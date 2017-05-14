@@ -55,3 +55,38 @@
    :non-normal-prefix "M-SPC"
    :states '(normal visual insert emacs)
    "/" 'swiper))
+
+(use-package org
+  :init
+  (setq org-M-RET-may-split-line nil
+        org-blank-before-new-entry '((heading . nil)
+                                     (plain-list-item . nil))
+        org-catch-invisible-edits 'smart
+        org-ctrl-k-protect-subtree t
+        org-imenu-depth 20)
+  :general
+  (:states '(insert emacs)
+   "RET" 'org-return-indent)
+  (:prefix "DEL"
+   :non-normal-prefix "M-DEL"
+   :states '(normal)
+   "o" '(lambda ()
+          (interactive)
+          (end-of-line)
+          (org-insert-heading)
+          (evil-append nil))
+   "O" '(lambda ()
+          (interactive)
+          (beginning-of-line)
+          (org-insert-heading)
+          (evil-append nil))
+   "DEL o" '(lambda ()
+              (interactive)
+              (end-of-line)
+              (org-insert-heading-respect-content)
+              (evil-append nil))
+   "DEL O" '(lambda ()
+              (interactive)
+              (beginning-of-line)
+              (org-insert-heading-respect-content)
+              (evil-append nil))))
