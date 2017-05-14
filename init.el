@@ -30,7 +30,7 @@
   :general
   (:prefix "SPC"
    :non-normal-prefix "M-SPC"
-   :states '(normal insert emacs)
+   :states '(normal visual insert emacs)
    "SPC" 'execute-extended-command
    "ff" 'find-file
    "fb" 'switch-buffer
@@ -53,5 +53,5 @@
   :general
   (:prefix "SPC"
    :non-normal-prefix "M-SPC"
-   :states '(normal insert emacs)
+   :states '(normal visual insert emacs)
    "/" 'swiper))
