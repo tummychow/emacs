@@ -14,3 +14,22 @@
       auto-save-list-file-prefix nil
       create-lockfiles nil
       make-backup-files nil)
+
+(use-package general
+  :demand t)
+
+(use-package evil
+  :demand t
+  :diminish 'undo-tree-mode
+  :init
+  (setq evil-want-Y-yank-to-eol t)
+  :config
+  (evil-mode 1)
+  :general
+  (:prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   :states '(normal insert emacs)
+   "SPC" 'execute-extended-command
+   "ff" 'find-file
+   "fb" 'switch-buffer
+   "ww" 'save-buffer))
