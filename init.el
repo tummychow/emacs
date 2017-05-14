@@ -56,6 +56,17 @@
    :states '(normal visual insert emacs)
    "/" 'swiper))
 
+(use-package shackle
+  :demand t
+  :diminish 'shackle-mode
+  :init
+  (setq shackle-rules '((help-mode :select t
+                                   :popup t
+                                   :align 'below
+                                   :size 0.5)))
+  :config
+  (shackle-mode 1))
+
 (use-package org
   :init
   (setq org-M-RET-may-split-line nil
