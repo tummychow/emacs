@@ -9,3 +9,8 @@
 			 ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 (eval-when-compile (require 'use-package))
+
+(setq auto-save-default nil
+      auto-save-list-file-prefix nil
+      create-lockfiles nil
+      make-backup-files nil)
