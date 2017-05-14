@@ -45,7 +45,8 @@
   :general
   ([remap execute-extended-command] 'counsel-M-x
    [remap find-file] 'counsel-find-file
-   [remap switch-buffer] 'ivy-switch-buffer)
+   [remap switch-buffer] 'ivy-switch-buffer
+   [remap imenu] 'counsel-imenu)
   (:keymaps 'ivy-minibuffer-map
    "<escape>" 'keyboard-escape-quit))
 
@@ -74,13 +75,16 @@
                                      (plain-list-item . nil))
         org-catch-invisible-edits 'smart
         org-ctrl-k-protect-subtree t
-        org-imenu-depth 20)
+        org-imenu-depth 20
+        imenu-auto-rescan t)
+  (setq-default imenu-auto-rescan-maxout 1000000000)
   :general
   (:states '(insert emacs)
    "RET" 'org-return-indent)
   (:prefix "DEL"
    :non-normal-prefix "M-DEL"
-   :states '(normal)
+   :states '(normal insert emacs)
+   "/" 'imenu
    "o" '(lambda ()
           (interactive)
           (end-of-line)
