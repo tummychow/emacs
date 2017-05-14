@@ -33,3 +33,23 @@
    "ff" 'find-file
    "fb" 'switch-buffer
    "ww" 'save-buffer))
+
+(use-package counsel
+  :diminish 'ivy-mode
+  :init
+  (setq ivy-count-format "(%d/%d) ")
+  :config
+  (ivy-mode 1)
+  :general
+  ([remap execute-extended-command] 'counsel-M-x
+   [remap find-file] 'counsel-find-file
+   [remap switch-buffer] 'ivy-switch-buffer)
+  (:keymaps 'ivy-minibuffer-map
+   "<escape>" 'keyboard-escape-quit))
+
+(use-package swiper
+  :general
+  (:prefix "SPC"
+   :non-normal-prefix "M-SPC"
+   :states '(normal insert emacs)
+   "/" 'swiper))
