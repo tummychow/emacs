@@ -35,7 +35,7 @@
    "ff" 'find-file
    "fb" 'switch-buffer
    "fw" 'other-window
-   "ww" 'save-buffer))
+   "w" 'save-buffer))
 
 (use-package counsel
   :diminish 'ivy-mode
