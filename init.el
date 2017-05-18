@@ -15,6 +15,8 @@
       create-lockfiles nil
       make-backup-files nil)
 
+(setq echo-keystrokes 0.1)
+
 (setq-default indent-tabs-mode nil)
 
 (use-package general
@@ -32,6 +34,10 @@
    :non-normal-prefix "M-SPC"
    :states '(normal visual insert emacs)
    "SPC" 'execute-extended-command
+   "hh" 'help-for-help
+   "hf" 'describe-function
+   "hk" 'describe-key
+   "hv" 'describe-variable
    "ff" 'find-file
    "fb" 'switch-buffer
    "fw" 'other-window
@@ -47,6 +53,9 @@
   ([remap execute-extended-command] 'counsel-M-x
    [remap find-file] 'counsel-find-file
    [remap switch-buffer] 'ivy-switch-buffer
+   [remap describe-face] 'counsel-describe-face
+   [remap describe-function] 'counsel-describe-function
+   [remap describe-variable] 'counsel-describe-variable
    [remap imenu] 'counsel-imenu)
   (:keymaps 'ivy-minibuffer-map
    "<escape>" 'keyboard-escape-quit))
