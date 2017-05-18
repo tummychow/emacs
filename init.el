@@ -34,6 +34,7 @@
    "SPC" 'execute-extended-command
    "ff" 'find-file
    "fb" 'switch-buffer
+   "fw" 'other-window
    "ww" 'save-buffer))
 
 (use-package counsel
@@ -49,6 +50,13 @@
    [remap imenu] 'counsel-imenu)
   (:keymaps 'ivy-minibuffer-map
    "<escape>" 'keyboard-escape-quit))
+
+(use-package ace-window
+  :init
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-scope 'frame)
+  :general
+  ([remap other-window] 'ace-window))
 
 (use-package swiper
   :general
