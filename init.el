@@ -104,6 +104,7 @@
    :non-normal-prefix "M-DEL"
    :states '(normal insert emacs)
    "/" 'imenu
+   "e" 'org-export-dispatch
    "o" '(lambda ()
           (interactive)
           (end-of-line)
