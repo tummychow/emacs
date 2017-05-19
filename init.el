@@ -16,6 +16,7 @@
       make-backup-files nil)
 
 (setq echo-keystrokes 0.1)
+(setq sentence-end-double-space nil)
 
 (setq-default indent-tabs-mode nil)
 
