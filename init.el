@@ -92,6 +92,7 @@
                                      (plain-list-item . nil))
         org-catch-invisible-edits 'smart
         org-ctrl-k-protect-subtree t
+        org-file-apps '(("pdf" . "xdg-open %s"))
         org-imenu-depth 20
         imenu-auto-rescan t)
   (setq-default imenu-auto-rescan-maxout 1000000000)
