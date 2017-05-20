@@ -22,6 +22,8 @@
 
 (use-package general
   :demand t)
+(use-package hydra
+  :demand t)
 
 (use-package evil
   :demand t
@@ -44,6 +46,7 @@
    "fw" 'other-window
    "w" 'save-buffer))
 
+(use-package ivy-hydra)
 (use-package counsel
   :diminish 'ivy-mode
   :init
@@ -97,6 +100,13 @@
         org-imenu-depth 20
         imenu-auto-rescan t)
   (setq-default imenu-auto-rescan-maxout 1000000000)
+  (defhydra hydra-org-headings ()
+    "navigate org headings"
+    ("u" outline-up-heading "up to higher level")
+    ("j" outline-next-visible-heading "down any level")
+    ("k" outline-previous-visible-heading "up any level")
+    ("J" org-forward-heading-same-level "down same level")
+    ("K" org-backward-heading-same-level "up same level"))
   :general
   (:states '(insert emacs)
    "RET" 'org-return-indent)
@@ -105,6 +115,11 @@
    :states '(normal insert emacs)
    "/" 'imenu
    "e" 'org-export-dispatch
+   "u" 'hydra-org-headings/outline-up-heading
+   "j" 'hydra-org-headings/outline-next-visible-heading
+   "k" 'hydra-org-headings/outline-previous-visible-heading
+   "J" 'hydra-org-headings/org-forward-heading-same-level
+   "K" 'hydra-org-headings/org-backward-heading-same-level
    "o" '(lambda ()
           (interactive)
           (end-of-line)
