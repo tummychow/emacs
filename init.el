@@ -17,6 +17,8 @@
 
 (setq echo-keystrokes 0.1)
 (setq sentence-end-double-space nil)
+(setq menu-bar-mode nil
+      tool-bar-mode nil)
 
 (setq-default indent-tabs-mode nil)
 
