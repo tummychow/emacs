@@ -106,6 +106,7 @@
   (setq-default imenu-auto-rescan-maxout 1000000000)
   (defhydra hydra-org-headings ()
     "navigate org headings"
+    ("<tab>" org-cycle "cycle heading")
     ("u" outline-up-heading "up to higher level")
     ("j" outline-next-visible-heading "down any level")
     ("k" outline-previous-visible-heading "up any level")
