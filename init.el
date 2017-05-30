@@ -75,6 +75,11 @@
   (:keymaps 'ivy-minibuffer-map
    "<escape>" 'keyboard-escape-quit))
 
+(use-package avy
+  :general
+  (:states '(motion)
+   "f" 'avy-goto-char-in-line))
+
 (use-package ace-window
   :init
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
