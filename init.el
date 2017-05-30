@@ -35,6 +35,8 @@
   :config
   (evil-mode 1)
   :general
+  (:states '(normal visual)
+   ";" 'evil-ex)
   (:prefix "SPC"
    :non-normal-prefix "M-SPC"
    :states '(normal visual insert emacs)
