@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ivy-hydra hydra ace-window shackle swiper counsel evil general use-package))))
+    (ws-butler ivy-hydra hydra ace-window shackle swiper counsel evil general use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

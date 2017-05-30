@@ -27,6 +27,12 @@
 (use-package hydra
   :demand t)
 
+(use-package ws-butler
+  :demand t
+  :diminish 'ws-butler-mode
+  :config
+  (ws-butler-mode 1))
+
 (use-package evil
   :demand t
   :diminish 'undo-tree-mode
