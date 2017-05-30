@@ -57,6 +57,7 @@
    "w" 'save-buffer))
 
 (use-package ivy-hydra)
+(use-package wgrep)
 (use-package counsel
   :diminish 'ivy-mode
   :init
