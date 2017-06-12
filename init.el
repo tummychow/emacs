@@ -53,13 +53,19 @@
    "hf" 'describe-function
    "hk" 'describe-key
    "hv" 'describe-variable
-   "ff" 'find-file
-   "fb" 'switch-buffer
-   "fw" 'other-window
+   "hm" 'describe-mode
+   "f" 'find-file
+   "b" 'switch-buffer
+   "v" 'other-window
    "w" 'save-buffer))
 
 (use-package ivy-hydra)
-(use-package wgrep)
+(use-package wgrep
+  :init
+  (setq wgrep-auto-save-buffer t)
+  :general
+  (:keymaps 'wgrep-mode-map
+   [remap save-buffer] 'wgrep-finish-edit))
 (use-package counsel
   :diminish 'ivy-mode
   :init
