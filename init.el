@@ -92,6 +92,12 @@
   :init
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame)
+  :config
+  (face-spec-set 'aw-leading-char-face
+    '((((class color)) (:foreground "red" :height 3.0))
+      (((background dark)) (:foreground "gray100" :height 3.0))
+      (((background light)) (:foreground "gray0" :height 3.0))
+      (t (:foreground "gray100" :underline nil :height 3.0))))
   :general
   ([remap other-window] 'ace-window))
 
