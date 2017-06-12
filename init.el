@@ -19,6 +19,8 @@
 (setq sentence-end-double-space nil)
 (setq menu-bar-mode nil
       tool-bar-mode nil)
+(setq initial-major-mode 'org-mode
+      initial-scratch-message nil)
 
 (setq-default indent-tabs-mode nil)
 
