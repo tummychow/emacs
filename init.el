@@ -144,6 +144,7 @@
   (:prefix "DEL"
    :non-normal-prefix "M-DEL"
    :states '(normal insert emacs)
+   :keymaps 'org-mode-map
    "/" 'imenu
    "e" 'org-export-dispatch
    "u" 'hydra-org-headings/outline-up-heading
