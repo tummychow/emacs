@@ -33,7 +33,7 @@
   :demand t
   :diminish 'ws-butler-mode
   :config
-  (ws-butler-mode 1))
+  (ws-butler-global-mode 1))
 
 (use-package evil
   :demand t
