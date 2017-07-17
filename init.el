@@ -46,7 +46,10 @@
   (evil-mode 1)
   :general
   (:states '(normal visual)
-   ";" 'evil-ex)
+   ";" 'evil-ex
+   "s" 'save-buffer
+   "x" 'other-window
+   "r" 'universal-argument)
   (:prefix "SPC"
    :non-normal-prefix "M-SPC"
    :states '(normal visual insert emacs)
@@ -57,9 +60,7 @@
    "hv" 'describe-variable
    "hm" 'describe-mode
    "f" 'find-file
-   "b" 'switch-buffer
-   "v" 'other-window
-   "w" 'save-buffer))
+   "b" 'switch-buffer))
 
 (use-package ivy-hydra)
 (use-package wgrep
@@ -163,14 +164,4 @@
           (interactive)
           (beginning-of-line)
           (org-insert-heading)
-          (evil-append nil))
-   "DEL o" '(lambda ()
-              (interactive)
-              (end-of-line)
-              (org-insert-heading-respect-content)
-              (evil-append nil))
-   "DEL O" '(lambda ()
-              (interactive)
-              (beginning-of-line)
-              (org-insert-heading-respect-content)
-              (evil-append nil))))
+          (evil-append nil))))
