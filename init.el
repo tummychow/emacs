@@ -163,6 +163,7 @@
    :keymaps 'org-mode-map
    "/" 'imenu
    "e" 'org-export-dispatch
+   "r" 'org-reveal
    "u" 'hydra-org-headings/outline-up-heading
    "j" 'hydra-org-headings/outline-next-visible-heading
    "k" 'hydra-org-headings/outline-previous-visible-heading
