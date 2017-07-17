@@ -68,8 +68,10 @@
    "f" 'find-file
    "b" 'switch-buffer))
 
-(use-package ivy-hydra)
+(use-package ivy-hydra
+  :commands (hydra-ivy/body))
 (use-package wgrep
+  :commands (wgrep-change-to-wgrep-mode)
   :init
   (setq wgrep-auto-save-buffer t)
   :general
