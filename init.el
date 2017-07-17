@@ -23,6 +23,7 @@
       initial-scratch-message nil)
 
 (setq-default indent-tabs-mode nil)
+(show-paren-mode 1)
 
 (use-package general
   :demand t)
