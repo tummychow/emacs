@@ -22,6 +22,7 @@
       tool-bar-mode nil)
 (setq initial-major-mode 'org-mode
       initial-scratch-message nil)
+(setq save-interprogram-paste-before-kill t)
 
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
