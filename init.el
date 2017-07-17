@@ -32,6 +32,8 @@
 (use-package ws-butler
   :demand t
   :diminish 'ws-butler-mode
+  :init
+  (setq ws-butler-keep-whitespace-before-point nil)
   :config
   (ws-butler-global-mode 1))
 
