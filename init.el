@@ -43,7 +43,8 @@
   :demand t
   :diminish 'undo-tree-mode
   :init
-  (setq evil-want-Y-yank-to-eol t)
+  (setq evil-want-Y-yank-to-eol t
+        evil-disable-insert-state-bindings t)
   :config
   (evil-mode 1)
   :general
