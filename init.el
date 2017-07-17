@@ -62,6 +62,9 @@
    "hk" 'describe-key
    "hv" 'describe-variable
    "hm" 'describe-mode
+   "dh" 'split-window-vertically
+   "dv" 'split-window-horizontally
+   "dx" 'delete-window
    "f" 'find-file
    "b" 'switch-buffer))
 
