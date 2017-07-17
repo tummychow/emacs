@@ -17,6 +17,7 @@
 
 (setq echo-keystrokes 0.1)
 (setq sentence-end-double-space nil)
+(setq visual-line-fringe-indicators '(left-curly-arrow nil))
 (setq menu-bar-mode nil
       tool-bar-mode nil)
 (setq initial-major-mode 'org-mode
