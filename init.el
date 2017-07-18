@@ -169,13 +169,13 @@
    "k" 'hydra-org-headings/outline-previous-visible-heading
    "J" 'hydra-org-headings/org-forward-heading-same-level
    "K" 'hydra-org-headings/org-backward-heading-same-level
-   "o" '(lambda ()
-          (interactive)
+   "o" '(lambda (arg)
+          (interactive "P")
           (end-of-line)
-          (org-insert-heading)
+          (org-insert-heading arg)
           (evil-append nil))
-   "O" '(lambda ()
-          (interactive)
+   "O" '(lambda (arg)
+          (interactive "P")
           (beginning-of-line)
-          (org-insert-heading)
+          (org-insert-heading arg)
           (evil-append nil))))
