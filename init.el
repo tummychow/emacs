@@ -131,6 +131,8 @@
   :config
   (shackle-mode 1))
 
+(use-package hydra-ox
+  :commands (hydra-ox/body))
 (use-package org
   :init
   (setq org-M-RET-may-split-line nil
@@ -162,7 +164,7 @@
    :states '(normal insert emacs)
    :keymaps 'org-mode-map
    "/" 'imenu
-   "e" 'org-export-dispatch
+   "e" 'hydra-ox/body
    "r" 'org-reveal
    "u" 'hydra-org-headings/outline-up-heading
    "j" 'hydra-org-headings/outline-next-visible-heading
