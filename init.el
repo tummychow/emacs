@@ -179,7 +179,7 @@
         org-imenu-depth 20
         imenu-auto-rescan t)
   (setq-default imenu-auto-rescan-maxout 1000000000)
-  (defhydra hydra-org-headings ()
+  (defhydra private/hydra-org-headings ()
     "navigate org headings"
     ("<tab>" org-cycle "cycle heading")
     ("u" outline-up-heading "up to higher level")
@@ -195,11 +195,11 @@
    "/" 'imenu
    "e" 'hydra-ox/body
    "r" 'org-reveal
-   "u" 'hydra-org-headings/outline-up-heading
-   "j" 'hydra-org-headings/outline-next-visible-heading
-   "k" 'hydra-org-headings/outline-previous-visible-heading
-   "J" 'hydra-org-headings/org-forward-heading-same-level
-   "K" 'hydra-org-headings/org-backward-heading-same-level
+   "u" 'private/hydra-org-headings/outline-up-heading
+   "j" 'private/hydra-org-headings/outline-next-visible-heading
+   "k" 'private/hydra-org-headings/outline-previous-visible-heading
+   "J" 'private/hydra-org-headings/org-forward-heading-same-level
+   "K" 'private/hydra-org-headings/org-backward-heading-same-level
    "o" '(lambda (arg)
           (interactive "P")
           (end-of-line)
