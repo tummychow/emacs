@@ -54,18 +54,23 @@
    "s" 'save-buffer
    "x" 'other-window
    "r" 'universal-argument)
+  (:keymaps 'universal-argument-map
+   "r" 'universal-argument-more)
   (:prefix "SPC"
    :non-normal-prefix "M-SPC"
    :states '(normal visual insert emacs)
-   "SPC" 'execute-extended-command
    "hh" 'help-for-help
    "hf" 'describe-function
    "hk" 'describe-key
    "hv" 'describe-variable
    "hm" 'describe-mode
+   "hw" 'where-is
    "dh" 'split-window-vertically
    "dv" 'split-window-horizontally
    "dx" 'delete-window
+   "dk" 'kill-buffer-and-window
+   "SPC" 'execute-extended-command
+   ";" 'eval-expression
    "f" 'find-file
    "b" 'switch-buffer))
 
