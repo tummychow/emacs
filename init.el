@@ -24,8 +24,11 @@
       initial-scratch-message nil)
 (setq save-interprogram-paste-before-kill t)
 
+(setq-default truncate-lines t)
 (setq-default indent-tabs-mode nil)
 (show-paren-mode 1)
+(setq global-hl-line-sticky-flag t)
+(global-hl-line-mode 1)
 
 (use-package general
   :demand t)
