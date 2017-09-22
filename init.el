@@ -114,6 +114,19 @@
   (:keymaps 'ivy-minibuffer-map
    "<escape>" 'keyboard-escape-quit))
 
+(use-package counsel-projectile
+  :init
+  (setq projectile-cache-file (expand-file-name "emacs/projectile.cache" (or (getenv "XDG_CACHE_HOME") "~/.cache")))
+  :config
+  (projectile-mode 1)
+  (counsel-projectile-on)
+  :general
+  (private/with-leader
+   :infix "p"
+   "f" 'counsel-projectile
+   "/" 'counsel-projectile-rg
+   "p" 'counsel-projectile-switch-project))
+
 (use-package avy
   :init
   (setq avy-all-windows nil)
