@@ -31,7 +31,16 @@
 (global-hl-line-mode 1)
 
 (use-package general
-  :demand t)
+  :demand t
+  :config
+  (general-create-definer private/with-leader
+                          :prefix "SPC"
+                          :non-normal-prefix "M-SPC"
+                          :states '(normal visual insert emacs))
+  (general-create-definer private/with-local-leader
+                          :prefix "DEL"
+                          :non-normal-prefix "M-DEL"
+                          :states '(normal visual insert emacs)))
 (use-package hydra
   :demand t)
 
@@ -59,23 +68,25 @@
    "r" 'universal-argument)
   (:keymaps 'universal-argument-map
    "r" 'universal-argument-more)
-  (:prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   :states '(normal visual insert emacs)
-   "hh" 'help-for-help
-   "hf" 'describe-function
-   "hk" 'describe-key
-   "hv" 'describe-variable
-   "hm" 'describe-mode
-   "hw" 'where-is
-   "dh" 'split-window-vertically
-   "dv" 'split-window-horizontally
-   "dx" 'delete-window
-   "dk" 'kill-buffer-and-window
+  (private/with-leader
    "SPC" 'execute-extended-command
    ";" 'eval-expression
    "f" 'find-file
-   "b" 'switch-buffer))
+   "b" 'switch-buffer)
+  (private/with-leader
+   :infix "h"
+   "h" 'help-for-help
+   "f" 'describe-function
+   "k" 'describe-key
+   "v" 'describe-variable
+   "m" 'describe-mode
+   "w" 'where-is)
+  (private/with-leader
+   :infix "d"
+   "h" 'split-window-vertically
+   "v" 'split-window-horizontally
+   "x" 'delete-window
+   "k" 'kill-buffer-and-window))
 
 (use-package ivy-hydra
   :commands (hydra-ivy/body))
@@ -137,9 +148,7 @@
 
 (use-package swiper
   :general
-  (:prefix "SPC"
-   :non-normal-prefix "M-SPC"
-   :states '(normal visual insert emacs)
+  (private/with-leader
    "/" 'swiper))
 
 (use-package shackle
@@ -181,9 +190,7 @@
   :general
   (:states '(insert emacs)
    "RET" 'org-return-indent)
-  (:prefix "DEL"
-   :non-normal-prefix "M-DEL"
-   :states '(normal insert emacs)
+  (private/with-local-leader
    :keymaps 'org-mode-map
    "/" 'imenu
    "e" 'hydra-ox/body
