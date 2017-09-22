@@ -101,9 +101,23 @@
    "<escape>" 'keyboard-escape-quit))
 
 (use-package avy
+  :init
+  (setq avy-all-windows nil)
+  :config
+  ;; evil automatically remaps those commands to be inclusive
+  ;; however, when i use these with an operator, i usually want
+  ;; exclusive behavior, so i'm redefining them
+  (evil-define-avy-motion avy-goto-char-2-above exclusive)
+  (evil-define-avy-motion avy-goto-char-2-below exclusive)
+  ;; TODO: pressing esc for avy input should just cancel out immediately
+  ;;       we can do this with C-g, so maybe we should advise these functions
+  ;;       to remap <escape> to C-g and unmap afterwards
+  ;; TODO: should have a good way of repeating last avy search
+  ;; TODO: should we have a binding for t/T?
   :general
   (:states '(motion)
-   "f" 'avy-goto-char-in-line))
+   "f" 'avy-goto-char-2-below
+   "F" 'avy-goto-char-2-above))
 
 (use-package ace-window
   :init
