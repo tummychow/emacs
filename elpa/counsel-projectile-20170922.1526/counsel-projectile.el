@@ -4,7 +4,7 @@
 
 ;; Author: Eric Danan
 ;; URL: https://github.com/ericdanan/counsel-projectile
-;; Package-Version: 20170911.1304
+;; Package-Version: 20170922.1526
 ;; Created: 2016-04-11
 ;; Keywords: project, convenience
 ;; Version: 0.1
@@ -455,7 +455,7 @@ Invokes the command referenced by
                file)
            (dolist (buffer counsel-projectile--buffers files)
              (when (setq file (buffer-file-name (get-buffer buffer)))
-               (delete (file-relative-name file root) files)))))))
+               (setq files (delete (file-relative-name file root) files))))))))
 
 (defun counsel-projectile--matcher (regexp candidates)
   "Return REGEXP-matching CANDIDATES.
