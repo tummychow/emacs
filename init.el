@@ -20,6 +20,7 @@
 (setq visual-line-fringe-indicators '(left-curly-arrow nil))
 (setq menu-bar-mode nil
       tool-bar-mode nil)
+(setq frame-title-format "%b")
 (setq initial-major-mode 'org-mode
       initial-scratch-message nil)
 (setq save-interprogram-paste-before-kill t)
@@ -29,6 +30,8 @@
 (show-paren-mode 1)
 (setq global-hl-line-sticky-flag t)
 (global-hl-line-mode 1)
+
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 (use-package general
   :demand t
@@ -112,6 +115,7 @@
    [remap describe-variable] 'counsel-describe-variable
    [remap imenu] 'counsel-imenu)
   (:keymaps 'ivy-minibuffer-map
+   ;; TODO: this mapping should actually be in all minibuffers
    "<escape>" 'keyboard-escape-quit))
 
 (use-package counsel-projectile
@@ -184,7 +188,10 @@
                                      (plain-list-item . nil))
         org-catch-invisible-edits 'smart
         org-ctrl-k-protect-subtree t
-        org-file-apps '(("pdf" . "xdg-open %s"))
+        org-file-apps '(("pdf" . system)
+                        (auto-mode . emacs)
+                        (system . "xdg-open %s")
+                        (t . system))
         org-ellipsis "⤵"
         org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -208,6 +215,7 @@
    "/" 'imenu
    "e" 'hydra-ox/body
    "r" 'org-reveal
+   "RET" 'org-open-at-point
    "u" 'private/hydra-org-headings/outline-up-heading
    "j" 'private/hydra-org-headings/outline-next-visible-heading
    "k" 'private/hydra-org-headings/outline-previous-visible-heading
