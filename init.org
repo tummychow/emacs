@@ -1,0 +1,23 @@
+-*- eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t) -*-
+
+* Tangling Hook
+  There are two main approaches to writing your emacs configuration in
+  org-mode:
+  - ~org-babel-load-file~. This approach is very simple to implement,
+    but has to tangle each file when emacs starts.
+  - ~org-babel-tangle~. This approach stores the tangled file on disk,
+    but you have to remember to re-tangle after each edit.
+
+
+  We can use a file-local after-save-hook to do the tangling
+  automatically. However, this file variable is not considered safe by
+  default, so emacs will prompt you the first time you open this
+  file.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq safe-local-variable-values '((eval add-hook 'after-save-hook
+                                             (lambda nil (org-babel-tangle))
+                                             nil t)))
+  #+END_SRC
+** Further Reading
+   - https://www.reddit.com/r/emacs/comments/372nxd/
