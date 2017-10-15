@@ -37,6 +37,11 @@
     (setq use-package-always-ensure t)
     (straight-use-package 'use-package)
   #+END_SRC
+* no-littering
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package no-littering
+      :demand t)
+  #+END_SRC
 * general
   I use SPC and DEL as my leaders, since my keyboard puts them under
   my left and right thumbs.
@@ -175,4 +180,65 @@
               (beginning-of-line)
               (org-insert-heading arg)
               (evil-append nil))))
+  #+END_SRC
+* General UI
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq auto-save-default nil)
+    (setq auto-save-list-file-prefix nil)
+    (setq create-lockfiles nil)
+    (setq make-backup-files nil)
+
+    (setq initial-major-mode 'org-mode)
+    (setq initial-scratch-message nil)
+
+    (setq-default truncate-lines t)
+    (setq visual-line-fringe-indicators '(left-curly-arrow nil))
+
+    (setq echo-keystrokes 0.1)
+
+    (setq sentence-end-double-space nil)
+
+    (setq menu-bar-mode nil)
+    (setq tool-bar-mode nil)
+
+    (setq frame-title-format "%b")
+
+    (setq save-interprogram-paste-before-kill t)
+
+    (setq global-hl-line-sticky-flag t)
+    (global-hl-line-mode t)
+    (show-paren-mode t)
+
+    (setq-default indent-tabs-mode nil)
+
+    (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+  #+END_SRC
+* ws-butler
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package ws-butler
+      :demand t
+      :diminish 'ws-butler-mode
+      :init
+      (setq ws-butler-keep-whitespace-before-point nil)
+      :config
+      (ws-butler-global-mode t))
+  #+END_SRC
+* projectile
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package projectile
+      :demand t
+      :config
+      (projectile-mode t))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package counsel-projectile
+      :config
+      (counsel-projectile-on)
+      :general
+      (private/with-leader
+       :infix "p"
+       "f" 'counsel-projectile
+       "/" 'counsel-projectile-rg
+       "p" 'counsel-projectile-switch-project))
   #+END_SRC
