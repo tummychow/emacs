@@ -37,3 +37,142 @@
     (setq use-package-always-ensure t)
     (straight-use-package 'use-package)
   #+END_SRC
+* general
+  I use SPC and DEL as my leaders, since my keyboard puts them under
+  my left and right thumbs.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package general
+      :demand t
+      :config
+      (general-create-definer private/with-leader
+                              :prefix "SPC"
+                              :non-normal-prefix "M-SPC"
+                              :states '(normal visual insert emacs))
+      (general-create-definer private/with-local-leader
+                              :prefix "DEL"
+                              :non-normal-prefix "M-DEL"
+                              :states '(normal visual insert emacs)))
+  #+END_SRC
+* evil
+  I never really became fluent in vim, but my brief experience made it
+  impossible to go back to any other editing system. The two big
+  innovations of vim were:
+  - separate modes for binding commands and inserting text
+  - composable operators and text objects
+
+
+  I'm not married to anything specific in vim or evil besides those
+  two principles, but nothing really comes close, and I'm not in the
+  mood to roll my own version of evil right now.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package evil
+      :demand t
+      :diminish 'undo-tree-mode
+      :init
+      (setq evil-want-Y-yank-to-eol t)
+      (setq evil-disable-insert-state-bindings t)
+      :config
+      (evil-mode t)
+      :general
+      (:states '(normal visual)
+       ";" 'evil-ex
+       "s" 'save-buffer
+       "x" 'other-window
+       "r" 'universal-argument)
+      (:keymaps 'universal-argument-map
+       "r" 'universal-argument-more)
+      (private/with-leader
+       "SPC" 'execute-extended-command
+       ";" 'eval-expression
+       "f" 'find-file
+       "b" 'switch-buffer)
+      (private/with-leader
+       :infix "h"
+       "h" 'help-for-help
+       "f" 'describe-function
+       "v" 'describe-variable
+       "k" 'describe-key
+       "m" 'describe-mode
+       "w" 'where-is)
+      (private/with-leader
+       :infix "d"
+       "h" 'split-window-vertically
+       "v" 'split-window-horizontally
+       "x" 'delete-window
+       "k" 'kill-buffer-and-window))
+  #+END_SRC
+* ivy, counsel, swiper
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package ivy
+      :demand t
+      :diminish 'ivy-mode
+      :init
+      (setq ivy-count-format "(%d/%d) ")
+      :config
+      (ivy-mode t)
+      :general
+      (:keymaps 'ivy-minibuffer-map
+       "<escape>" 'abort-recursive-edit)
+      ([remap switch-buffer] 'ivy-switch-buffer))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package counsel
+      :demand t
+      :diminish 'counsel-mode
+      :config
+      (counsel-mode t))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package ivy-hydra
+      :commands (hydra-ivy/body))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package wgrep
+      :commands (wgrep-change-to-wgrep-mode)
+      :init
+      (setq wgrep-auto-save-buffer t)
+      :general
+      (:keymaps 'wgrep-mode-map
+       [remap save-buffer] 'wgrep-finish-edit))
+  #+END_SRC
+* org
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package org
+      :init
+      (setq org-M-RET-may-split-line nil)
+      (setq org-blank-before-new-entry '((heading . nil)
+                                         (plain-list-item . nil)))
+      (setq org-catch-invisible-edits 'smart)
+      (setq org-ellipsis "⤵")
+      (setq org-src-fontify-natively t)
+      (setq org-src-tab-acts-natively t)
+      (setq org-src-window-setup 'current-window)
+      (setq org-file-apps '(("pdf" . system)
+                            (auto-mode . emacs)
+                            (system . "xdg-open %s")
+                            (t . system)))
+      :general
+      (:states '(insert emacs)
+       :keymaps 'org-mode-map
+       "RET" 'org-return-indent)
+      (private/with-local-leader
+       :keymaps 'org-mode-map
+       "/" 'counsel-org-goto
+       "r" 'org-reveal
+       "RET" 'org-open-at-point
+       "o" '(lambda (arg)
+              (interactive "P")
+              (end-of-line)
+              (org-insert-heading arg)
+              (evil-append nil))
+       "O" '(lambda (arg)
+              (interactive "P")
+              (beginning-of-line)
+              (org-insert-heading arg)
+              (evil-append nil))))
+  #+END_SRC
