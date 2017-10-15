@@ -252,9 +252,15 @@
   files and buffers means one less thing to think about. Manually
   managing which files are open is unnecessary friction.
 
+  A recent tweak to projectile's modeline causes immense UI lag, which
+  is what the custom modeline snippet is for. See more [[https://github.com/bbatsov/projectile/issues/1183#issuecomment-335569547][here]].
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package projectile
       :demand t
+      :init
+      (setq projectile-mode-line
+            '(:eval (format " Projectile[%s]" (projectile-project-name))))
       :config
       (projectile-mode t))
   #+END_SRC
