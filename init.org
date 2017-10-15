@@ -21,7 +21,7 @@
   #+END_SRC
 ** Further Reading
    - https://www.reddit.com/r/emacs/comments/372nxd/
-* straight.el
+* [[https://github.com/raxod502/straight.el][straight.el]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el"))
           (bootstrap-version 2))
@@ -37,14 +37,18 @@
     (setq use-package-always-ensure t)
     (straight-use-package 'use-package)
   #+END_SRC
-* no-littering
+* [[https://github.com/emacscollective/no-littering][no-littering]]
+  This keeps files like ~projectile-known-projects-file~ where they
+  belong.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package no-littering
       :demand t)
   #+END_SRC
-* general
-  I use SPC and DEL as my leaders, since my keyboard puts them under
-  my left and right thumbs.
+* [[https://github.com/noctuid/general.el][general]]
+  general provides a unified interface for binding keys. I use SPC and
+  DEL as my leaders, since my keyboard puts them under my left and
+  right thumbs.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package general
@@ -59,7 +63,7 @@
                               :non-normal-prefix "M-DEL"
                               :states '(normal visual insert emacs)))
   #+END_SRC
-* evil
+* [[https://github.com/emacs-evil/evil][evil]]
   I never really became fluent in vim, but my brief experience made it
   impossible to go back to any other editing system. The two big
   innovations of vim were:
@@ -70,6 +74,11 @@
   I'm not married to anything specific in vim or evil besides those
   two principles, but nothing really comes close, and I'm not in the
   mood to roll my own version of evil right now.
+
+  My evil configuration makes extensive use of sequenced keypresses
+  under a leader. I find excessive chording (ie pressing multiple keys
+  simultaneously) to be a nightmare for my hands, and would much
+  rather press 3-4 keys in a row than 2-3 at once.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package evil
@@ -108,7 +117,7 @@
        "x" 'delete-window
        "k" 'kill-buffer-and-window))
   #+END_SRC
-* ivy, counsel, swiper
+* [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ivy
       :demand t
@@ -137,6 +146,13 @@
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package swiper
+      :general
+      (private/with-leader
+       "/" 'swiper))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package wgrep
       :commands (wgrep-change-to-wgrep-mode)
       :init
@@ -145,7 +161,11 @@
       (:keymaps 'wgrep-mode-map
        [remap save-buffer] 'wgrep-finish-edit))
   #+END_SRC
-* org
+* [[http://orgmode.org/][org]]
+  Note that straight.el will always install a fresh org-mode from
+  [[https://github.com/emacsmirror/org][emacsmirror]] (which, unlike org's ELPA, can be cloned over TLS). This
+  repository is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package org
       :init
@@ -173,15 +193,18 @@
        "o" '(lambda (arg)
               (interactive "P")
               (end-of-line)
-              (org-insert-heading arg)
+              (org-meta-return arg)
               (evil-append nil))
        "O" '(lambda (arg)
               (interactive "P")
               (beginning-of-line)
-              (org-insert-heading arg)
+              (org-meta-return arg)
               (evil-append nil))))
   #+END_SRC
 * General UI
+  This is for built-in emacs miscellany that I want to reconfigure or
+  turn off. There's quite a bit of stuff in here.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (setq auto-save-default nil)
     (setq auto-save-list-file-prefix nil)
@@ -213,7 +236,7 @@
 
     (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   #+END_SRC
-* ws-butler
+* [[https://github.com/lewang/ws-butler][ws-butler]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ws-butler
       :demand t
@@ -223,7 +246,12 @@
       :config
       (ws-butler-global-mode t))
   #+END_SRC
-* projectile
+* [[https://github.com/bbatsov/projectile][projectile]] with [[https://github.com/ericdanan/counsel-projectile][ivy]] integration
+  I mainly use projectile for fuzzy searching an entire project's
+  files and buffers. Being able to ignore the distinction between
+  files and buffers means one less thing to think about. Manually
+  managing which files are open is unnecessary friction.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package projectile
       :demand t
@@ -242,10 +270,18 @@
        "/" 'counsel-projectile-rg
        "p" 'counsel-projectile-switch-project))
   #+END_SRC
-* avy
-  evil actually defines motion wrappers for avy. However, its wrappers
-  are inclusive motions, and I vastly prefer using exclusive motions
-  here, so I redefine the wrappers.
+* [[https://github.com/abo-abo/avy][avy]]
+  One of the unpleasant truths of vim is that, although there are
+  structured motions for everything, you're probably going to start
+  out by holding down hjkl a lot. It takes a long time for all those
+  other motions to seep into your muscle memory. avy provides a
+  command that quickly gets anywhere on the screen, regardless of how
+  the buffer is formatted. It reflects a "lazy vim" approach of using
+  cheap, general commands that you'll never have to think about.
+
+  evil actually [[https://github.com/emacs-evil/evil/blob/master/evil-integration.el][defines]] motion wrappers for avy. However, its wrappers
+  are inclusive, and I vastly prefer exclusivity for "jump to first
+  instance" motions, so I redefine them.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
@@ -259,7 +295,20 @@
        "f" 'avy-goto-char-2-below
        "F" 'avy-goto-char-2-above))
   #+END_SRC
-* ace-window
+
+  - avy ~read-char~ prompts can only be canceled with C-g, can we use
+    ESC?
+  - quickly repeat last avy search in both directions?
+  - similar bindings for t/T?
+* [[https://github.com/abo-abo/ace-window][ace-window]]
+  Forget obtuse up/down/left/right-based window switching. It takes up
+  a ton of binding space and it's not even the fastest way to move
+  around. With ace-window you can select any window with one key.
+
+  I use a nasty hack to increase the size of the ace-window marker
+  character. You can probably do this with ~custom-set-faces~, whose
+  use I try to avoid.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ace-window
       :init
@@ -274,14 +323,13 @@
       :general
       ([remap other-window] 'ace-window))
   #+END_SRC
-* swiper
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package swiper
-      :general
-      (private/with-leader
-       "/" 'swiper))
-  #+END_SRC
-* shackle
+* [[https://github.com/wasamasa/shackle][shackle]]
+  shackle keeps temporary windows out of the way. emacs has a nasty
+  tendency to spawn them in the first free window it can find, and if
+  you have your windows laid out just right, that's usually not what
+  you wanted. I'm used to vim's "help pops up at the bottom" approach,
+  and shackle lets me have that.
+
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package shackle
       :demand t
