@@ -242,3 +242,55 @@
        "/" 'counsel-projectile-rg
        "p" 'counsel-projectile-switch-project))
   #+END_SRC
+* avy
+  evil actually defines motion wrappers for avy. However, its wrappers
+  are inclusive motions, and I vastly prefer using exclusive motions
+  here, so I redefine the wrappers.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package avy
+      :init
+      (setq avy-all-windows nil)
+      :config
+      (evil-define-avy-motion avy-goto-char-2-above exclusive)
+      (evil-define-avy-motion avy-goto-char-2-below exclusive)
+      :general
+      (:states '(motion)
+       "f" 'avy-goto-char-2-below
+       "F" 'avy-goto-char-2-above))
+  #+END_SRC
+* ace-window
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package ace-window
+      :init
+      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+            aw-scope 'frame)
+      :config
+      (face-spec-set 'aw-leading-char-face
+        '((((class color)) (:foreground "red" :height 3.0))
+          (((background dark)) (:foreground "gray100" :height 3.0))
+          (((background light)) (:foreground "gray0" :height 3.0))
+          (t (:foreground "gray100" :underline nil :height 3.0))))
+      :general
+      ([remap other-window] 'ace-window))
+  #+END_SRC
+* swiper
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package swiper
+      :general
+      (private/with-leader
+       "/" 'swiper))
+  #+END_SRC
+* shackle
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package shackle
+      :demand t
+      :diminish 'shackle-mode
+      :init
+      (setq shackle-rules '((help-mode :select t
+                                       :popup t
+                                       :align 'below
+                                       :size 0.5)))
+      :config
+      (shackle-mode t))
+  #+END_SRC
