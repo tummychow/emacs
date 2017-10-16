@@ -21,6 +21,11 @@
   #+END_SRC
 ** Further Reading
    - https://www.reddit.com/r/emacs/comments/372nxd/
+** TODO Async
+   Tangling produces a noticeable pause every time I save. This should
+   be pushed off the main thread.
+   - https://www.reddit.com/r/emacs/comments/5ej8by/
+   - https://emacs.stackexchange.com/q/22722
 * [[https://github.com/raxod502/straight.el][straight.el]]
   I like straight.el philosophically - clones and lockfiles "feels"
   like the right way to solve this problem - and I don't mind having
@@ -227,8 +232,13 @@
     - easy integration with swiper/rg and occur/wgrep, if you realize
       that you're biting off more than you can chew
 *** iedit/multiple-cursors
-    I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit/evil-iedit-state, and I'm also
-    interested in multiple-cursors.
+    I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit, and I'm also interested in
+    multiple-cursors:
+    - [[https://github.com/victorhge/iedit][iedit]]
+    - [[https://github.com/syl20bnr/evil-iedit-state][evil-iedit-state]]
+    - [[https://github.com/hlissner/evil-multiedit][evil-multiedit]]
+    - [[https://github.com/gabesoft/evil-mc][evil-mc]]
+    - [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]
 * [[http://orgmode.org/][org]]
   Note that straight.el will always install a fresh org-mode from
   [[https://github.com/emacsmirror/org][emacsmirror]] (which, unlike org's ELPA, can be cloned over TLS). This
@@ -303,6 +313,9 @@
    navigation mode, jump around headings freely, and add to the
    jumplist when you "exit" heading navigation mode. I used to have a
    hydra for this, and might rebuild it.
+** TODO org-agenda
+   I probably want to set org-agenda-files to something under
+   no-littering, and then add basically every org file I open to it.
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
@@ -474,7 +487,8 @@
     (use-package ace-window
       :init
       (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-            aw-scope 'frame)
+            aw-scope 'frame
+            aw-dispatch-alist '((?z aw-flip-window)))
       :config
       (face-spec-set 'aw-leading-char-face
         '((((class color)) (:foreground "red" :height 3.0))
@@ -503,3 +517,64 @@
       :config
       (shackle-mode t))
   #+END_SRC
+* TODO Other Improvements
+  - https://github.com/emacs-tw/awesome-emacs
+  - https://github.com/hlissner/.emacs.d/
+  - https://github.com/noctuid/evil-guide
+** TODO epub
+   See [[https://github.com/wasamasa/nov.el][nov.el]].
+** TODO Modeline and Frame Title
+   I'm pretty happy with the built-in emacs modeline in terms of
+   information, but it doesn't look flattering. Could use some
+   customization. Matching improvements for frame title would also be
+   appropriate.
+   - https://www.reddit.com/r/emacs/comments/6ftm3x/
+   - [[https://github.com/dbordak/telephone-line][telephone-line]]
+   - [[https://github.com/milkypostman/powerline][powerline]]/[[https://github.com/TheBB/spaceline][spaceline]]
+   - [[https://github.com/Malabarba/smart-mode-line][smart-mode-line]]
+** TODO Surround
+   One of the few vim plugins I really got to know was tpope's
+   surround. Moving to emacs and having not picked up a similar plugin
+   makes me wonder how anyone lives without that kind of functionality.
+   - [[https://github.com/emacs-evil/evil-surround][evil-surround]]
+   - [[https://github.com/cute-jumper/embrace.el][embrace]]
+** TODO Pairs
+   Automatic pair insertion saves a lot of time and generally reduces
+   the cognitive load of keeping parentheses matched. As emacs is a
+   lisp-heavy environment, a number of specialized packages exist
+   specifically for lisp's uniquely paren-intensive requirements. An
+   interesting overview was written [[https://github.com/shaunlebron/history-of-lisp-editing][here]]. Much ink has been shed on
+   this topic, such as [[https://www.reddit.com/r/emacs/comments/4nvhu4/][here]].
+   - paredit
+   - [[https://github.com/DogLooksGood/parinfer-mode][parinfer]]
+   - [[https://github.com/Fuco1/smartparens][smartparens]]
+   - [[https://github.com/promethial/paxedit][paxedit]]
+   - [[https://github.com/noctuid/lispyville][lispyville]]
+   - [[https://github.com/luxbock/evil-cleverparens][evil-cleverparens]]
+   - xah also has some interesting thoughts [[https://www.reddit.com/r/emacs/comments/3sfmkz/could_this_be_a_pareditsmartparens_killer/cwxocld/][here]]
+
+
+   While we're on the subject of lisp, it would be nice to fix
+   indentation of keyword blocks, as described [[https://github.com/kaushalmodi/.emacs.d/blob/6e815386ed6c84c5b417239b297d989e9a9c69ca/setup-files/setup-elisp.el#L133][here]]. One example of
+   this in my config is in the ~:general~ sections of my use-package
+   forms.
+
+   Outside of lisp, it's still useful to have automatic pairs, but you
+   don't really need anything else. Besides smartparens, there's also
+   the built-in electric-pair-mode.
+** TODO Comments
+   emacs has two built-in commenting functions, comment-dwim and
+   comment-line. There are some packages as well:
+   - [[https://github.com/linktohack/evil-commentary][evil-commentary]]
+   - [[https://github.com/redguardtoo/evil-nerd-commenter][evil-nerd-commenter]]
+   - [[https://github.com/remyferre/comment-dwim-2][comment-dwim-2]]
+** TODO Autocompletion
+   Autocompletion is a huge time saver and can eliminate a lot of
+   "whoops I forgot that argument's type" brain cycles. Unfortunately,
+   the situation in emacs is [[https://www.reddit.com/r/emacs/comments/49ee8f/][not great]]. There are two main
+   implentations, [[https://github.com/company-mode/company-mode][company]] and [[https://github.com/auto-complete/auto-complete][auto-complete]].
+** TODO which-key
+   Things like help-for-help and hydra-ox are basically key trees with
+   built-in prompts. I find the persistence of hydras to be their main
+   selling point. If all you want is the prompt, [[https://github.com/justbur/emacs-which-key][which-key]] is probably
+   a better approach.
