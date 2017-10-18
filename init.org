@@ -296,13 +296,13 @@
    only displays leaf-level headings, so you can't jump directly to
    intermediate headings.
 
-   I've also heard of some other options like deft, orgnav, and
-   helm-org-rifle, but for now, counsel-org-goto is so close to my
+   I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
+   [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
    ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
-** TODO ace-link
+** TODO [[https://github.com/abo-abo/ace-link][ace-link]]
    A more powerful alternative to org-open-at-point. This should open
    the link at point (if any), and otherwise select one avy-style.
-** TODO worf Tree Mutation
+** TODO [[https://github.com/abo-abo/worf][worf]] Tree Mutation
    It's fine to use counsel-org-goto for large jumps, but for shorter
    movements, it's much faster to go up or down headings. worf has an
    especially elegant way of combining navigation and mutation of org
@@ -375,15 +375,15 @@
 ** TODO Indentation
    You can see that I set indent-tabs-mode to nil by default. I really
    do not like setting indentation behavior in my config. I used to
-   use vim-sleuth and it was magical. You never had to tell it
+   use [[https://github.com/tpope/vim-sleuth][vim-sleuth]] and it was magical. You never had to tell it
    anything; it just knew what the right settings were. That's what
    indentation configuration is supposed to feel like. I've heard that
-   dtrt-indent can provide similar functionality for emacs.
+   [[https://github.com/jscheid/dtrt-indent][dtrt-indent]] can provide similar functionality for emacs.
 
    I haven't had to edit any "real" code in emacs yet, so remapping
    org-return-indent was sufficient for me, but I'd also like to look
-   into electric-indent-mode or aggressive-indent-mode to do this
-   automatically.
+   into electric-indent-mode (built-in) or [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] to
+   do this automatically.
 * [[https://github.com/lewang/ws-butler][ws-butler]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ws-butler
@@ -454,7 +454,7 @@
    with ~C-g~. Is there really no way to use ~ESC~ or ~<escape>~
    instead?
 ** TODO Repeat
-   One nice feature of vim-sneak is that, after your initial search,
+   One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
    you can mash the key to go to the next or previous instance. Such
    behavior could also be useful here. It would be something like this:
    - when you first press ~fF~, you get prompted for the search
@@ -468,7 +468,7 @@
    - the jumplist only gets updated once for the entire search chain
 
 
-   Look into evil-snipe, perhaps?
+   Look into [[https://github.com/hlissner/evil-snipe][evil-snipe]], perhaps?
 ** TODO ~tT~
    If we have bindings for ~fF~, should we add ~tT~ as well? What
    would they do? We could also use ~ft~ instead of ~fF~, which is one
@@ -545,9 +545,9 @@
    - [[https://github.com/milkypostman/powerline][powerline]]/[[https://github.com/TheBB/spaceline][spaceline]]
    - [[https://github.com/Malabarba/smart-mode-line][smart-mode-line]]
 ** TODO Surround
-   One of the few vim plugins I really got to know was tpope's
-   surround. Moving to emacs and having not picked up a similar plugin
-   makes me wonder how anyone lives without that kind of functionality.
+   One of the few vim plugins I really got to know was [[https://github.com/tpope/vim-surround][surround]].
+   Moving to emacs and having not picked up a similar plugin makes me
+   wonder how anyone lives without that kind of functionality.
    - [[https://github.com/emacs-evil/evil-surround][evil-surround]]
    - [[https://github.com/cute-jumper/embrace.el][embrace]]
 ** TODO Pairs
@@ -586,15 +586,15 @@
    the situation in emacs is [[https://www.reddit.com/r/emacs/comments/49ee8f/][not great]]. There are two main
    implentations, [[https://github.com/company-mode/company-mode][company]] and [[https://github.com/auto-complete/auto-complete][auto-complete]].
 ** TODO which-key
-   Things like help-for-help and hydra-ox are basically key trees with
+   Things like help-for-help and [[https://github.com/abo-abo/hydra/blob/master/hydra-ox.el][hydra-ox]] are basically key trees with
    built-in prompts. I find the persistence of hydras to be their main
    selling point. If all you want is the prompt, [[https://github.com/justbur/emacs-which-key][which-key]] is probably
    a better approach.
 ** TODO beancount
-   beancount's repository contains its own emacs major mode. The repo
+   beancount's repository contains its own [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][emacs major mode]]. The repo
    is on bitbucket, but straight.el doesn't have hg support (should be
    reasonable to implement, if it comes to that). It appears that the
-   mode hasn't been edited in a long time, so the github mirror should
+   mode hasn't been edited in a long time, so the [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] should
    also work. I'll need straight.el to clone the repository and build
    the one elisp file.
 ** TODO git
