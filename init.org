@@ -223,7 +223,7 @@
     in my workflow. For the most part, I am, but it's literally the
     only ex command I use regularly. If I can replace it with
     something else, that lets me completely rebind ~;:~ to other
-    commands. visual-regexp, maybe? My requirements:
+    commands. [[https://github.com/benma/visual-regexp.el][visual-regexp]] or [[https://github.com/zk-phi/phi-search][phi-search]]? My requirements:
     - robust live preview
     - edit find and replace sides simultaneously, ideally with similar
       syntax to ~:s~
@@ -350,6 +350,12 @@
     (setq-default indent-tabs-mode nil)
 
     (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+    (setq uniquify-buffer-name-style 'forward)
+
+    (setq require-final-newline t)
+
+    (setq load-prefer-newer t)
   #+END_SRC
 ** TODO visual-line-mode
    visual-line-mode is a built-in mode that truncates lines at word
@@ -498,6 +504,12 @@
       :general
       ([remap other-window] 'ace-window))
   #+END_SRC
+** TODO Dispatch
+   You can do a lot of interesting window related stuff with
+   aw-dispatch-alist, which could probably replace my entire ~SPC d~
+   leader tree. Definitely worth investigating. Integrating desktop
+   management keybinds (eg eyebrowse, see below) would also be
+   appropriate.
 * [[https://github.com/wasamasa/shackle][shackle]]
   shackle keeps temporary windows out of the way. emacs has a nasty
   tendency to spawn them in the first free window it can find, and if
@@ -578,3 +590,71 @@
    built-in prompts. I find the persistence of hydras to be their main
    selling point. If all you want is the prompt, [[https://github.com/justbur/emacs-which-key][which-key]] is probably
    a better approach.
+** TODO beancount
+   beancount's repository contains its own emacs major mode. The repo
+   is on bitbucket, but straight.el doesn't have hg support (should be
+   reasonable to implement, if it comes to that). It appears that the
+   mode hasn't been edited in a long time, so the github mirror should
+   also work. I'll need straight.el to clone the repository and build
+   the one elisp file.
+** TODO git
+   Obviously the elephant in this room is [[https://github.com/magit/magit][magit]], with support from
+   other packages like [[https://github.com/vermiculus/magithub][magithub]] and [[https://github.com/emacs-evil/evil-magit][evil-magit]]. Some other important
+   considerations:
+   - [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]], [[https://github.com/syohex/emacs-git-gutter/][git-gutter]], or [[https://github.com/dgutov/diff-hl][diff-hl]]
+   - [[https://github.com/rmuslimov/browse-at-remote][browse-at-remote]]
+** TODO Desktops
+   My goal is to have window arrangements segregated by project, like
+   [[https://github.com/bbatsov/persp-projectile][persp-projectile]]. However, you need to have desktop management
+   first to implement that, so I'm looking at [[https://www.reddit.com/r/emacs/comments/6sffrd/am_i_misunderstanding_eyebrowse/dlcfhwk/][rolling my own]] using
+   [[https://github.com/wasamasa/eyebrowse][eyebrowse]]. It's also worth exploring [[https://github.com/ilohmar/wconf][wconf]], or the built-in
+   winner-mode.
+** TODO Scroll
+   I'm pretty comfortable with emacs's default scrolling behavior, but
+   here are some packages to investigate:
+   - [[https://github.com/aspiers/smooth-scrolling][smooth-scrolling]]
+   - [[https://github.com/zk-phi/sublimity][sublimity]]
+   - [[https://github.com/Malabarba/beacon][beacon]]
+** TODO Dired
+   I use ranger as my file manager these days. Theoretically, there's
+   no reason I couldn't do that in emacs instead. However, vanilla
+   dired is not fun. It's a pain to teach dired to open things in
+   their native programs rather than in emacs. So there's a lot of
+   work that needs to be added here:
+   - wdired (built-in, similar to ranger's bulkrename)
+   - [[https://github.com/fourier/ztree][ztree]]
+   - [[https://github.com/ralesi/ranger.el][ranger.el]]
+   - [[https://github.com/Fuco1/dired-hacks][dired-hacks]]
+** TODO File Tree
+   In practice, I vastly prefer navigating projects with recursive
+   fuzzy search, as already provided by counsel-projectile. But
+   there's something to be said for an interactive file tree when
+   exploring a project whose structure you don't yet know. emacs has a
+   number of options here:
+   - [[https://github.com/jaypei/emacs-neotree][neotree]]
+   - [[https://github.com/m2ym/direx-el][direx]]
+   - [[https://github.com/Alexander-Miller/treemacs][treemacs]]
+   - [[https://github.com/sabof/project-explorer][project-explorer]] (appears unmaintained)
+** TODO mpd
+   I grudgingly use ncmpcpp as my mpd client right now, but its
+   interface is not customizable enough for my tastes. I would like a
+   tree by genre/album/track/artist in that order (cmus has a tree,
+   but it's artist/album only with no other options). What better
+   place to implement a highly customizable text-based UI than emacs?
+   - mpc (built-in)
+   - [[https://www.gnu.org/software/emms/][EMMS]]
+   - [[https://github.com/pft/mingus][mingus]]
+   - [[https://github.com/nlamirault/dionysos][dionysos]]
+** TODO Miscellaneous Packages
+   - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
+     use-package)
+   - [[https://github.com/flycheck/flycheck][flycheck]]
+   - [[https://github.com/bbatsov/crux][crux]]
+   - [[https://github.com/bbatsov/super-save][super-save]]
+   - [[https://github.com/joaotavora/yasnippet][yasnippet]]
+   - [[https://github.com/dacap/keyfreq][keyfreq]]
+   - [[https://github.com/nflath/hungry-delete][hungry-delete]] and/or [[https://github.com/hrehfeld/emacs-smart-hungry-delete][smart-hungry-delete]]
+   - [[https://github.com/alezost/mwim.el][mwim]]
+   - global-auto-revert-mode (built-in)
+   - [[https://github.com/bbatsov/zenburn-emacs][zenburn]] (I should actually implement [[https://github.com/tummychow/pallor][pallor]] in emacs)
+   - [[https://www.reddit.com/r/emacs/comments/4d8gvt/][auto close minibuffer]]
