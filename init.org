@@ -492,9 +492,9 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ace-window
       :init
-      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-            aw-scope 'frame
-            aw-dispatch-alist '((?z aw-flip-window)))
+      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+      (setq aw-scope 'frame)
+      (setq aw-dispatch-alist '((?z aw-flip-window)))
       :config
       (face-spec-set 'aw-leading-char-face
         '((((class color)) (:foreground "red" :height 3.0))
