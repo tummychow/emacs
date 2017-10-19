@@ -1,0 +1,17 @@
+* ~~/.emacs.d~
+  Just my emacs configuration. See ~init.org~ for the details.
+* Installing
+  If, for some reason, you want to try my configuration, follow these steps:
+  1. Clone this repo to ~~/.emacs.d~. (I recommend backing up your own
+     emacs configuration first.)
+  2. Launch emacs, and ~C-x C-f ~/.emacs.d/init.org~.
+  3. emacs will warn you that ~init.org~ sets an unsafe file variable,
+     and it will prompt you for how to handle this variable. My config
+     tells emacs to treat that variable as safe, so it doesn't really
+     matter what you choose here.
+  4. Tangle the file manually (~C-c C-v t~ or ~M-x org-babel-tangle~).
+  5. Restart emacs (~M-x kill-emacs~). Note that this restart may take
+     a very long time; emacs will bootstrap [[https://github.com/raxod502/straight.el][straight.el]] and pull all
+     my init's dependencies. This includes an entire clone of
+     org-mode.
+  6. You should now have emacs open with my config active.
