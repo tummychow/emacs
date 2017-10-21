@@ -252,7 +252,6 @@
                                          (plain-list-item . nil)))
       (setq org-catch-invisible-edits 'smart)
       (setq org-ellipsis "⤵")
-      (setq org-return-follows-link t)
       (setq org-src-fontify-natively t)
       (setq org-src-tab-acts-natively t)
       (setq org-src-window-setup 'current-window)
@@ -268,6 +267,7 @@
        :keymaps 'org-mode-map
        "/" 'counsel-org-goto
        "r" 'org-reveal
+       "RET" 'org-open-at-point
        "o" '(lambda (arg)
               (interactive "P")
               (end-of-line)
@@ -302,6 +302,8 @@
 ** TODO [[https://github.com/abo-abo/ace-link][ace-link]]
    A more powerful alternative to org-open-at-point. This should open
    the link at point (if any), and otherwise select one avy-style.
+   Note that org-return-follows-link doesn't work in evil normal
+   state.
 ** TODO [[https://github.com/abo-abo/worf][worf]] Tree Mutation
    It's fine to use counsel-org-goto for large jumps, but for shorter
    movements, it's much faster to go up or down headings. worf has an
