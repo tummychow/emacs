@@ -252,6 +252,7 @@
                                          (plain-list-item . nil)))
       (setq org-catch-invisible-edits 'smart)
       (setq org-ellipsis "⤵")
+      (setq org-return-follows-link t)
       (setq org-src-fontify-natively t)
       (setq org-src-tab-acts-natively t)
       (setq org-src-window-setup 'current-window)
@@ -267,7 +268,6 @@
        :keymaps 'org-mode-map
        "/" 'counsel-org-goto
        "r" 'org-reveal
-       "RET" 'org-open-at-point
        "o" '(lambda (arg)
               (interactive "P")
               (end-of-line)
@@ -316,6 +316,49 @@
 ** TODO org-agenda
    I probably want to set org-agenda-files to something under
    no-littering, and then add basically every org file I open to it.
+** TODO org Indentation
+   Right now, plain text in org-mode is indented to match the level of
+   the headline. This is enforced by two configuration tweaks:
+   - I bind ~RET~ to org-return-indent, since org-mode disables
+     electric-indent-mode. If I removed this binding, pressing ~RET~
+     in org-mode would leave unindented text. Pressing ~TAB~ in that
+     unindented text would indent it, because...
+   - I leave org-cycle-emulate-tab on its default value of t, which
+     causes ~TAB~ to behave normally (ie indenting) in plain text.
+     Setting this to nil prevents that behavior, causing ~TAB~ to just
+     cycle the subtree that contains the text (which is actually
+     useful behavior in its own right, because it's a quick way to
+     jump back up to the containing heading).
+
+
+   However, there's a bigger question of whether indentation in
+   org-mode is actually useful. Moving text up and down headings is a
+   lot more annoying when the text is indented by different levels. I
+   also believe it interferes with beancount (which can be embedded in
+   org-mode, but doesn't support indented directives).
+
+   On the other hand, I tried unindenting this file and found that it
+   drastically hurt readability (my eyes were instinctively scanning
+   the left edge of the screen to identify the headline boundaries). I
+   didn't even realize that would be a problem until I saw it. So,
+   while I would like to get rid of indentation, we need to maintain
+   readability to do so. A few tweaks might help:
+   - currently I do not insert any blanks before new headings
+     (org-blank-before-new-entry), but if there's no indentation, I
+     might want to turn that back on.
+   - I'm still using emacs's default theme, which only distinguishes
+     headings using color. Back when I took notes in markdown, this
+     was fine because I surrounded every heading with an empty line
+     above and below, but org-mode is denser due to the previous
+     point. I could increase the font size of headings to make them
+     stand out more. This is particularly important if the heading is
+     next to another colored element, like a keyword.
+** TODO org Completion
+   I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
+   can type them in lowercase (which I should really start doing), but
+   even better would be autocomplete for them. Autocompletion is
+   unfortunately a TODO in its own right, but perhaps we can hack up
+   an interim solution with ivy.
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
@@ -610,7 +653,7 @@
    [[https://github.com/bbatsov/persp-projectile][persp-projectile]]. However, you need to have desktop management
    first to implement that, so I'm looking at [[https://www.reddit.com/r/emacs/comments/6sffrd/am_i_misunderstanding_eyebrowse/dlcfhwk/][rolling my own]] using
    [[https://github.com/wasamasa/eyebrowse][eyebrowse]]. It's also worth exploring [[https://github.com/ilohmar/wconf][wconf]], or the built-in
-   winner-mode.
+   winner-mode. Also: [[https://github.com/cyrus-and/zoom][zoom]].
 ** TODO Scroll
    I'm pretty comfortable with emacs's default scrolling behavior, but
    here are some packages to investigate:
