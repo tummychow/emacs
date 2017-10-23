@@ -578,6 +578,26 @@
       :config
       (shackle-mode t))
   #+END_SRC
+* [[http://furius.ca/beancount/][beancount]]
+  The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight.el
+  doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine substitute,
+  since the mode doesn't appear to be modified often.
+
+  beancount-mode is actually a minor mode, and its directives can be
+  embedded in other major modes. The author of beancount uses org-mode
+  for this. However, beancount expects directives to be in the first
+  column of the line, so you can't use indented org-mode files for
+  this purpose. We might need to set some buffer-local variables to do
+  this; see the section on org indentation.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package beancount
+      :recipe (:host github
+               :repo "beancount/beancount"
+               :branch "master"
+               :files ("editors/emacs/beancount.el"))
+      :mode ("\\.beancount\\'" . beancount-mode))
+  #+END_SRC
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
@@ -639,13 +659,6 @@
    built-in prompts. I find the persistence of hydras to be their main
    selling point. If all you want is the prompt, [[https://github.com/justbur/emacs-which-key][which-key]] is probably
    a better approach.
-** TODO beancount
-   beancount's repository contains its own [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][emacs major mode]]. The repo
-   is on bitbucket, but straight.el doesn't have hg support (should be
-   reasonable to implement, if it comes to that). It appears that the
-   mode hasn't been edited in a long time, so the [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] should
-   also work. I'll need straight.el to clone the repository and build
-   the one elisp file.
 ** TODO git
    Obviously the elephant in this room is [[https://github.com/magit/magit][magit]], with support from
    other packages like [[https://github.com/vermiculus/magithub][magithub]] and [[https://github.com/emacs-evil/evil-magit][evil-magit]]. Some other important
