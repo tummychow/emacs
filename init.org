@@ -1,7 +1,7 @@
 -*- eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t) -*-
 
 * Tangling Hook
-  There are two main approaches to writing your emacs configuration in
+  There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration in
   org-mode:
   - org-babel-load-file. This approach is very simple to implement,
     but has to tangle each file when emacs starts.
@@ -19,13 +19,15 @@
                                              (lambda nil (org-babel-tangle))
                                              nil t)))
   #+END_SRC
-** Further Reading
-   - https://www.reddit.com/r/emacs/comments/372nxd/
 ** TODO Async
    Tangling produces a noticeable pause every time I save. This should
    be pushed off the main thread.
    - https://www.reddit.com/r/emacs/comments/5ej8by/
    - https://emacs.stackexchange.com/q/22722
+
+
+   We have to be careful about tangling with the org that was
+   installed by straight.el, not the built-in one.
 * [[https://github.com/raxod502/straight.el][straight.el]]
   I like straight.el philosophically - clones and lockfiles "feels"
   like the right way to solve this problem - and I don't mind having
