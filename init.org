@@ -588,7 +588,8 @@
   for this. However, beancount expects directives to be in the first
   column of the line, so you can't use indented org-mode files for
   this purpose. We might need to set some buffer-local variables to do
-  this; see the section on org indentation.
+  this; see the section on org indentation. Perhaps [[https://github.com/alphapapa/outshine][outshine]] is a
+  better approach?
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package beancount
@@ -665,6 +666,11 @@
    considerations:
    - [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]], [[https://github.com/syohex/emacs-git-gutter/][git-gutter]], or [[https://github.com/dgutov/diff-hl][diff-hl]]
    - [[https://github.com/rmuslimov/browse-at-remote][browse-at-remote]]
+
+
+   I also want good gist support, which I believe is built into magit,
+   but there are also some interesting third-party alternatives, like
+   [[https://github.com/etu/webpaste.el][webpaste]].
 ** TODO Desktops
    My goal is to have window arrangements segregated by project, like
    [[https://github.com/bbatsov/persp-projectile][persp-projectile]]. However, you need to have desktop management
