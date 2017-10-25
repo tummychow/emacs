@@ -597,8 +597,21 @@
                :repo "beancount/beancount"
                :branch "master"
                :files ("editors/emacs/beancount.el"))
-      :mode ("\\.beancount\\'" . beancount-mode))
+      :mode ("\\.beancount\\'" . beancount-mode)
+      :init
+      (setq beancount-use-ido nil))
   #+END_SRC
+** TODO Mode Improvements
+   beancount-mode is rather anemic, and there's a lot of stuff I would
+   like to improve:
+   - quick key to insert the current YYYY-MM-DD
+   - fontification of comments
+   - automatic reinitialization of accounts without having to manually
+     invoke beancount-init-accounts
+   - shorter key sequence for beancount-insert-account
+   - clean auto align for the entire file, even for non-transaction
+     directives
+   - flycheck invocation of bean-check
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
