@@ -606,12 +606,14 @@
    beancount-mode is rather anemic, and there's a lot of stuff I would
    like to improve:
    - quick key to insert the current YYYY-MM-DD
-   - fontification of comments
+   - fontification of comments, strings, numbers, and commodities
+   - keywords (eg open, balance, document) are fontified in comments
+     and strings, where they should be treated as regular text
    - automatic reinitialization of accounts without having to manually
      invoke beancount-init-accounts
    - shorter key sequence for beancount-insert-account
    - clean auto align for the entire file, even for non-transaction
-     directives
+     directives (bean-format can help, but it only aligns amounts)
    - flycheck invocation of bean-check
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
