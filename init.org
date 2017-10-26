@@ -305,19 +305,9 @@
    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
    ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
 ** Indentation
-   Right now, plain text in org-mode is indented to match the level of
-   the headline. This is enforced by two configuration tweaks:
-   - I bind ~RET~ to org-return-indent, since org-mode disables
-     electric-indent-mode. If I removed this binding, pressing ~RET~
-     in org-mode would leave unindented text. Pressing ~TAB~ in that
-     unindented text would indent it, because...
-   - I leave org-cycle-emulate-tab on its default value of t, which
-     causes ~TAB~ to behave normally (ie indenting) in plain text.
-     Setting this to nil prevents that behavior, causing ~TAB~ to just
-     cycle the subtree that contains the text (which is actually
-     useful behavior in its own right, because it's a quick way to
-     jump back up to the containing heading).
-
+   By default, plain text in org-mode is indented to match the level
+   of the headline. This is controlled by org-adapt-indentation,
+   org-cycle-emulate-tab, and my binding of org-return-indent.
 
    I actually like the indentation, because it helps distinguish
    headlines (you can scan the left edge of the buffer to locate
@@ -588,14 +578,10 @@
         (when (and buffer-file-name
                    (string= (file-name-extension buffer-file-name) "beancount"))
           (beancount-mode t)
-          (set (make-local-variable 'org-cycle-emulate-tab) nil)
+          (set (make-local-variable 'org-adapt-indentation) nil)
           (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
                                                                    (plain-list-item . nil)))))
-      (add-hook 'org-mode-hook 'private/org-beancount)
-      :general
-      (:states '(insert emacs)
-       :keymaps 'beancount-mode-map
-       [remap org-return-indent] 'org-return))
+      (add-hook 'org-mode-hook 'private/org-beancount))
   #+END_SRC
 ** org-beancount
    beancount-mode is actually a minor mode, and its directives can be
@@ -606,7 +592,8 @@
    I implemented similar behavior via a hook, so that I wouldn't need
    file-specific cruft. This hook also disables indentation in
    org-mode, which is necessary because beancount does not support
-   leading whitespace on directives.
+   leading whitespace on directives. Since the file is unindented, I
+   add a blank line above each heading to make them more visible.
 ** TODO Mode Improvements
    beancount-mode is rather anemic, and there's a lot of stuff I would
    like to improve:
