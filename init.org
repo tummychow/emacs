@@ -286,6 +286,7 @@
        "/" 'counsel-org-goto
        "r" 'org-reveal
        "RET" 'org-open-at-point
+       "l" 'org-toggle-link-display
        "o" 'private/org-meta-return-after
        "O" 'private/org-meta-return-before))
   #+END_SRC
