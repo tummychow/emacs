@@ -282,7 +282,7 @@
               (org-meta-return arg)
               (evil-append nil))))
   #+END_SRC
-** org Navigation
+** Navigation
    I'm very fond of counsel-org-goto. It Just Works, which can't be
    said for some of the things I tried in the past.
 
@@ -302,6 +302,27 @@
    I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
    ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
+** Indentation
+   Right now, plain text in org-mode is indented to match the level of
+   the headline. This is enforced by two configuration tweaks:
+   - I bind ~RET~ to org-return-indent, since org-mode disables
+     electric-indent-mode. If I removed this binding, pressing ~RET~
+     in org-mode would leave unindented text. Pressing ~TAB~ in that
+     unindented text would indent it, because...
+   - I leave org-cycle-emulate-tab on its default value of t, which
+     causes ~TAB~ to behave normally (ie indenting) in plain text.
+     Setting this to nil prevents that behavior, causing ~TAB~ to just
+     cycle the subtree that contains the text (which is actually
+     useful behavior in its own right, because it's a quick way to
+     jump back up to the containing heading).
+
+
+   I actually like the indentation, because it helps distinguish
+   headlines (you can scan the left edge of the buffer to locate
+   them). It also increases the vertical density of my org files,
+   since I don't need empty lines (org-blank-before-new-entry) or
+   larger fonts to make the headlines stand out. I do disable the
+   indentation for beancount buffers; see below.
 ** TODO [[https://github.com/abo-abo/ace-link][ace-link]]
    A more powerful alternative to org-open-at-point. This should open
    the link at point (if any), and otherwise select one avy-style.
@@ -321,44 +342,7 @@
 ** TODO org-agenda
    I probably want to set org-agenda-files to something under
    no-littering, and then add basically every org file I open to it.
-** TODO org Indentation
-   Right now, plain text in org-mode is indented to match the level of
-   the headline. This is enforced by two configuration tweaks:
-   - I bind ~RET~ to org-return-indent, since org-mode disables
-     electric-indent-mode. If I removed this binding, pressing ~RET~
-     in org-mode would leave unindented text. Pressing ~TAB~ in that
-     unindented text would indent it, because...
-   - I leave org-cycle-emulate-tab on its default value of t, which
-     causes ~TAB~ to behave normally (ie indenting) in plain text.
-     Setting this to nil prevents that behavior, causing ~TAB~ to just
-     cycle the subtree that contains the text (which is actually
-     useful behavior in its own right, because it's a quick way to
-     jump back up to the containing heading).
-
-
-   However, there's a bigger question of whether indentation in
-   org-mode is actually useful. Moving text up and down headings is a
-   lot more annoying when the text is indented by different levels. I
-   also believe it interferes with beancount (which can be embedded in
-   org-mode, but doesn't support indented directives).
-
-   On the other hand, I tried unindenting this file and found that it
-   drastically hurt readability (my eyes were instinctively scanning
-   the left edge of the screen to identify the headline boundaries). I
-   didn't even realize that would be a problem until I saw it. So,
-   while I would like to get rid of indentation, we need to maintain
-   readability to do so. A few tweaks might help:
-   - currently I do not insert any blanks before new headings
-     (org-blank-before-new-entry), but if there's no indentation, I
-     might want to turn that back on.
-   - I'm still using emacs's default theme, which only distinguishes
-     headings using color. Back when I took notes in markdown, this
-     was fine because I surrounded every heading with an empty line
-     above and below, but org-mode is denser due to the previous
-     point. I could increase the font size of headings to make them
-     stand out more. This is particularly important if the heading is
-     next to another colored element, like a keyword.
-** TODO org Completion
+** TODO Completion
    I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
    can type them in lowercase (which I should really start doing), but
    even better would be autocomplete for them. Autocompletion is
