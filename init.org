@@ -135,9 +135,12 @@
       :config
       (ivy-mode t)
       :general
+      ([remap switch-buffer] 'ivy-switch-buffer)
       (:keymaps 'ivy-minibuffer-map
        "<escape>" 'abort-recursive-edit)
-      ([remap switch-buffer] 'ivy-switch-buffer))
+      (private/with-local-leader
+       :keymaps 'ivy-occur-grep-mode-map
+       "o" 'ivy-wgrep-change-to-wgrep-mode))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -192,10 +195,12 @@
     swiper directly to ~/~.
 *** occur/wgrep
     I find wgrep very useful for transitioning from search to replace.
-    However, it takes multiple keybinds that I can never remember
-    (first you have to occur from the minibuffer, then in the occur
-    buffer you have to enable wgrep). I would like to abbreviate those
-    bindings or make them less obscure.
+    The key sequences are not too difficult to remember: ~C-o~ to
+    bring up hydra-ivy, ~u~ to occur, and ~DEL o~ to enable wgrep in
+    that buffer. There are quite a few other default bindings in
+    ivy-occur-mode-map, which might also be better on the local leader
+    with keys matching those of hydra-ivy (eg ~g~ in occur reverts the
+    buffer, but ~g~ in ivy-hydra invokes ivy-call).
 *** rg
     There's probably some argument to be made for using rg (already
     projectile-integrated) in larger searches. We'll see where that
