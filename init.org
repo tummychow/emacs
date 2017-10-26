@@ -262,6 +262,16 @@
                             (auto-mode . emacs)
                             (system . "xdg-open %s")
                             (t . system)))
+      (defun private/org-meta-return-before (arg)
+        (interactive "P")
+        (beginning-of-line)
+        (org-meta-return arg)
+        (evil-append nil))
+      (defun private/org-meta-return-after (arg)
+        (interactive "P")
+        (end-of-line)
+        (org-meta-return arg)
+        (evil-append nil))
       :general
       (:states '(insert emacs)
        :keymaps 'org-mode-map
@@ -271,16 +281,8 @@
        "/" 'counsel-org-goto
        "r" 'org-reveal
        "RET" 'org-open-at-point
-       "o" '(lambda (arg)
-              (interactive "P")
-              (end-of-line)
-              (org-meta-return arg)
-              (evil-append nil))
-       "O" '(lambda (arg)
-              (interactive "P")
-              (beginning-of-line)
-              (org-meta-return arg)
-              (evil-append nil))))
+       "o" 'private/org-meta-return-after
+       "O" 'private/org-meta-return-before))
   #+END_SRC
 ** Navigation
    I'm very fond of counsel-org-goto. It Just Works, which can't be
