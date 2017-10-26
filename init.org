@@ -441,6 +441,10 @@
     (use-package projectile
       :demand t
       :init
+      (defun private/projectile-ignore-projects (project-root)
+        (or (file-remote-p project-root)
+            (string-prefix-p (straight--dir) project-root)))
+      (setq projectile-ignored-project-function 'private/projectile-ignore-projects)
       (setq projectile-mode-line
             '(:eval (format " Projectile[%s]" (projectile-project-name))))
       :config
