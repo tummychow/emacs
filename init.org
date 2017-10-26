@@ -32,7 +32,8 @@
   I like straight.el philosophically - clones and lockfiles "feels"
   like the right way to solve this problem - and I don't mind having
   to give up package.el for those benefits. Extensive documentation is
-  also greatly appreciated.
+  also greatly appreciated. UX is still rough around the edges - see
+  [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]], [[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]] - but I can wait for that.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el"))
@@ -409,6 +410,7 @@
    anything; it just knew what the right settings were. That's what
    indentation configuration is supposed to feel like. I've heard that
    [[https://github.com/jscheid/dtrt-indent][dtrt-indent]] can provide similar functionality for emacs.
+   [[https://github.com/editorconfig/editorconfig-emacs][editorconfig]] support is also applicable to this problem.
 
    I haven't had to edit any "real" code in emacs yet, so remapping
    org-return-indent was sufficient for me, but I'd also like to look
@@ -426,7 +428,7 @@
   #+END_SRC
 * [[https://github.com/bbatsov/projectile][projectile]] with [[https://github.com/ericdanan/counsel-projectile][ivy]] integration
   I mainly use projectile for fuzzy searching an entire project's
-  files and buffers. It's quite refreshing to never think about what
+  files and buffers. It's quite refreshing to never think about which
   files are "open" and which ones aren't. The concept of a "root"
   directory is also important for things like rg searching.
 
@@ -460,6 +462,21 @@
        "/" 'counsel-projectile-rg
        "p" 'counsel-projectile-switch-project))
   #+END_SRC
+** TODO Disambiguated Buffer/File Names
+   Suppose I have a project with two files, foo/README and bar/README.
+   If I open foo/README, it'll show up in counsel-projectile as just
+   README, because now it's a buffer. Meanwhile bar/README continues
+   to show up by its full name because it hasn't been opened yet.
+
+   In my head, I know the layout of this project, so I know README
+   alone is an ambiguous name. If I'm looking for foo/README, I will
+   therefore type foo first, and counsel-projectile will have no
+   matches.
+
+   If I open bar/README as well, then emacs is forced to disambiguate
+   names, which it does the way I expect (uniquify-buffer-name-style).
+   I should teach projectile how to keep names unique even when some
+   are open buffers and some aren't.
 * [[https://github.com/abo-abo/avy][avy]]
   One of the unpleasant truths of vim is that, although there are
   structured motions for everything, you're probably going to start
@@ -488,7 +505,8 @@
 ** TODO read-char ~ESC~
    avy uses read-char to receive input. It seems I can only cancel it
    with ~C-g~. Is there really no way to use ~ESC~ or ~<escape>~
-   instead?
+   instead? Maybe I can advise the function and add a temporary
+   [[https://www.reddit.com/r/emacs/comments/67rlfr/][translation]] for it?
 ** TODO Repeat
    One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
    you can mash the key to go to the next or previous instance. Such
@@ -688,9 +706,9 @@
 ** TODO Desktops
    My goal is to have window arrangements segregated by project, like
    [[https://github.com/bbatsov/persp-projectile][persp-projectile]]. However, you need to have desktop management
-   first to implement that, so I'm looking at [[https://www.reddit.com/r/emacs/comments/6sffrd/am_i_misunderstanding_eyebrowse/dlcfhwk/][rolling my own]] using
-   [[https://github.com/wasamasa/eyebrowse][eyebrowse]]. It's also worth exploring [[https://github.com/ilohmar/wconf][wconf]], or the built-in
-   winner-mode. Also: [[https://github.com/cyrus-and/zoom][zoom]].
+   first to implement that, so I'm looking at using [[https://github.com/wasamasa/eyebrowse][eyebrowse]] with
+   some hand-rolled [[https://www.reddit.com/r/emacs/comments/6sffrd/am_i_misunderstanding_eyebrowse/dlcfhwk/][projectile integration]]. It's also worth exploring
+   [[https://github.com/ilohmar/wconf][wconf]], or the built-in winner-mode. Also: [[https://github.com/cyrus-and/zoom][zoom]].
 ** TODO Scroll
    I'm pretty comfortable with emacs's default scrolling behavior, but
    here are some packages to investigate:
