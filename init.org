@@ -584,24 +584,39 @@
   doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine substitute,
   since the mode doesn't appear to be modified often.
 
-  beancount-mode is actually a minor mode, and its directives can be
-  embedded in other major modes. The author of beancount uses org-mode
-  for this. However, beancount expects directives to be in the first
-  column of the line, so you can't use indented org-mode files for
-  this purpose. We might need to set some buffer-local variables to do
-  this; see the section on org indentation. Perhaps [[https://github.com/alphapapa/outshine][outshine]] is a
-  better approach?
-
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package beancount
       :recipe (:host github
                :repo "beancount/beancount"
                :branch "master"
                :files ("editors/emacs/beancount.el"))
-      :mode ("\\.beancount\\'" . beancount-mode)
+      :mode ("\\.beancount\\'" . org-mode)
+      :commands (beancount-mode)
       :init
-      (setq beancount-use-ido nil))
+      (setq beancount-use-ido nil)
+      (defun private/org-beancount ()
+        (when (and buffer-file-name
+                   (string= (file-name-extension buffer-file-name) "beancount"))
+          (beancount-mode t)
+          (set (make-local-variable 'org-cycle-emulate-tab) nil)
+          (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
+                                                                   (plain-list-item . nil)))))
+      (add-hook 'org-mode-hook 'private/org-beancount)
+      :general
+      (:states '(insert emacs)
+       :keymaps 'beancount-mode-map
+       [remap org-return-indent] 'org-return))
   #+END_SRC
+** org-beancount
+   beancount-mode is actually a minor mode, and its directives can be
+   embedded in other major modes. The author of beancount uses
+   org-mode for this, probably via a file-local property (~-*- mode:
+   org; mode: beancount -*-~).
+
+   I implemented similar behavior via a hook, so that I wouldn't need
+   file-specific cruft. This hook also disables indentation in
+   org-mode, which is necessary because beancount does not support
+   leading whitespace on directives.
 ** TODO Mode Improvements
    beancount-mode is rather anemic, and there's a lot of stuff I would
    like to improve:
