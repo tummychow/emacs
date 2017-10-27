@@ -1,5 +1,9 @@
 * ~~/.emacs.d~
   Just my emacs configuration. See ~init.org~ for the details.
+
+  I reserve the right to make breaking changes to my configuration
+  arbitrarily, even with the use of history-breaking rebases or force
+  pushes. You depend on this repository at your own risk.
 * Installing
   If, for some reason, you want to try my configuration, follow these steps:
   1. Clone this repo to ~~/.emacs.d~. (I recommend backing up your own
