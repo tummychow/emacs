@@ -463,20 +463,21 @@
        "p" 'counsel-projectile-switch-project))
   #+END_SRC
 ** TODO Disambiguated Buffer/File Names
-   Suppose I have a project with two files, foo/README and bar/README.
-   If I open foo/README, it'll show up in counsel-projectile as just
-   README, because now it's a buffer. Meanwhile bar/README continues
-   to show up by its full name because it hasn't been opened yet.
+   Suppose I have a project with two files, "foo/README" and
+   "bar/README". If I open "foo/README", it'll show up in
+   counsel-projectile as just "README", because now it's a buffer.
+   Meanwhile "bar/README" continues to show up by its full name
+   because it hasn't been opened yet.
 
-   In my head, I know the layout of this project, so I know README
-   alone is an ambiguous name. If I'm looking for foo/README, I will
-   therefore type foo first, and counsel-projectile will have no
+   In my head, I know the layout of this project, so I know "README"
+   alone is an ambiguous name. If I'm looking for "foo/README", I will
+   therefore type "foo" first, and counsel-projectile will have no
    matches.
 
-   If I open bar/README as well, then emacs is forced to disambiguate
-   names, which it does the way I expect (uniquify-buffer-name-style).
-   I should teach projectile how to keep names unique even when some
-   are open buffers and some aren't.
+   If I open "bar/README" as well, then emacs is forced to
+   disambiguate names, which it does the way I expect
+   (uniquify-buffer-name-style). I should teach projectile how to keep
+   names unique even when some are open buffers and some aren't.
 * [[https://github.com/abo-abo/avy][avy]]
   One of the unpleasant truths of vim is that, although there are
   structured motions for everything, you're probably going to start
