@@ -641,9 +641,14 @@
      and strings, where they should be treated as regular text
    - automatic reinitialization of accounts without having to manually
      invoke beancount-init-accounts
+   - beancount-account-regexp does not recognize custom naming options
+     (see beancount-account-categories)
    - shorter key sequence for beancount-insert-account
    - clean auto align for the entire file, even for non-transaction
      directives (bean-format can help, but it only aligns amounts)
+   - indentation should default to 2 spaces after a transaction,
+     returning to 0 after an empty line (Can we use TAB to cycle
+     between valid indentation levels? We're in org-mode...)
    - flycheck invocation of bean-check
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
