@@ -554,7 +554,7 @@
 
   I use a nasty hack to increase the size of the ace-window marker
   character. You can probably do this with custom-set-faces, whose use
-  I try to avoid.
+  I try to avoid. Perhaps set-face-attribute would be cleaner.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ace-window
