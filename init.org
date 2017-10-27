@@ -311,6 +311,18 @@
    I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
    ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
+*** TODO Out-of-Order Search
+    In my typical use of counsel-org-goto, I search for the last
+    segment of the exact heading I'm aiming for. If that isn't
+    specific enough, I end up having to backspace over my search query
+    and enter a higher-level heading first, to disambiguate. For
+    example, in a file with headings "foo/bar/baz" and "foo/qux/baz",
+    I might search for "baz", then have to backspace and search for
+    "bar baz".
+
+    The solution to this problem would be to relax matching order, so
+    that "baz bar" could match "foo/bar/baz". ivy--regex-ignore-order
+    might be perfect for this.
 ** Indentation
    By default, plain text in org-mode is indented to match the level
    of the headline. This is controlled by org-adapt-indentation,
