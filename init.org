@@ -28,6 +28,13 @@
 
    We have to be careful about tangling with the org that was
    installed by straight.el, not the built-in one.
+** TODO Read/Edit/Compile Loop
+   Before I started using a tangled init, I could just edit init.el
+   directly and eval-buffer to reload it. Having to
+   org-babel-load-file and then select init.org is noticeably less
+   convenient. I should make a wrapper for this. (And, while we're at
+   it, the wrapper should execute inside a single straight.el
+   transaction, just like it would when init.el is actually loaded.)
 * [[https://github.com/raxod502/straight.el][straight.el]]
   I like straight.el philosophically - clones and lockfiles "feels"
   like the right way to solve this problem - and I don't mind having
