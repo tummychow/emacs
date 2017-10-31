@@ -102,8 +102,8 @@
       :init
       (setq evil-want-Y-yank-to-eol t)
       (setq evil-disable-insert-state-bindings t)
+      (setq evil-motion-state-modes nil)
       :config
-      (setq evil-motion-state-modes (delete 'help-mode evil-motion-state-modes))
       (evil-mode t)
       :general
       (:states '(normal visual)
