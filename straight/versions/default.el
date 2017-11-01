@@ -8,7 +8,7 @@
  ("epkgs" . "40b53437b7d49497c172764a8080443464542d4f")
  ("epl" . "83797835f729f39b80acba4c7e83d73a2e410e26")
  ("evil" . "53ebb9d1482fef8f25e4e1dd1d640128ec6a99b5")
- ("general.el" . "00efad765a3ace42a2833c65a169d96c7925623b")
+ ("general.el" . "6828a859af771df5ec1bf50b67f0fcc7261b5a11")
  ("goto-chg" . "81fca94d2592cf32bab451c39a9cd2d9b03fbd6b")
  ("hydra" . "df3025f7e3cf3899168ae8ced1e9b734df2b32a0")
  ("melpa" . "0099a1f9b0efb3fc3a1420cfe71a647ec6458998")

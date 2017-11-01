@@ -141,6 +141,8 @@
        "b" 'switch-buffer)
       (private/with-leader
        :infix "h"
+       "" '(:wk "help"
+            :ignore t)
        "h" 'help-for-help
        "f" 'describe-function
        "v" 'describe-variable
@@ -149,6 +151,8 @@
        "w" 'where-is)
       (private/with-leader
        :infix "d"
+       "" '(:wk "desktops"
+            :ignore t)
        "h" 'split-window-vertically
        "v" 'split-window-horizontally
        "x" 'delete-window
@@ -522,6 +526,8 @@
       :general
       (private/with-leader
        :infix "p"
+       "" '(:wk "projectile"
+            :ignore t)
        "f" 'counsel-projectile
        "/" 'counsel-projectile-rg
        "p" 'counsel-projectile-switch-project))
