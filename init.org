@@ -83,6 +83,27 @@
                               :non-normal-prefix "M-DEL"
                               :states '(normal visual insert emacs)))
   #+END_SRC
+* [[https://github.com/justbur/emacs-which-key][which-key]]
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package which-key
+      :demand t
+      :diminish 'which-key-mode
+      :init
+      (setq which-key-echo-keystrokes 0.01)
+      (setq which-key-idle-delay 0.5)
+      (setq which-key-idle-secondary-delay 0.01)
+      (setq which-key-popup-type 'minibuffer)
+      (setq which-key-show-prefix 'top)
+      (setq which-key-max-description-length nil)
+      (setq which-key-compute-remaps t)
+      (setq which-key-sort-order 'which-key-prefix-then-key-order-reverse)
+      :config
+      (which-key-mode t))
+  #+END_SRC
+
+  I could enable which-key-allow-evil-operators and
+  which-key-show-operator-states, but choose not to because the popup
+  is too large. There's just too much information in there.
 * [[https://github.com/emacs-evil/evil][evil]]
   I never really became fluent in vim, but my brief experience made it
   impossible to go back to any other editing system. The two big
@@ -133,6 +154,11 @@
        "x" 'delete-window
        "k" 'kill-buffer-and-window))
   #+END_SRC
+** TODO help-for-help
+   Instead of having ~SPC h h~ bound to help-for-help, we should put
+   all the various help bindings under ~SPC h~ and use which-key to
+   generate a prompt. Then we wouldn't need a binding for
+   help-for-help at all.
 * [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ivy
@@ -373,6 +399,19 @@
    even better would be autocomplete for them. Autocompletion is
    unfortunately a TODO in its own right, but perhaps we can hack up
    an interim solution with ivy.
+** TODO org-agenda/org-export-dispatch
+   org-export-dispatch is a large key tree. So large that org spawns
+   an entire buffer just to show you the prompts. I used to use
+   [[https://github.com/abo-abo/hydra/blob/master/hydra-ox.el][hydra-ox]], which moves the prompt to the minibuffer instead.
+   However, the best solution would be to implement the prompt with
+   which-key instead.
+
+   org-agenda is a similar function, but with slightly different usage
+   patterns. In particular, you can press ~<>~ multiple times within
+   an org-agenda buffer to adjust the restriction level. This
+   persistent binding would require a hydra to replicate.
+   Alternatively, we could approximate it with just a plain key tree,
+   which would probably be easier.
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
@@ -388,8 +427,6 @@
 
     (setq-default truncate-lines t)
     (setq visual-line-fringe-indicators '(left-curly-arrow nil))
-
-    (setq echo-keystrokes 0.1)
 
     (setq sentence-end-double-space nil)
 
@@ -720,11 +757,6 @@
    "whoops I forgot that argument's type" brain cycles. Unfortunately,
    the situation in emacs is [[https://www.reddit.com/r/emacs/comments/49ee8f/][not great]]. There are two main
    implentations, [[https://github.com/company-mode/company-mode][company]] and [[https://github.com/auto-complete/auto-complete][auto-complete]].
-** TODO which-key
-   Things like help-for-help, org-agenda, and [[https://github.com/abo-abo/hydra/blob/master/hydra-ox.el][hydra-ox]] are basically
-   key trees with built-in prompts. I find the persistence of hydras
-   to be their main selling point. If all you want is the prompt,
-   [[https://github.com/justbur/emacs-which-key][which-key]] is probably a better approach.
 ** TODO git
    Obviously the elephant in this room is [[https://github.com/magit/magit][magit]], with support from
    other packages like [[https://github.com/vermiculus/magithub][magithub]] and [[https://github.com/emacs-evil/evil-magit][evil-magit]]. Some other important

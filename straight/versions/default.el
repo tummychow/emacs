@@ -4,6 +4,7 @@
  ("beancount" . "c67f9b22973f032080f20f6ca42d39b74cfae8db")
  ("counsel-projectile" . "88a16cb75301ae95f21a71e8838a49590d011e73")
  ("diminish.el" . "565a983a39d2e2cffab5df13b34f3b6116723208")
+ ("emacs-which-key" . "6d2e17c949ff7bfebfe0b0878a93d94b31585031")
  ("epkgs" . "40b53437b7d49497c172764a8080443464542d4f")
  ("epl" . "83797835f729f39b80acba4c7e83d73a2e410e26")
  ("evil" . "53ebb9d1482fef8f25e4e1dd1d640128ec6a99b5")
