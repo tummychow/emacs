@@ -319,11 +319,29 @@
        :keymaps 'org-mode-map
        "/" 'counsel-org-goto
        "r" 'org-reveal
+       "e" 'org-edit-special
+       "x" 'org-export-dispatch
        "RET" 'org-open-at-point
        "l" 'org-toggle-link-display
        "o" 'private/org-meta-return-after
-       "O" 'private/org-meta-return-before))
+       "O" 'private/org-meta-return-before)
+      (private/with-local-leader
+       :keymaps 'org-src-mode-map
+       "e" 'org-edit-src-exit))
   #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package hydra-ox
+      :recipe (hydra :type git :host github :repo "abo-abo/hydra")
+      :general
+      ([remap org-export-dispatch] 'hydra-ox/body))
+  #+END_SRC
+
+  Note that MELPA does not split hydra and hydra-ox into separate
+  packages, so straight.el doesn't know how to install hydra-ox. It
+  has to explicitly be told that this package comes from the hydra
+  repo. I would prefer to straight-get-recipe this, but hardcoding it
+  is basically the same thing.
 ** Navigation
    I'm very fond of counsel-org-goto. It Just Works, which can't be
    said for some of the things I tried in the past.
@@ -389,19 +407,14 @@
    even better would be autocomplete for them. Autocompletion is
    unfortunately a TODO in its own right, but perhaps we can hack up
    an interim solution with ivy.
-** TODO org-agenda/org-export-dispatch
-   org-export-dispatch is a large key tree. So large that org spawns
-   an entire buffer just to show you the prompts. I used to use
-   [[https://github.com/abo-abo/hydra/blob/master/hydra-ox.el][hydra-ox]], which moves the prompt to the minibuffer instead.
-   However, the best solution would be to implement the prompt with
-   which-key instead.
-
-   org-agenda is a similar function, but with slightly different usage
-   patterns. In particular, you can press ~<>~ multiple times within
-   an org-agenda buffer to adjust the restriction level. This
-   persistent binding would require a hydra to replicate.
-   Alternatively, we could approximate it with just a plain key tree,
-   which would probably be easier.
+** TODO org-agenda
+   org-agenda is a large key tree that spawns a buffer just for
+   prompts. We could replace the prompts with which-key, but
+   org-agenda has some additional features. In particular, you can
+   press ~<>~ multiple times within an org-agenda buffer to adjust the
+   restriction level. This persistent binding would require a hydra to
+   replicate. Alternatively, we could approximate it with just a plain
+   key tree, which would probably be easier.
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
