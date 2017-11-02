@@ -503,6 +503,7 @@
         level, up same level, child heading
       - ~v~: radio toggle to enable moving to (and revealing)
         invisible headings (default off)
+      - ~<tab>~: org-cycle
       - ~c~: enter heading change state
         - ~jk~: move subtree down, move subtree up
         - ~hl~: promote subtree, demote subtree
@@ -510,6 +511,9 @@
         - ~q~: go back to heading state
       - ~i~ (available outside hydra): enter list state
         - ~hjkl~: superlist, down same level, up same level, sublist
+        - ~v~: radio toggle to enable moving to (and revealing)
+          invisible items (default off)
+        - ~<tab>~: org-cycle
         - ~q~: go back to heading state
         - ~c~: enter list change state
           - ~jk~: move item tree down, move item tree up
