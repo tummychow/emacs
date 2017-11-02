@@ -321,7 +321,8 @@
         (org-up-heading-safe))
       (defun private/org-goto-first-child ()
         (interactive)
-        (org-goto-first-child))
+        (org-goto-first-child)
+        (org-reveal))
       (defhydra private/hydra-worf ()
         "navigate and move org headings"
         ("<tab>" org-cycle "cycle")
