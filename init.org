@@ -83,6 +83,15 @@
                               :non-normal-prefix "M-DEL"
                               :states '(normal visual insert emacs)))
   #+END_SRC
+* [[https://github.com/abo-abo/hydra][hydra]]
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package hydra
+      :demand t)
+  #+END_SRC
+
+  We could probably defer loading of hydra (the main macro, defhydra,
+  has an autoload defined), but like general, it's a pretty deep
+  library.
 * [[https://github.com/justbur/emacs-which-key][which-key]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package which-key
@@ -307,6 +316,19 @@
                    (not (org-agenda-file-p buffer-file-name)))
           (org-agenda-file-to-front t)))
       (add-hook 'org-mode-hook 'private/org-agenda-file-to-back-if-new)
+      (defun private/org-up-heading-safe ()
+        (interactive)
+        (org-up-heading-safe))
+      (defun private/org-goto-first-child ()
+        (interactive)
+        (org-goto-first-child))
+      (defhydra private/hydra-worf ()
+        "navigate and move org headings"
+        ("<tab>" org-cycle "cycle")
+        ("h" private/org-up-heading-safe "parent")
+        ("j" org-forward-heading-same-level "next")
+        ("k" org-backward-heading-same-level "prev")
+        ("l" private/org-goto-first-child "child"))
       :config
       (when (and (stringp org-agenda-files)
                  (not (file-exists-p org-agenda-files)))
@@ -317,12 +339,20 @@
        "RET" 'org-return-indent)
       (private/with-local-leader
        :keymaps 'org-mode-map
+       "h" '(private/hydra-worf/private/org-up-heading-safe
+             :wk "parent heading")
+       "j" '(private/hydra-worf/org-forward-heading-same-level
+             :wk "next heading")
+       "k" '(private/hydra-worf/org-backward-heading-same-level
+             :wk "prev heading")
+       "l" '(private/hydra-worf/private/org-goto-first-child
+             :wk "child heading")
        "/" 'counsel-org-goto
        "r" 'org-reveal
        "e" 'org-edit-special
        "x" 'org-export-dispatch
        "RET" 'org-open-at-point
-       "l" 'org-toggle-link-display
+       "z l" 'org-toggle-link-display
        "o" 'private/org-meta-return-after
        "O" 'private/org-meta-return-before)
       (private/with-local-leader
@@ -401,6 +431,93 @@
    navigation mode, jump around headings freely, and add to the
    jumplist when you "exit" heading navigation mode. I used to have a
    hydra for this, and might rebuild it.
+
+   Some considerations for this development:
+   - movements:
+     - next heading:
+       - any level:
+         - org-next-visible-heading
+         - outline-next-visible-heading
+         - outline-next-heading
+       - same level:
+         - org-forward-heading-same-level
+         - outline-forward-same-level
+         - org-get-next-sibling
+         - outline-get-next-sibling
+         - org-goto-sibling
+     - previous heading:
+       - any level:
+         - org-previous-visible-heading
+         - outline-previous-visible-heading
+         - outline-previous-heading
+       - same level:
+         - org-backward-heading-same-level
+         - outline-backward-same-level
+         - org-get-last-sibling
+         - outline-get-last-sibling
+         - org-goto-sibling
+     - parent:
+       - org-up-heading-safe
+       - org-up-heading-all
+       - outline-up-heading
+     - child:
+       - org-goto-first-child
+   - change:
+     - item:
+       | ITEM    | org-metaleft          | org-metadown          | org-metaup          | org-metaright         |
+       |---------+-----------------------+-----------------------+---------------------+-----------------------|
+       | heading | org-do-promote        | org-move-subtree-down | org-move-subtree-up | org-do-demote         |
+       | list    | org-outdent-item      | org-move-item-down    | org-move-item-up    | org-indent-item       |
+       | table   | org-table-move-column | org-table-move-row    | org-table-move-row  | org-table-move-column |
+     - tree:
+       | TREE    | org-shiftmetaleft       | org-shiftmetadown     | org-shiftmetaup        | org-shiftmetaright      |
+       |---------+-------------------------+-----------------------+------------------------+-------------------------|
+       | heading | org-promote-subtree     | org-drag-line-forward | org-drag-line-backward | org-demote-subtree      |
+       | list    | org-outdent-item-tree   | org-drag-line-forward | org-drag-line-backward | org-indent-item-tree    |
+       | table   | org-table-delete-column | org-table-insert-row  | org-table-kill-row     | org-table-insert-column |
+   - Can we use the [[https://github.com/abo-abo/hydra/commit/763bb2a423c829dc145188718dcf9ee47480ed0a][:bind lambda]] to build bindings to the heads with
+     general (lambda gets invoked [[https://github.com/abo-abo/hydra/blob/master/hydra.el#L1302][here]]? Or do we have to manually bind
+     each head in private/with-local-leader?
+   - We should have a toggle in the hydra to allow moving to invisible
+     headings, which should default to off.
+   - Should we also operate on lists? org-previous-item and
+     org-next-item can navigate up/down, but they put the cursor in a
+     stupid position. There doesn't appear to be a way to navigate
+     up/down levels of a list. In addition, org-next-item does nothing
+     unless you're already in a list. We may need to resort to
+     [[http://orgmode.org/worg/dev/org-syntax.html][parsing]].
+   - Similarly, support for tables would also be interesting, but
+     there don't appear to be good ways to jump "into" a table.
+   - We should print a message to the minibuffer if we try to move
+     past the end of a direction. [[https://emacs.stackexchange.com/a/11024][save-excursion]] might help for this.
+*** Target UX
+    - heading state (default)
+      - ~hjkl~ (available outside hydra): parent heading, down same
+        level, up same level, child heading
+      - ~v~: radio toggle to enable moving to (and revealing)
+        invisible headings (default off)
+      - ~c~: enter heading change state
+        - ~jk~: move subtree down, move subtree up
+        - ~hl~: promote subtree, demote subtree
+        - ~HL~: promote heading, demote heading
+        - ~q~: go back to heading state
+      - ~i~ (available outside hydra): enter list state
+        - ~hjkl~: superlist, down same level, up same level, sublist
+        - ~q~: go back to heading state
+        - ~c~: enter list change state
+          - ~jk~: move item tree down, move item tree up
+          - ~hl~: outdent item tree, indent item tree
+          - ~HL~: outdent item, indent item
+          - ~q~: go back to list state
+      - ~t~ (available outside hydra): enter table state
+        - ~hjkl~: left cell, down cell, up cell, right cell
+        - ~q~: go back to heading state
+        - ~c~: enter table change state
+          - ~jk~: move row down, move row up
+          - ~hl~: move column left, move column right
+          - ~JK~: insert row, delete row
+          - ~HL~: delete column, insert column
+          - ~q~: go back to table state
 ** TODO Completion
    I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
    can type them in lowercase (which I should really start doing), but
@@ -415,6 +532,13 @@
    restriction level. This persistent binding would require a hydra to
    replicate. Alternatively, we could approximate it with just a plain
    key tree, which would probably be easier.
+
+   The basic key tree is implemented in
+   org-agenda-get-restriction-and-command. Note that org-agenda has a
+   bunch of custom command functionality as well
+   (org-agenda-custom-commands) and we have to decide how much of that
+   we want to implement. defhydradio can help us with the persistent
+   parts (~<>~), as it does in hydra-ox.
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
