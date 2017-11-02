@@ -352,9 +352,16 @@
        "e" 'org-edit-special
        "x" 'org-export-dispatch
        "RET" 'org-open-at-point
-       "z l" 'org-toggle-link-display
        "o" 'private/org-meta-return-after
        "O" 'private/org-meta-return-before)
+      (private/with-local-leader
+       :keymaps 'org-mode-map
+       :infix "z"
+       "" '(:wk "toggles"
+            :ignore t)
+       "h" 'org-toggle-heading
+       "i" 'org-toggle-item
+       "l" 'org-toggle-link-display)
       (private/with-local-leader
        :keymaps 'org-src-mode-map
        "e" 'org-edit-src-exit))
