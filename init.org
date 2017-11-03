@@ -458,12 +458,18 @@
          - org-previous-visible-heading
          - outline-previous-visible-heading
          - outline-previous-heading
-       - same level:
-         - org-backward-heading-same-level
-         - outline-backward-same-level
-         - org-get-last-sibling
-         - outline-get-last-sibling
-         - org-goto-sibling
+       - same level (note that, if we're not on a heading, we want to
+         back up to the current heading, not the one before it):
+         - org-backward-heading-same-level: skips past current heading
+         - outline-backward-same-level: same problem as
+           org-backward-heading-same-level
+         - org-get-last-sibling: doesn't actually restrict point to
+           same-level headings (it returns nil but the point still
+           moves, which is almost definitely a bug)
+         - outline-get-last-sibling: same problem as
+           org-get-last-sibling
+         - org-goto-sibling: same problem as
+           org-backward-heading-same-level
      - parent:
        - org-up-heading-safe
        - org-up-heading-all
