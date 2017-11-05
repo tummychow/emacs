@@ -920,7 +920,7 @@
    [[https://github.com/bbatsov/persp-projectile][persp-projectile]]. However, you need to have desktop management
    first to implement that, so I'm looking at using [[https://github.com/wasamasa/eyebrowse][eyebrowse]] with
    some hand-rolled [[https://www.reddit.com/r/emacs/comments/6sffrd/am_i_misunderstanding_eyebrowse/dlcfhwk/][projectile integration]]. It's also worth exploring
-   [[https://github.com/ilohmar/wconf][wconf]], or the built-in winner-mode. Also: [[https://github.com/cyrus-and/zoom][zoom]].
+   [[https://github.com/ilohmar/wconf][wconf]], or the built-in winner-mode. Also: [[https://github.com/cyrus-and/zoom][zoom]], [[https://github.com/bmag/emacs-purpose][purpose]].
 ** TODO Scroll
    I'm pretty comfortable with emacs's default scrolling behavior, but
    here are some packages to investigate:
