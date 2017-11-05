@@ -562,6 +562,7 @@
   turn off. There's quite a bit of stuff in here.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (global-auto-revert-mode 1)
     (setq auto-save-default nil)
     (setq auto-save-list-file-prefix nil)
     (setq create-lockfiles nil)
@@ -967,6 +968,5 @@
    - [[https://github.com/dacap/keyfreq][keyfreq]]
    - [[https://github.com/nflath/hungry-delete][hungry-delete]] and/or [[https://github.com/hrehfeld/emacs-smart-hungry-delete][smart-hungry-delete]]
    - [[https://github.com/alezost/mwim.el][mwim]]
-   - global-auto-revert-mode (built-in)
    - [[https://github.com/bbatsov/zenburn-emacs][zenburn]] (I should actually implement [[https://github.com/tummychow/pallor][pallor]] in emacs)
    - [[https://www.reddit.com/r/emacs/comments/4d8gvt/][auto close minibuffer]]
