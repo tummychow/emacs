@@ -17,7 +17,7 @@
  ("pkg-info.el" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("projectile" . "dd48cb8af4cf41d109fb6d46f0c3f2134f37fcfb")
  ("shackle" . "979b021077655ca38749a60c9752c0817e8fd93e")
- ("straight.el" . "87525b5b89ed8b6a6823422b0d9b0cb097eeac04")
+ ("straight.el" . "eacf1497193df99a3335c0ef5a3f979c68dc511f")
  ("swiper" . "f7470feef4880a735495c5013465efffd049270d")
  ("undo-tree" . "e9a9102f515acd7523158f20e83f300600374989")
  ("use-package" . "cb89901b52a9413b6c233d7fbb616a2d8f38b50a")

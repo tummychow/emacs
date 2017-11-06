@@ -40,9 +40,16 @@
   like the right way to solve this problem - and I don't mind having
   to give up package.el for those benefits. Extensive documentation is
   also greatly appreciated. UX is still rough around the edges - see
-  [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]], [[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]] - but I can wait for that.
+  [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq straight-recipe-overrides
+          '((nil . ((straight :type git :host github
+                              :repo "raxod502/straight.el"
+                              :branch "develop"
+                              :files ("straight.el"))))))
+    (setq straight-check-for-modifications 'never)
+
     (let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el"))
           (bootstrap-version 2))
       (unless (file-exists-p bootstrap-file)
@@ -57,6 +64,11 @@
     (setq use-package-always-ensure t)
     (straight-use-package 'use-package)
   #+END_SRC
+
+  I disable straight's automatic rebuilding and invoke
+  straight-rebuild-package by hand. This avoids some nasty startup
+  delays ([[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]]). I don't need to rebuild all that often, so I don't
+  mind having to do it manually.
 * [[https://github.com/emacscollective/no-littering][no-littering]]
   This keeps files like projectile-known-projects-file where they
   belong.
