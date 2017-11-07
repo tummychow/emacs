@@ -575,6 +575,7 @@
   turn off. There's quite a bit of stuff in here.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq revert-without-query '(""))
     (global-auto-revert-mode 1)
     (setq auto-save-default nil)
     (setq auto-save-list-file-prefix nil)
