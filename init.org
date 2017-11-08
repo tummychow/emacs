@@ -603,6 +603,10 @@
 
     (setq-default indent-tabs-mode nil)
 
+    (advice-add 'executable-make-buffer-file-executable-if-script-p
+                :before-while (lambda ()
+                                (and buffer-file-name
+                                     (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
     (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
     (setq uniquify-buffer-name-style 'forward)
