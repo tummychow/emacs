@@ -976,6 +976,15 @@
    - [[https://www.gnu.org/software/emms/][EMMS]]
    - [[https://github.com/pft/mingus][mingus]]
    - [[https://github.com/nlamirault/dionysos][dionysos]]
+** TODO markdown
+   org-mode is so much better than markdown that it's not even funny.
+   Unfortunately, support outside emacs is nonexistent, and sometimes
+   you have to write markup that other people can actually edit.
+
+   I expect to need visual-line-mode in my markdown files (see above).
+   That, in and of itself, poses a problem. I'm probably also going to
+   have to remap a ton of keybindings to accommodate an org-like
+   interface. Such is the life of an evil user.
 ** TODO Miscellaneous Packages
    - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
      use-package)
