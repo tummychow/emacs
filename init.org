@@ -706,8 +706,18 @@
 
    If I open "bar/README" as well, then emacs is forced to
    disambiguate names, which it does the way I expect
-   (uniquify-buffer-name-style). I should teach projectile how to keep
-   names unique even when some are open buffers and some aren't.
+   (uniquify-buffer-name-style). I should teach counsel-projectile how
+   to keep names unique even when some are open buffers and some
+   aren't.
+
+   Another example of this problem: you have READMEs open in two
+   separate projects, "foo/README" and "bar/README". uniquify will do
+   its job and disambiguate the names. But now if you switch between
+   projects, you'll see a buffer named "foo/README" where you expected
+   just "README". In this case, counsel-projectile should discard
+   uniquification. Basically, inside counsel-projectile, buffer names
+   should always be based at the project root, even if uniquification
+   (or lack thereof) would display otherwise.
 * [[https://github.com/abo-abo/avy][avy]]
   One of the unpleasant truths of vim is that, although there are
   structured motions for everything, you're probably going to start
