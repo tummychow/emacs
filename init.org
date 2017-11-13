@@ -1007,3 +1007,6 @@
    - [[https://github.com/alezost/mwim.el][mwim]]
    - [[https://github.com/bbatsov/zenburn-emacs][zenburn]] (I should actually implement [[https://github.com/tummychow/pallor][pallor]] in emacs)
    - [[https://www.reddit.com/r/emacs/comments/4d8gvt/][auto close minibuffer]]
+   - tools for fontification debugging: [[https://github.com/Lindydancer/font-lock-studio][font-lock-studio]],
+     [[https://github.com/Lindydancer/font-lock-profiler][font-lock-profiler]], [[https://github.com/Lindydancer/highlight-refontification][highlight-refontification]], [[https://github.com/Lindydancer/face-explorer][face-explorer]],
+     [[https://github.com/Lindydancer/faceup][faceup]]
