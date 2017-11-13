@@ -170,7 +170,7 @@
        "x" 'delete-window
        "k" 'kill-buffer-and-window))
   #+END_SRC
-* [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]]
+* [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]], [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ivy
       :demand t
