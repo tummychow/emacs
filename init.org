@@ -720,6 +720,12 @@
        "/" 'counsel-projectile-rg
        "p" 'counsel-projectile-switch-project))
   #+END_SRC
+** TODO Creating New Files
+   The original projectile-find-file allows you to create a new file
+   if there's no match (similar to the default behavior of find-file).
+   However, counsel-projectile-find-file and counsel-projectile don't
+   let you do this; they require a match. I'd prefer to be able to
+   make new files.
 ** TODO Disambiguated Buffer/File Names
    Suppose I have a project with two files, "foo/README" and
    "bar/README". If I open "foo/README", it'll show up in
