@@ -570,6 +570,25 @@
    (org-agenda-custom-commands) and we have to decide how much of that
    we want to implement. defhydradio can help us with the persistent
    parts (~<>~), as it does in hydra-ox.
+* [[https://github.com/jrblevin/markdown-mode][Markdown]]
+  While I prefer working in org-mode, sometimes you have to write
+  markup that other people can edit, and org-mode is really not usable
+  in any editor but emacs. In those situations, Markdown is basically
+  inevitable.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package markdown-mode
+      :mode ("\\.md\\'" . markdown-mode)
+      :commands (markdown-mode gfm-mode)
+      :init
+      (setq-default markdown-hide-urls t)
+      (add-hook 'markdown-mode-hook 'visual-line-mode))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package edit-indirect
+      :commands (edit-indirect-region))
+  #+END_SRC
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
   turn off. There's quite a bit of stuff in here.
@@ -584,9 +603,6 @@
 
     (setq initial-major-mode 'org-mode)
     (setq initial-scratch-message nil)
-
-    (setq-default truncate-lines t)
-    (setq visual-line-fringe-indicators '(left-curly-arrow nil))
 
     (setq sentence-end-double-space nil)
 
@@ -615,11 +631,23 @@
 
     (setq load-prefer-newer t)
   #+END_SRC
-** TODO visual-line-mode
+** visual-line-mode
    visual-line-mode is a built-in mode that truncates lines at word
    boundaries. adaptive-wrap-mode (GNU ELPA) extends it to also
-   preserve leading indentation. I have not had positive experiences
-   with this part of emacs:
+   preserve leading indentation.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq-default truncate-lines t)
+     (setq visual-line-fringe-indicators '(left-curly-arrow nil))
+
+     (use-package adaptive-wrap
+       :commands (adaptive-wrap-prefix-mode)
+       :diminish 'adaptive-wrap-prefix-mode
+       :init
+       (add-hook 'visual-line-mode-hook 'adaptive-wrap-prefix-mode))
+   #+END_SRC
+
+   I have not had positive experiences with this part of emacs:
    - [[https://github.com/abo-abo/swiper/issues/227][swiper, org, and visual-line-mode]] cause some very strange issues
      when used together
    - apparently it doesn't like [[https://github.com/brentonk/adaptive-wrap-vp][variable-width fonts]] ([[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=15155][see also]])
@@ -986,15 +1014,6 @@
    - [[https://www.gnu.org/software/emms/][EMMS]]
    - [[https://github.com/pft/mingus][mingus]]
    - [[https://github.com/nlamirault/dionysos][dionysos]]
-** TODO markdown
-   org-mode is so much better than markdown that it's not even funny.
-   Unfortunately, support outside emacs is nonexistent, and sometimes
-   you have to write markup that other people can actually edit.
-
-   I expect to need visual-line-mode in my markdown files (see above).
-   That, in and of itself, poses a problem. I'm probably also going to
-   have to remap a ton of keybindings to accommodate an org-like
-   interface. Such is the life of an evil user.
 ** TODO Miscellaneous Packages
    - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
      use-package)
