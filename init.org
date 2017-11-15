@@ -835,7 +835,7 @@
       :init
       (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
       (setq aw-scope 'frame)
-      (setq aw-dispatch-alist '((?z aw-flip-window)))
+      (setq aw-dispatch-alist '((?x aw-flip-window)))
       :config
       (face-spec-set 'aw-leading-char-face
         '((((class color)) (:foreground "red" :height 3.0))
