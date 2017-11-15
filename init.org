@@ -346,6 +346,11 @@
       (when (and (stringp org-agenda-files)
                  (not (file-exists-p org-agenda-files)))
         (with-temp-buffer (write-file org-agenda-files)))
+      (advice-add 'org-element-property
+                  :after-until (lambda (property element)
+                                 (and (eq (org-element-type element) 'src-block)
+                                      (eq property :language)
+                                      "fundamental")))
       :general
       (:states '(insert emacs)
        :keymaps 'org-mode-map
@@ -435,6 +440,13 @@
    since I don't need empty lines (org-blank-before-new-entry) or
    larger fonts to make the headlines stand out. I do disable the
    indentation for beancount buffers; see below.
+** org-src Default Language
+   I want to use fundamental-mode in org-src blocks that have no
+   language, but there is no supported way to set a [[https://emacs.stackexchange.com/q/8314][default language]]
+   for org-src blocks. However, you can hack it in by advising
+   org-element-property. If org-element-property returns nil for an
+   org-src block's language, this advice will treat the block's
+   language as fundamental instead.
 ** TODO [[https://github.com/abo-abo/ace-link][ace-link]]
    A more powerful alternative to org-open-at-point. This should open
    the link at point (if any), and otherwise select one avy-style.
