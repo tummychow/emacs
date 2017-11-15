@@ -670,6 +670,14 @@
    detail that my editor is supposed to render irrelevant. It doesn't
    help that auto-fill-mode is not applicable to everything I write.
    emacs is really not doing the job here.
+** generic-x
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package generic-x
+       :ensure nil
+       :demand t
+       :init
+       (setq generic-use-find-file-hook nil))
+   #+END_SRC
 ** TODO Indentation
    You can see that I set indent-tabs-mode to nil by default. I really
    do not like setting indentation behavior in my config. I used to
