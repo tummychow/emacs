@@ -447,7 +447,7 @@
    org-element-property. If org-element-property returns nil for an
    org-src block's language, this advice will treat the block's
    language as fundamental instead.
-** TODO [[https://github.com/abo-abo/ace-link][ace-link]]
+** TODO [[https://github.com/abo-abo/ace-link][ace-link]]/[[https://github.com/noctuid/link-hint.el][link-hint]]
    A more powerful alternative to org-open-at-point. This should open
    the link at point (if any), and otherwise select one avy-style.
    Note that org-return-follows-link doesn't work in evil normal
@@ -1060,3 +1060,4 @@
    - tools for fontification debugging: [[https://github.com/Lindydancer/font-lock-studio][font-lock-studio]],
      [[https://github.com/Lindydancer/font-lock-profiler][font-lock-profiler]], [[https://github.com/Lindydancer/highlight-refontification][highlight-refontification]], [[https://github.com/Lindydancer/face-explorer][face-explorer]],
      [[https://github.com/Lindydancer/faceup][faceup]]
+   - more text objects: [[https://github.com/ninrod/exato][exato]], [[https://github.com/noctuid/targets.el][targets]]
