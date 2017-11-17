@@ -823,10 +823,15 @@
        "F" 'avy-goto-char-2-above))
   #+END_SRC
 ** TODO read-char ~ESC~
-   avy uses read-char to receive input. It seems I can only cancel it
-   with ~C-g~. Is there really no way to use ~ESC~ or ~<escape>~
-   instead? Maybe I can advise the function and add a temporary
-   [[https://www.reddit.com/r/emacs/comments/67rlfr/][translation]] for it?
+   avy-goto-char-2 uses read-char to request the target characters. It
+   seems I can only cancel it with ~C-g~. Furthermore, it seems
+   read-char is too low-level to support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps. Is
+   there no way to escape with ~ESC~ or ~<escape>~?
+
+   I've tried read-key as well and it seems to have a similar
+   problem - if you remap ~ESC~ to ~C-g~, read-key will return 7 (the
+   ~C-g~ keycode) instead of 27 (the ~ESC~ keycode), but either way
+   pressing ~ESC~ doesn't actually quit.
 ** TODO Repeat
    One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
    you can mash the key to go to the next or previous instance. Such
