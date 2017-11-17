@@ -168,7 +168,9 @@
        "h" 'split-window-vertically
        "v" 'split-window-horizontally
        "x" 'delete-window
-       "k" 'kill-buffer-and-window))
+       "k" 'kill-buffer-and-window)
+      (:keymaps 'minibuffer-local-map
+       "<escape>" 'minibuffer-keyboard-quit))
   #+END_SRC
 * [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]], [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]
   #+BEGIN_SRC emacs-lisp :tangle yes
