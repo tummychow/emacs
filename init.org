@@ -168,6 +168,7 @@
        "h" 'split-window-vertically
        "v" 'split-window-horizontally
        "x" 'delete-window
+       "b" 'kill-this-buffer
        "k" 'kill-buffer-and-window)
       (:keymaps 'minibuffer-local-map
        "<escape>" 'minibuffer-keyboard-quit))
