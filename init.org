@@ -3,10 +3,11 @@
 * Tangling Hook
   There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration in
   org-mode:
-  - org-babel-load-file. This approach is very simple to implement,
-    but has to tangle each file when emacs starts.
-  - org-babel-tangle. This approach stores the tangled file on disk,
-    but you have to remember to re-tangle after each edit.
+
+  - org-babel-load-file :: This approach is very simple to implement,
+       but has to tangle each file when emacs starts.
+  - org-babel-tangle :: This approach stores the tangled file on disk,
+       but you have to remember to re-tangle after each edit.
 
 
   We can use a file-local after-save-hook to do the tangling
@@ -22,6 +23,7 @@
 ** TODO Async
    Tangling produces a noticeable pause every time I save. This should
    be pushed off the main thread.
+
    - https://www.reddit.com/r/emacs/comments/5ej8by/
    - https://emacs.stackexchange.com/q/22722
 
@@ -129,6 +131,7 @@
   I never really became fluent in vim, but my brief experience made it
   impossible to go back to any other editing system. The two big
   innovations of vim were:
+
   - separate modes for binding commands and inserting text
   - composable operators and text objects
 
@@ -280,6 +283,7 @@
     only ex command I use regularly. If I can replace it with
     something else, that lets me completely rebind ~;:~ to other
     commands. [[https://github.com/benma/visual-regexp.el][visual-regexp]] or [[https://github.com/zk-phi/phi-search][phi-search]]? My requirements:
+
     - robust live preview
     - edit find and replace sides simultaneously, ideally with similar
       syntax to ~:s~
@@ -290,6 +294,7 @@
 *** iedit/multiple-cursors
     I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit, and I'm also interested in
     multiple-cursors:
+
     - [[https://github.com/victorhge/iedit][iedit]]
     - [[https://github.com/syl20bnr/evil-iedit-state][evil-iedit-state]]
     - [[https://github.com/hlissner/evil-multiedit][evil-multiedit]]
@@ -468,6 +473,7 @@
    hydra for this, and might rebuild it.
 
    Some considerations for this development:
+
    - movements:
      - next heading:
        - any level:
@@ -533,37 +539,37 @@
      past the end of a direction. [[https://emacs.stackexchange.com/a/11024][save-excursion]] might help for this.
 *** Target UX
     - heading state (default)
-      - ~hjkl~ (available outside hydra): parent heading, down same
-        level, up same level, child heading
-      - ~v~: radio toggle between three states: always move to
-        invisible, never move to invisible, only move to invisible if
-        there is none visible (default)
-      - ~<tab>~: org-cycle
-      - ~c~: enter heading change state
-        - ~jk~: move subtree down, move subtree up
-        - ~hl~: promote subtree, demote subtree
-        - ~HL~: promote heading, demote heading
-        - ~q~: go back to heading state
-      - ~i~ (available outside hydra): enter list state
-        - ~hjkl~: superlist, down same level, up same level, sublist
-        - ~v~: radio toggle to enable moving to (and revealing)
-          invisible items (default off)
-        - ~<tab>~: org-cycle
-        - ~q~: go back to heading state
-        - ~c~: enter list change state
-          - ~jk~: move item tree down, move item tree up
-          - ~hl~: outdent item tree, indent item tree
-          - ~HL~: outdent item, indent item
-          - ~q~: go back to list state
-      - ~t~ (available outside hydra): enter table state
-        - ~hjkl~: left cell, down cell, up cell, right cell
-        - ~q~: go back to heading state
-        - ~c~: enter table change state
-          - ~jk~: move row down, move row up
-          - ~hl~: move column left, move column right
-          - ~JK~: insert row, delete row
-          - ~HL~: delete column, insert column
-          - ~q~: go back to table state
+      - ~hjkl~ (available outside hydra) :: parent heading, down same
+           level, up same level, child heading
+      - ~v~ :: radio toggle between three states: always move to
+               invisible, never move to invisible, only move to
+               invisible if there is none visible (default)
+      - ~<tab>~ :: org-cycle
+      - ~c~ :: enter heading change state
+        - ~jk~ :: move subtree down, move subtree up
+        - ~hl~ :: promote subtree, demote subtree
+        - ~HL~ :: promote heading, demote heading
+        - ~q~ :: go back to heading state
+      - ~i~ (available outside hydra) :: enter list state
+        - ~hjkl~ :: superlist, down same level, up same level, sublist
+        - ~v~ :: radio toggle to enable moving to (and revealing)
+                 invisible items (default off)
+        - ~<tab>~ :: org-cycle
+        - ~q~ :: go back to heading state
+        - ~c~ :: enter list change state
+          - ~jk~ :: move item tree down, move item tree up
+          - ~hl~ :: outdent item tree, indent item tree
+          - ~HL~ :: outdent item, indent item
+          - ~q~ :: go back to list state
+      - ~t~ (available outside hydra) :: enter table state
+        - ~hjkl~ :: left cell, down cell, up cell, right cell
+        - ~q~ :: go back to heading state
+        - ~c~ :: enter table change state
+          - ~jk~ :: move row down, move row up
+          - ~hl~ :: move column left, move column right
+          - ~JK~ :: insert row, delete row
+          - ~HL~ :: delete column, insert column
+          - ~q~ :: go back to table state
 ** TODO Completion
    I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
    can type them in lowercase (which I should really start doing), but
@@ -686,6 +692,7 @@
    #+END_SRC
 
    I have not had positive experiences with this part of emacs:
+
    - [[https://github.com/abo-abo/swiper/issues/227][swiper, org, and visual-line-mode]] cause some very strange issues
      when used together
    - apparently it doesn't like [[https://github.com/brentonk/adaptive-wrap-vp][variable-width fonts]] ([[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=15155][see also]])
@@ -837,6 +844,7 @@
    One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
    you can mash the key to go to the next or previous instance. Such
    behavior could also be useful here. It would be something like this:
+
    - when you first press ~fF~, you get prompted for the search
      argument (same as existing avy)
    - the matching candidates get highlighted under a trie (same as
@@ -947,6 +955,7 @@
 ** TODO Mode Improvements
    beancount-mode is rather anemic, and there's a lot of stuff I would
    like to improve:
+
    - quick key to insert the current YYYY-MM-DD
    - fontification of comments, strings, numbers, and commodities
    - keywords (eg open, balance, document) are fontified in comments
@@ -978,6 +987,7 @@
    information, but it doesn't look flattering. Could use some
    customization. Matching improvements for frame title would also be
    appropriate.
+
    - https://www.reddit.com/r/emacs/comments/6ftm3x/
    - [[https://github.com/dbordak/telephone-line][telephone-line]]
    - [[https://github.com/milkypostman/powerline][powerline]]/[[https://github.com/TheBB/spaceline][spaceline]]
@@ -986,6 +996,7 @@
    One of the few vim plugins I really got to know was [[https://github.com/tpope/vim-surround][surround]].
    Moving to emacs and having not picked up a similar plugin makes me
    wonder how anyone lives without that kind of functionality.
+
    - [[https://github.com/emacs-evil/evil-surround][evil-surround]]
    - [[https://github.com/cute-jumper/embrace.el][embrace]]
 ** TODO Pairs
@@ -995,6 +1006,7 @@
    specifically for lisp's uniquely paren-intensive requirements. An
    interesting overview was written [[https://github.com/shaunlebron/history-of-lisp-editing][here]]. Much ink has been shed on
    this topic, such as [[https://www.reddit.com/r/emacs/comments/4nvhu4/][here]].
+
    - paredit
    - [[https://github.com/DogLooksGood/parinfer-mode][parinfer]]
    - [[https://github.com/Fuco1/smartparens][smartparens]]
@@ -1015,6 +1027,7 @@
 ** TODO Comments
    emacs has two built-in commenting functions, comment-dwim and
    comment-line. There are some packages as well:
+
    - [[https://github.com/linktohack/evil-commentary][evil-commentary]]
    - [[https://github.com/redguardtoo/evil-nerd-commenter][evil-nerd-commenter]]
    - [[https://github.com/remyferre/comment-dwim-2][comment-dwim-2]]
@@ -1027,6 +1040,7 @@
    Obviously the elephant in this room is [[https://github.com/magit/magit][magit]], with support from
    other packages like [[https://github.com/vermiculus/magithub][magithub]] and [[https://github.com/emacs-evil/evil-magit][evil-magit]]. Some other important
    considerations:
+
    - [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]], [[https://github.com/syohex/emacs-git-gutter/][git-gutter]], or [[https://github.com/dgutov/diff-hl][diff-hl]]
    - [[https://github.com/rmuslimov/browse-at-remote][browse-at-remote]]
 
@@ -1043,6 +1057,7 @@
 ** TODO Scroll
    I'm pretty comfortable with emacs's default scrolling behavior, but
    here are some packages to investigate:
+
    - [[https://github.com/aspiers/smooth-scrolling][smooth-scrolling]]
    - [[https://github.com/zk-phi/sublimity][sublimity]]
    - [[https://github.com/Malabarba/beacon][beacon]]
@@ -1052,6 +1067,7 @@
    dired is not fun. It's a pain to teach dired to open things in
    their native programs rather than in emacs. So there's a lot of
    work that needs to be added here:
+
    - wdired (built-in, similar to ranger's bulkrename)
    - [[https://github.com/fourier/ztree][ztree]]
    - [[https://github.com/ralesi/ranger.el][ranger.el]]
@@ -1062,6 +1078,7 @@
    there's something to be said for an interactive file tree when
    exploring a project whose structure you don't yet know. emacs has a
    number of options here:
+
    - [[https://github.com/jaypei/emacs-neotree][neotree]]
    - [[https://github.com/m2ym/direx-el][direx]]
    - [[https://github.com/Alexander-Miller/treemacs][treemacs]]
@@ -1072,6 +1089,7 @@
    tree by genre/album/track/artist in that order (cmus has a tree,
    but it's artist/album only with no other options). What better
    place to implement a highly customizable text-based UI than emacs?
+
    - mpc (built-in)
    - [[https://www.gnu.org/software/emms/][EMMS]]
    - [[https://github.com/pft/mingus][mingus]]
