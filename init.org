@@ -37,7 +37,7 @@
    convenient. I should make a wrapper for this. (And, while we're at
    it, the wrapper should execute inside a single straight.el
    transaction, just like it would when init.el is actually loaded.)
-* [[https://github.com/raxod502/straight.el][straight.el]]
+* [[https://github.com/raxod502/straight.el][straight.el]], [[https://github.com/jwiegley/use-package][use-package]]
   I like straight.el philosophically - clones and lockfiles "feels"
   like the right way to solve this problem - and I don't mind having
   to give up package.el for those benefits. Extensive documentation is
@@ -110,16 +110,16 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package which-key
       :demand t
-      :diminish 'which-key-mode
-      :init
-      (setq which-key-echo-keystrokes 0.01)
-      (setq which-key-idle-delay 0.5)
-      (setq which-key-idle-secondary-delay 0.01)
-      (setq which-key-popup-type 'minibuffer)
-      (setq which-key-show-prefix 'top)
-      (setq which-key-max-description-length nil)
-      (setq which-key-compute-remaps t)
-      (setq which-key-sort-order 'which-key-prefix-then-key-order-reverse)
+      :diminish
+      :custom
+      (which-key-echo-keystrokes 0.01)
+      (which-key-idle-delay 0.5)
+      (which-key-idle-secondary-delay 0.01)
+      (which-key-popup-type 'minibuffer)
+      (which-key-show-prefix 'top)
+      (which-key-max-description-length nil)
+      (which-key-compute-remaps t)
+      (which-key-sort-order 'which-key-prefix-then-key-order-reverse)
       :config
       (which-key-mode t))
   #+END_SRC
@@ -144,10 +144,10 @@
     (use-package evil
       :demand t
       :diminish 'undo-tree-mode
-      :init
-      (setq evil-want-Y-yank-to-eol t)
-      (setq evil-disable-insert-state-bindings t)
-      (setq evil-motion-state-modes nil)
+      :custom
+      (evil-want-Y-yank-to-eol t)
+      (evil-disable-insert-state-bindings t)
+      (evil-motion-state-modes nil)
       :config
       (evil-mode t)
       :general
@@ -180,9 +180,9 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ivy
       :demand t
-      :diminish 'ivy-mode
-      :init
-      (setq ivy-count-format "(%d/%d) ")
+      :diminish
+      :custom
+      (ivy-count-format "(%d/%d) ")
       :config
       (ivy-mode t)
       :general
@@ -197,7 +197,7 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package counsel
       :demand t
-      :diminish 'counsel-mode
+      :diminish
       :config
       (counsel-mode t))
   #+END_SRC
@@ -217,8 +217,8 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package wgrep
       :commands (wgrep-change-to-wgrep-mode)
-      :init
-      (setq wgrep-auto-save-buffer t)
+      :custom
+      (wgrep-auto-save-buffer t)
       :general
       (:keymaps 'wgrep-mode-map
        [remap save-buffer] 'wgrep-finish-edit))
@@ -307,19 +307,26 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package org
-      :init
-      (setq org-M-RET-may-split-line nil)
-      (setq org-blank-before-new-entry '((heading . nil)
-                                         (plain-list-item . nil)))
-      (setq org-catch-invisible-edits 'smart)
-      (setq org-ellipsis "⤵")
-      (setq org-src-fontify-natively t)
-      (setq org-src-tab-acts-natively t)
-      (setq org-src-window-setup 'current-window)
-      (setq org-file-apps '(("pdf" . system)
-                            (auto-mode . emacs)
-                            (system . "xdg-open %s")
-                            (t . system)))
+      :custom
+      (org-M-RET-may-split-line nil)
+      (org-blank-before-new-entry '((heading . nil)
+                                    (plain-list-item . nil)))
+      (org-catch-invisible-edits 'smart)
+      (org-ellipsis "⤵")
+      (org-src-fontify-natively t)
+      (org-src-tab-acts-natively t)
+      (org-src-window-setup 'current-window)
+      (org-file-apps '(("pdf" . system)
+                       (auto-mode . emacs)
+                       (system . "xdg-open %s")
+                       (t . system)))
+      (org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
+      :hook (org-mode . private/org-agenda-file-to-back-if-new)
+      :config
+      (defun private/org-agenda-file-to-back-if-new ()
+        (when (and buffer-file-name
+                   (not (org-agenda-file-p buffer-file-name)))
+          (org-agenda-file-to-front t)))
       (defun private/org-meta-return-before (arg)
         (interactive "P")
         (beginning-of-line)
@@ -330,12 +337,6 @@
         (end-of-line)
         (org-meta-return arg)
         (evil-append nil))
-      (setq org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
-      (defun private/org-agenda-file-to-back-if-new ()
-        (when (and buffer-file-name
-                   (not (org-agenda-file-p buffer-file-name)))
-          (org-agenda-file-to-front t)))
-      (add-hook 'org-mode-hook 'private/org-agenda-file-to-back-if-new)
       (defun private/org-up-heading-safe ()
         (interactive)
         (org-up-heading-safe))
@@ -350,7 +351,6 @@
         ("j" org-forward-heading-same-level "next")
         ("k" org-backward-heading-same-level "prev")
         ("l" private/org-goto-first-child "child"))
-      :config
       (when (and (stringp org-agenda-files)
                  (not (file-exists-p org-agenda-files)))
         (with-temp-buffer (write-file org-agenda-files)))
@@ -601,9 +601,9 @@
     (use-package markdown-mode
       :mode ("\\.md\\'" . markdown-mode)
       :commands (markdown-mode gfm-mode)
-      :init
-      (setq-default markdown-hide-urls t)
-      (add-hook 'markdown-mode-hook 'visual-line-mode))
+      :custom
+      (markdown-hide-urls t)
+      :hook (markdown-mode . visual-line-mode))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -685,10 +685,8 @@
      (setq visual-line-fringe-indicators '(left-curly-arrow nil))
 
      (use-package adaptive-wrap
-       :commands (adaptive-wrap-prefix-mode)
        :diminish 'adaptive-wrap-prefix-mode
-       :init
-       (add-hook 'visual-line-mode-hook 'adaptive-wrap-prefix-mode))
+       :hook (visual-line-mode . adaptive-wrap-prefix-mode))
    #+END_SRC
 
    I have not had positive experiences with this part of emacs:
@@ -708,8 +706,8 @@
      (use-package generic-x
        :ensure nil
        :demand t
-       :init
-       (setq generic-use-find-file-hook nil))
+       :custom
+       (generic-use-find-file-hook nil))
    #+END_SRC
 ** TODO Indentation
    You can see that I set indent-tabs-mode to nil by default. I really
@@ -728,9 +726,9 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ws-butler
       :demand t
-      :diminish 'ws-butler-mode
-      :init
-      (setq ws-butler-keep-whitespace-before-point nil)
+      :diminish
+      :custom
+      (ws-butler-keep-whitespace-before-point nil)
       :config
       (ws-butler-global-mode t))
   #+END_SRC
@@ -743,12 +741,12 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package projectile
       :demand t
-      :init
-      (defun private/projectile-ignore-projects (project-root)
-        (or (file-remote-p project-root)
-            (string-prefix-p (straight--dir) project-root)))
-      (setq projectile-ignored-project-function 'private/projectile-ignore-projects)
-      (setq projectile-globally-ignored-file-suffixes '(".pdf"))
+      :custom
+      (projectile-ignored-project-function
+       (lambda (project-root)
+         (or (file-remote-p project-root)
+             (string-prefix-p (straight--dir) project-root))))
+      (projectile-globally-ignored-file-suffixes '(".pdf"))
       :config
       (projectile-mode t))
   #+END_SRC
@@ -815,8 +813,8 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package avy
-      :init
-      (setq avy-all-windows nil)
+      :custom
+      (avy-all-windows nil)
       :config
       (defun avy-goto-char-2-esc (&optional arg beg end)
         "Like avy-goto-char-2, but cancels the prompt if you press ESC."
@@ -879,16 +877,14 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package ace-window
+      :custom
+      (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+      (aw-scope 'frame)
+      :custom-face
+      (aw-leading-char-face ((t (:foreground "red"
+                                 :height 3.0))))
       :init
-      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-      (setq aw-scope 'frame)
       (setq aw-dispatch-alist '((?x aw-flip-window)))
-      :config
-      (face-spec-set 'aw-leading-char-face
-        '((((class color)) (:foreground "red" :height 3.0))
-          (((background dark)) (:foreground "gray100" :height 3.0))
-          (((background light)) (:foreground "gray0" :height 3.0))
-          (t (:foreground "gray100" :underline nil :height 3.0))))
       :general
       ([remap other-window] 'ace-window))
   #+END_SRC
@@ -908,12 +904,12 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package shackle
       :demand t
-      :diminish 'shackle-mode
-      :init
-      (setq shackle-rules '((help-mode :select t
-                                       :popup t
-                                       :align 'below
-                                       :size 0.5)))
+      :diminish
+      :custom
+      (shackle-rules '((help-mode :select t
+                                  :popup t
+                                  :align 'below
+                                  :size 0.5)))
       :config
       (shackle-mode t))
   #+END_SRC
@@ -930,16 +926,17 @@
                :files ("editors/emacs/beancount.el"))
       :mode ("\\.beancount\\'" . org-mode)
       :commands (beancount-mode)
-      :init
-      (setq beancount-use-ido nil)
+      :custom
+      (beancount-use-ido nil)
+      :hook (org-mode . private/org-beancount)
+      :config
       (defun private/org-beancount ()
         (when (and buffer-file-name
                    (string= (file-name-extension buffer-file-name) "beancount"))
           (beancount-mode t)
           (set (make-local-variable 'org-adapt-indentation) nil)
           (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
-                                                                   (plain-list-item . nil)))))
-      (add-hook 'org-mode-hook 'private/org-beancount))
+                                                                   (plain-list-item . nil))))))
   #+END_SRC
 ** org-beancount
    beancount-mode is actually a minor mode, and its directives can be

@@ -24,6 +24,6 @@
  ("swiper" . "f7470feef4880a735495c5013465efffd049270d")
  ("systemd-mode" . "22f024fe8f433af7b6a6b99520cea1e766894fe5")
  ("undo-tree" . "e9a9102f515acd7523158f20e83f300600374989")
- ("use-package" . "cb89901b52a9413b6c233d7fbb616a2d8f38b50a")
+ ("use-package" . "b6bb3c8e917816cdf9987f88ba00fa0f0debb2a5")
  ("ws-butler" . "80dabd5d158929e8433e46207bb521282b21e4f3"))
 :mars
