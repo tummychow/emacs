@@ -18,7 +18,7 @@
  ("no-littering" . "a4b42b185b65e78bc3bb6523e23aefb1213eb3b2")
  ("org" . "ef6dac812b75f6f421bed7bc84d6f166c0b90f71")
  ("pkg-info.el" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
- ("projectile" . "dd48cb8af4cf41d109fb6d46f0c3f2134f37fcfb")
+ ("projectile" . "184d3451c9258cfbbfa2b26a07c7daeee2e9a605")
  ("shackle" . "979b021077655ca38749a60c9752c0817e8fd93e")
  ("straight.el" . "d295fd9edef728caf3f81e321b35cd2ffa303127")
  ("swiper" . "f7470feef4880a735495c5013465efffd049270d")
