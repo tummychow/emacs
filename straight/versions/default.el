@@ -21,7 +21,7 @@
  ("projectile" . "184d3451c9258cfbbfa2b26a07c7daeee2e9a605")
  ("shackle" . "979b021077655ca38749a60c9752c0817e8fd93e")
  ("straight.el" . "d295fd9edef728caf3f81e321b35cd2ffa303127")
- ("swiper" . "f7470feef4880a735495c5013465efffd049270d")
+ ("swiper" . "b960aa4fa52b19dba4d5994fb29f445164209f46")
  ("systemd-mode" . "22f024fe8f433af7b6a6b99520cea1e766894fe5")
  ("undo-tree" . "e9a9102f515acd7523158f20e83f300600374989")
  ("use-package" . "b6bb3c8e917816cdf9987f88ba00fa0f0debb2a5")
