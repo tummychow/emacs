@@ -846,6 +846,11 @@
    early. I suspect this is extremely unidiomatic elisp the way I've
    written it, but oh well. Pull requests are welcome to address my
    atrocious lack of style.
+
+   Note that, although pressing ~ESC~ will end the avy prompt, evil
+   still thinks that the motion completed (eg ~cf ESC~ will still go
+   into insert mode). Is there a way to signal that the motion was
+   canceled?
 ** TODO Repeat
    One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
    you can mash the key to go to the next or previous instance. Such
