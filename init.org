@@ -190,8 +190,17 @@
       (:keymaps 'ivy-minibuffer-map
        "<escape>" 'abort-recursive-edit)
       (private/with-local-leader
+       :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
+       "DEL" 'ivy-occur-dispatch
+       "RET" 'ivy-occur-press-and-switch
+       "f" 'ivy-occur-press
+       "a" 'ivy-occur-read-action
+       "c" 'ivy-occur-toggle-calling
+       "d" 'ivy-occur-delete-candidate
+       "r" 'ivy-occur-revert-buffer)
+      (private/with-local-leader
        :keymaps 'ivy-occur-grep-mode-map
-       "o" 'ivy-wgrep-change-to-wgrep-mode))
+       "w" 'ivy-wgrep-change-to-wgrep-mode))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -247,11 +256,8 @@
 *** occur/wgrep
     I find wgrep very useful for transitioning from search to replace.
     The key sequences are not too difficult to remember: ~C-o~ to
-    bring up hydra-ivy, ~u~ to occur, and ~DEL o~ to enable wgrep in
-    that buffer. There are quite a few other default bindings in
-    ivy-occur-mode-map, which might also be better on the local leader
-    with keys matching those of hydra-ivy (eg ~g~ in occur reverts the
-    buffer, but ~g~ in ivy-hydra invokes ivy-call).
+    bring up hydra-ivy, ~u~ to occur, and ~DEL w~ to enable wgrep in
+    that buffer.
 *** rg
     There's probably some argument to be made for using rg (already
     projectile-integrated) in larger searches. We'll see where that
