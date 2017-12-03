@@ -605,7 +605,6 @@
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package markdown-mode
       :mode ("\\.md\\'" . markdown-mode)
-      :commands (markdown-mode gfm-mode)
       :custom
       (markdown-hide-urls t)
       :hook (markdown-mode . visual-line-mode))
@@ -613,7 +612,7 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package edit-indirect
-      :commands (edit-indirect-region))
+      :defer t)
   #+END_SRC
 * Built-ins
   This is for built-in emacs miscellany that I want to reconfigure or
@@ -934,8 +933,8 @@
                :repo "beancount/beancount"
                :branch "master"
                :files ("editors/emacs/beancount.el"))
+      :defer t
       :mode ("\\.beancount\\'" . org-mode)
-      :commands (beancount-mode)
       :custom
       (beancount-use-ido nil)
       :hook (org-mode . private/org-beancount)
@@ -981,7 +980,7 @@
 * [[https://github.com/holomorph/systemd-mode][systemd]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package systemd
-      :commands (systemd-mode))
+      :defer t)
   #+END_SRC
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
