@@ -100,12 +100,8 @@
 * [[https://github.com/abo-abo/hydra][hydra]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package hydra
-      :demand t)
+      :defer t)
   #+END_SRC
-
-  We could probably defer loading of hydra (the main macro, defhydra,
-  has an autoload defined), but like general, it's a pretty deep
-  library.
 * [[https://github.com/justbur/emacs-which-key][which-key]]
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package which-key
