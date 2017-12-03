@@ -6,6 +6,7 @@
  ("counsel-projectile" . "88a16cb75301ae95f21a71e8838a49590d011e73")
  ("diminish.el" . "565a983a39d2e2cffab5df13b34f3b6116723208")
  ("edit-indirect" . "032ac0ec690d4999d564fd882588c7a197efe8dd")
+ ("emacs-htmlize" . "a0b55cba65a225df8d9e17a3ac448ce9e8ec962d")
  ("emacs-which-key" . "6d2e17c949ff7bfebfe0b0878a93d94b31585031")
  ("epkgs" . "ab558abf30192975c21daea88cffbc4d1952aa90")
  ("epl" . "83797835f729f39b80acba4c7e83d73a2e410e26")

@@ -394,6 +394,11 @@
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package htmlize
+      :defer t)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package hydra-ox
       :recipe (hydra :type git :host github :repo "abo-abo/hydra")
       :general
