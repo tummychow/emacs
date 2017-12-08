@@ -636,6 +636,9 @@
     (setq menu-bar-mode nil)
     (setq tool-bar-mode nil)
 
+    (setq line-number-display-limit nil)
+    (column-number-mode t)
+
     (setq frame-title-format "%b")
 
     (setq save-interprogram-paste-before-kill t)
