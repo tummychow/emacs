@@ -991,8 +991,28 @@
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
   - https://github.com/noctuid/evil-guide
-** TODO epub
-   See [[https://github.com/wasamasa/nov.el][nov.el]].
+** TODO More File Types
+   Spacemacs layers for [[https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang][various languages]] can give us useful direction
+   on this subject.
+*** TODO epub
+    See [[https://github.com/wasamasa/nov.el][nov.el]].
+*** TODO YAML
+    See [[https://github.com/yoshiki/yaml-mode][yaml-mode]].
+*** TODO Bash
+    See [[https://github.com/Alexander-Miller/company-shell][company-shell]].
+*** TODO Python
+    See [[https://github.com/jorgenschaefer/elpy][elpy]], [[https://github.com/proofit404/anaconda-mode][anaconda-mode]], [[https://github.com/proofit404/company-anaconda][company-anaconda]], and [[https://github.com/JorisE/yapfify][yapfify]]. (elpy vs
+    anaconda: [[https://github.com/proofit404/anaconda-mode/issues/38][further reading]].)
+*** TODO Ruby
+    Default indentation behavior for ruby seemed particularly
+    atrocious when I last encountered it. See [[https://github.com/zenspider/enhanced-ruby-mode][enhanced-ruby-mode]] and
+    [[https://github.com/dgutov/robe][robe]].
+*** TODO Go
+    See [[https://github.com/dominikh/go-mode.el][go-mode]] (unmaintained?) and [[https://github.com/nsf/gocode/tree/master/emacs-company][company-go]].
+** TODO Better Heading Tree
+   This file is manageable thanks to org-mode, but the heading
+   organization is rather haphazard. In particular, we should separate
+   type-specific major modes from other packages.
 ** TODO Modeline and Frame Title
    I'm pretty happy with the built-in emacs modeline in terms of
    information, but it doesn't look flattering. Could use some
