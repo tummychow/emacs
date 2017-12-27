@@ -991,6 +991,7 @@
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
   - https://github.com/noctuid/evil-guide
+  - https://github.com/jojojames/evil-collection
 ** TODO More File Types
    Spacemacs layers for [[https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang][various languages]] can give us useful direction
    on this subject.
