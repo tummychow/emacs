@@ -761,10 +761,8 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package counsel-projectile
-      :init
-      (setq counsel-projectile-drop-to-switch-project-binding "C-SPC")
       :config
-      (counsel-projectile-on)
+      (counsel-projectile-mode t)
       :general
       (private/with-leader
        :infix "p"
