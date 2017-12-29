@@ -45,15 +45,11 @@
   [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
 
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq straight-recipe-overrides
-          '((nil . ((straight :type git :host github
-                              :repo "raxod502/straight.el"
-                              :branch "develop"
-                              :files ("straight.el"))))))
+    (setq straight-repository-branch "develop")
     (setq straight-check-for-modifications 'never)
 
-    (let ((bootstrap-file (concat user-emacs-directory "straight/bootstrap.el"))
-          (bootstrap-version 2))
+    (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
+          (bootstrap-version 3))
       (unless (file-exists-p bootstrap-file)
         (with-current-buffer
             (url-retrieve-synchronously
@@ -63,8 +59,11 @@
           (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage))
 
-    (setq use-package-always-ensure t)
+    (setq straight-use-package-by-default t)
     (straight-use-package 'use-package)
+
+    (use-package diminish
+      :defer t)
   #+END_SRC
 
   I disable straight's automatic rebuilding and invoke
@@ -402,7 +401,7 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package hydra-ox
-      :recipe (hydra :type git :host github :repo "abo-abo/hydra")
+      :straight hydra
       :general
       ([remap org-export-dispatch] 'hydra-ox/body))
   #+END_SRC
@@ -713,7 +712,7 @@
 ** generic-x
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package generic-x
-       :ensure nil
+       :straight nil
        :demand t
        :custom
        (generic-use-find-file-hook nil))
@@ -934,10 +933,10 @@
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package beancount
-      :recipe (:host github
-               :repo "beancount/beancount"
-               :branch "master"
-               :files ("editors/emacs/beancount.el"))
+      :straight (:host github
+                 :repo "beancount/beancount"
+                 :branch "master"
+                 :files ("editors/emacs/beancount.el"))
       :defer t
       :mode ("\\.beancount\\'" . org-mode)
       :custom
