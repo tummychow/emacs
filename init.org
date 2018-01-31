@@ -1,994 +1,997 @@
 -*- eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t) -*-
 
-* Tangling Hook
-  There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration in
-  org-mode:
+* Libraries and Plumbing
+** Tangling Hook
+   There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration in
+   org-mode:
 
-  - org-babel-load-file :: This approach is very simple to implement,
-       but has to tangle each file when emacs starts.
-  - org-babel-tangle :: This approach stores the tangled file on disk,
-       but you have to remember to re-tangle after each edit.
-
-
-  We can use a file-local after-save-hook to do the tangling
-  automatically. However, this file variable is not considered safe by
-  default, so emacs will prompt you the first time you open this
-  file.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook
-                                                   (lambda ()
-                                                     (org-babel-tangle))
-                                                   nil t))
-  #+END_SRC
-** TODO Async
-   Tangling produces a noticeable pause every time I save. This should
-   be pushed off the main thread.
-
-   - https://www.reddit.com/r/emacs/comments/5ej8by/
-   - https://emacs.stackexchange.com/q/22722
+   - org-babel-load-file :: This approach is very simple to implement,
+        but has to tangle each file when emacs starts.
+   - org-babel-tangle :: This approach stores the tangled file on disk,
+        but you have to remember to re-tangle after each edit.
 
 
-   We have to be careful about tangling with the org that was
-   installed by straight.el, not the built-in one.
-** TODO Read/Edit/Compile Loop
-   Before I started using a tangled init, I could just edit init.el
-   directly and eval-buffer to reload it. Having to
-   org-babel-load-file and then select init.org is noticeably less
-   convenient. I should make a wrapper for this. (And, while we're at
-   it, the wrapper should execute inside a single straight.el
-   transaction, just like it would when init.el is actually loaded.)
-* [[https://github.com/raxod502/straight.el][straight.el]], [[https://github.com/jwiegley/use-package][use-package]]
-  I like straight.el philosophically - clones and lockfiles "feels"
-  like the right way to solve this problem - and I don't mind having
-  to give up package.el for those benefits. Extensive documentation is
-  also greatly appreciated. UX is still rough around the edges - see
-  [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
+   We can use a file-local after-save-hook to do the tangling
+   automatically. However, this file variable is not considered safe by
+   default, so emacs will prompt you the first time you open this
+   file.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq straight-repository-branch "develop")
-    (setq straight-check-for-modifications 'never)
-
-    (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
-          (bootstrap-version 3))
-      (unless (file-exists-p bootstrap-file)
-        (with-current-buffer
-            (url-retrieve-synchronously
-             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-             'silent 'inhibit-cookies)
-          (goto-char (point-max))
-          (eval-print-last-sexp)))
-      (load bootstrap-file nil 'nomessage))
-
-    (setq straight-use-package-by-default t)
-    (straight-use-package 'use-package)
-
-    (use-package diminish
-      :defer t)
-  #+END_SRC
-
-  I disable straight's automatic rebuilding and invoke
-  straight-rebuild-package by hand. This avoids some nasty startup
-  delays ([[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]]). I don't need to rebuild all that often, so I don't
-  mind having to do it manually.
-* [[https://github.com/emacscollective/no-littering][no-littering]]
-  This keeps files like projectile-known-projects-file where they
-  belong.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package no-littering
-      :demand t)
-  #+END_SRC
-* [[https://github.com/noctuid/general.el][general]]
-  general provides a unified interface for binding keys. I use ~SPC~
-  and ~DEL~ as my leaders, since my keyboard puts them under my left
-  and right thumbs.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package general
-      :demand t
-      :config
-      (general-create-definer private/with-leader
-                              :prefix "SPC"
-                              :non-normal-prefix "M-SPC"
-                              :states '(normal visual insert emacs))
-      (general-create-definer private/with-local-leader
-                              :prefix "DEL"
-                              :non-normal-prefix "M-DEL"
-                              :states '(normal visual insert emacs)))
-  #+END_SRC
-* [[https://github.com/abo-abo/hydra][hydra]]
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package hydra
-      :defer t)
-  #+END_SRC
-* [[https://github.com/justbur/emacs-which-key][which-key]]
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package which-key
-      :demand t
-      :diminish
-      :custom
-      (which-key-echo-keystrokes 0.01)
-      (which-key-idle-delay 0.5)
-      (which-key-idle-secondary-delay 0.01)
-      (which-key-popup-type 'minibuffer)
-      (which-key-show-prefix 'top)
-      (which-key-max-description-length nil)
-      (which-key-compute-remaps t)
-      (which-key-sort-order 'which-key-prefix-then-key-order-reverse)
-      :config
-      (which-key-mode 1))
-  #+END_SRC
-
-  I could enable which-key-allow-evil-operators and
-  which-key-show-operator-states, but choose not to because the popup
-  is too large. There's just too much information in there.
-* [[https://github.com/emacs-evil/evil][evil]]
-  I never really became fluent in vim, but my brief experience made it
-  impossible to go back to any other editing system. The two big
-  innovations of vim were:
-
-  - separate modes for binding commands and inserting text
-  - composable operators and text objects
-
-
-  I'm not married to anything specific in vim or evil besides those
-  two principles, but nothing really comes close, and I'm not in the
-  mood to roll my own version of evil right now.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package evil
-      :demand t
-      :diminish 'undo-tree-mode
-      :custom
-      (evil-want-Y-yank-to-eol t)
-      (evil-disable-insert-state-bindings t)
-      (evil-motion-state-modes nil)
-      :config
-      (evil-mode 1)
-      :general
-      (:states '(normal visual)
-       ";" 'evil-ex
-       "s" 'save-buffer
-       "x" 'other-window
-       "r" 'universal-argument)
-      (:keymaps 'universal-argument-map
-       "r" 'universal-argument-more)
-      (private/with-leader
-       "SPC" 'execute-extended-command
-       ";" 'eval-expression
-       "f" 'find-file
-       "b" 'switch-buffer
-       "h" 'help-command)
-      (private/with-leader
-       :infix "d"
-       "" '(:wk "desktops"
-            :ignore t)
-       "h" 'split-window-vertically
-       "v" 'split-window-horizontally
-       "x" 'delete-window
-       "b" 'kill-this-buffer
-       "k" 'kill-buffer-and-window)
-      (:keymaps 'minibuffer-local-map
-       "<escape>" 'minibuffer-keyboard-quit))
-  #+END_SRC
-* [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]], [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package ivy
-      :demand t
-      :diminish
-      :custom
-      (ivy-count-format "(%d/%d) ")
-      :config
-      (ivy-mode 1)
-      :general
-      ([remap switch-buffer] 'ivy-switch-buffer)
-      (:keymaps 'ivy-minibuffer-map
-       "<escape>" 'abort-recursive-edit)
-      (private/with-local-leader
-       :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
-       "DEL" 'ivy-occur-dispatch
-       "RET" 'ivy-occur-press-and-switch
-       "f" 'ivy-occur-press
-       "a" 'ivy-occur-read-action
-       "c" 'ivy-occur-toggle-calling
-       "d" 'ivy-occur-delete-candidate
-       "r" 'ivy-occur-revert-buffer)
-      (private/with-local-leader
-       :keymaps 'ivy-occur-grep-mode-map
-       "w" 'ivy-wgrep-change-to-wgrep-mode))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package counsel
-      :demand t
-      :diminish
-      :config
-      (counsel-mode 1))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package ivy-hydra
-      :commands (hydra-ivy/body))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package swiper
-      :general
-      (private/with-leader
-       "/" 'swiper))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package wgrep
-      :commands (wgrep-change-to-wgrep-mode)
-      :custom
-      (wgrep-auto-save-buffer t)
-      :general
-      (:keymaps 'wgrep-mode-map
-       [remap save-buffer] 'wgrep-finish-edit))
-  #+END_SRC
-** TODO Structured Find/Replace
-   This is a big topic, but I'm just going to stick it here because
-   it's all going through ivy one way or another.
-*** swiper
-    swiper is my primary tool for structured find. It's incremental
-    (ie it shows me where I'm going before I decide to go there) and
-    ephemeral (ie if I dismiss the minibuffer it leaves no traces of
-    its presence). One useful addition would be an easy way to resume
-    the previous swiper search. ivy-resume, maybe?
-*** isearch
-    I have experimented with isearch (which is hooked into evil's ~/~
-    by default). I find it most useful as a motion - ie when I already
-    know exactly what I'm looking for with very high specificity - but
-    avy works almost as well in those situations.
-
-    I don't like using it for "searching". Jumping around with ~nN~ is
-    cumbersome, and often after a few jumps you realize that you
-    should have refined the search expression a bit more. With swiper,
-    you can just scroll the minibuffer, and if you need to narrow it
-    down, you can type in more text. I'm considering just binding
-    swiper directly to ~/~.
-*** occur/wgrep
-    I find wgrep very useful for transitioning from search to replace.
-    The key sequences are not too difficult to remember: ~C-o~ to
-    bring up hydra-ivy, ~u~ to occur, and ~DEL w~ to enable wgrep in
-    that buffer.
-*** rg
-    There's probably some argument to be made for using rg (already
-    projectile-integrated) in larger searches. We'll see where that
-    fits into the picture. I just haven't used it enough yet. I
-    believe the occur/wgrep system works just as well here as it does
-    for swiper.
-*** :s
-    For smaller find/replaces, I still use vim's trusty ~:s~. The
-    syntax of ~:s~ lets you write the find and replace halves of the
-    expression simultaneously in a very nimble way. Automatically
-    reusing the last pattern from ~/~ is also a nice feature, although
-    a bit niche. I only feel the need to do that when I'm replacing a
-    fairly complex pattern, which is usually a sign to reach for
-    another tool.
-
-    Once you start replacing a lot of stuff (more than a screenful) or
-    really complicated stuff (anything involving eval-based
-    expressions), ~:s~ becomes unpredictable and too cumbersome to use
-    off hand. It works best when its effects are transparent and
-    obvious.
-
-    Speaking of transparency, evil's live preview for ~:s~ is
-    extremely valuable. However, I've encountered some bugs with it
-    (typically when replacing leading whitespace) where the
-    preview markers don't go away after the command is done.
-
-    It probably sounds like I like ~:s~ and I'm happy with its place
-    in my workflow. For the most part, I am, but it's literally the
-    only ex command I use regularly. If I can replace it with
-    something else, that lets me completely rebind ~;:~ to other
-    commands. [[https://github.com/benma/visual-regexp.el][visual-regexp]] or [[https://github.com/zk-phi/phi-search][phi-search]]? My requirements:
-
-    - robust live preview
-    - edit find and replace sides simultaneously, ideally with similar
-      syntax to ~:s~
-    - a quick keybind to jump from find to replace or vice versa
-      (useful in longer expressions)
-    - easy integration with swiper/rg and occur/wgrep, if you realize
-      that you're biting off more than you can chew
-*** iedit/multiple-cursors
-    I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit, and I'm also interested in
-    multiple-cursors:
-
-    - [[https://github.com/victorhge/iedit][iedit]]
-    - [[https://github.com/syl20bnr/evil-iedit-state][evil-iedit-state]]
-    - [[https://github.com/hlissner/evil-multiedit][evil-multiedit]]
-    - [[https://github.com/gabesoft/evil-mc][evil-mc]]
-    - [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]
-* [[http://orgmode.org/][org]]
-  Note that straight.el will always install a fresh org-mode from
-  [[https://github.com/emacsmirror/org][emacsmirror]] (which, unlike org's ELPA, can be cloned over TLS). This
-  repository is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package org
-      :custom
-      (org-M-RET-may-split-line nil)
-      (org-blank-before-new-entry '((heading . nil)
-                                    (plain-list-item . nil)))
-      (org-catch-invisible-edits 'smart)
-      (org-ellipsis "⤵")
-      (org-src-fontify-natively t)
-      (org-src-tab-acts-natively t)
-      (org-src-window-setup 'current-window)
-      (org-file-apps '(("pdf" . system)
-                       (auto-mode . emacs)
-                       (system . "xdg-open %s")
-                       (t . system)))
-      (org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
-      :hook (org-mode . private/org-agenda-file-to-back-if-new)
-      :config
-      (defun private/org-agenda-file-to-back-if-new ()
-        (when (and buffer-file-name
-                   (not (org-agenda-file-p buffer-file-name)))
-          (org-agenda-file-to-front t)))
-      (defun private/org-meta-return-before (arg)
-        (interactive "P")
-        (beginning-of-line)
-        (org-meta-return arg)
-        (evil-append nil))
-      (defun private/org-meta-return-after (arg)
-        (interactive "P")
-        (end-of-line)
-        (org-meta-return arg)
-        (evil-append nil))
-      (defun private/org-up-heading-safe ()
-        (interactive)
-        (org-up-heading-safe))
-      (defun private/org-goto-first-child ()
-        (interactive)
-        (org-goto-first-child)
-        (org-reveal))
-      (defhydra private/hydra-worf ()
-        "navigate and move org headings"
-        ("<tab>" org-cycle "cycle")
-        ("h" private/org-up-heading-safe "parent")
-        ("j" org-forward-heading-same-level "next")
-        ("k" org-backward-heading-same-level "prev")
-        ("l" private/org-goto-first-child "child"))
-      (when (and (stringp org-agenda-files)
-                 (not (file-exists-p org-agenda-files)))
-        (with-temp-buffer (write-file org-agenda-files)))
-      (advice-add 'org-element-property
-                  :after-until (lambda (property element)
-                                 (and (eq (org-element-type element) 'src-block)
-                                      (eq property :language)
-                                      "fundamental")))
-      :general
-      (:states '(insert emacs)
-       :keymaps 'org-mode-map
-       "RET" 'org-return-indent)
-      (private/with-local-leader
-       :keymaps 'org-mode-map
-       "h" '(private/hydra-worf/private/org-up-heading-safe
-             :wk "parent heading")
-       "j" '(private/hydra-worf/org-forward-heading-same-level
-             :wk "next heading")
-       "k" '(private/hydra-worf/org-backward-heading-same-level
-             :wk "prev heading")
-       "l" '(private/hydra-worf/private/org-goto-first-child
-             :wk "child heading")
-       "/" 'counsel-org-goto
-       "r" 'org-reveal
-       "e" 'org-edit-special
-       "x" 'org-export-dispatch
-       "RET" 'org-open-at-point
-       "o" 'private/org-meta-return-after
-       "O" 'private/org-meta-return-before)
-      (private/with-local-leader
-       :keymaps 'org-mode-map
-       :infix "z"
-       "" '(:wk "toggles"
-            :ignore t)
-       "h" 'org-toggle-heading
-       "i" 'org-toggle-item
-       "l" 'org-toggle-link-display)
-      (private/with-local-leader
-       :keymaps 'org-src-mode-map
-       "e" 'org-edit-src-exit))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package htmlize
-      :defer t)
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package hydra-ox
-      :straight hydra
-      :general
-      ([remap org-export-dispatch] 'hydra-ox/body))
-  #+END_SRC
-
-  Note that MELPA does not split hydra and hydra-ox into separate
-  packages, so straight.el doesn't know how to install hydra-ox. It
-  has to explicitly be told that this package comes from the hydra
-  repo. I would prefer to straight-get-recipe this, but hardcoding it
-  is basically the same thing.
-** Navigation
-   I'm very fond of counsel-org-goto. It Just Works, which can't be
-   said for some of the things I tried in the past.
-
-   org has org-goto built-in. However, I despise org's "open another
-   buffer and fumble around in here" approach to navigation. You can
-   customize org-goto to use ivy (org-goto-interface and
-   org-outline-complete-in-steps), but I found that it choked on
-   headlines with slashes in them. Perhaps it was an ivy bug.
-
-   Rather than investigate the slashes problem with org-goto, I
-   tolerated counsel-imenu for a while. You need to futz around with
-   some variables (imenu-auto-rescan, imenu-auto-rescan-timeout) to
-   make it rescan every time you use it. The real problem is that it
-   only displays leaf-level headings, so you can't jump directly to
-   intermediate headings.
-
-   I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
-   [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
-   ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
-*** TODO Out-of-Order Search
-    In my typical use of counsel-org-goto, I search for the last
-    segment of the exact heading I'm aiming for. If that isn't
-    specific enough, I end up having to backspace over my search query
-    and enter a higher-level heading first, to disambiguate. For
-    example, in a file with headings "foo/bar/baz" and "foo/qux/baz",
-    I might search for "baz", then have to backspace and search for
-    "bar baz".
-
-    The solution to this problem would be to relax matching order, so
-    that "baz bar" could match "foo/bar/baz". ivy--regex-ignore-order
-    might be perfect for this.
-** Indentation
-   By default, plain text in org-mode is indented to match the level
-   of the headline. This is controlled by org-adapt-indentation,
-   org-cycle-emulate-tab, and my binding of org-return-indent.
-
-   I actually like the indentation, because it helps distinguish
-   headlines (you can scan the left edge of the buffer to locate
-   them). It also increases the vertical density of my org files,
-   since I don't need empty lines (org-blank-before-new-entry) or
-   larger fonts to make the headlines stand out. I do disable the
-   indentation for beancount buffers; see below.
-** org-src Default Language
-   I want to use fundamental-mode in org-src blocks that have no
-   language, but there is no supported way to set a [[https://emacs.stackexchange.com/q/8314][default language]]
-   for org-src blocks. However, you can hack it in by advising
-   org-element-property. If org-element-property returns nil for an
-   org-src block's language, this advice will treat the block's
-   language as fundamental instead.
-** TODO [[https://github.com/abo-abo/ace-link][ace-link]]/[[https://github.com/noctuid/link-hint.el][link-hint]]
-   A more powerful alternative to org-open-at-point. This should open
-   the link at point (if any), and otherwise select one avy-style.
-   Note that org-return-follows-link doesn't work in evil normal
-   state.
-** TODO [[https://github.com/abo-abo/worf][worf]] Tree Mutation
-   It's fine to use counsel-org-goto for large jumps, but for shorter
-   movements, it's much faster to go up or down headings. worf has an
-   especially elegant way of combining navigation and mutation of org
-   trees. Unfortunately it doesn't play nice with evil.
-
-   One important caveat of any up/down heading navigation is that it
-   tends to pollute the jumplist. Ideally, you want to "enter" heading
-   navigation mode, jump around headings freely, and add to the
-   jumplist when you "exit" heading navigation mode. I used to have a
-   hydra for this, and might rebuild it.
-
-   Some considerations for this development:
-
-   - movements:
-     - next heading:
-       - any level:
-         - org-next-visible-heading
-         - outline-next-visible-heading
-         - outline-next-heading
-       - same level:
-         - org-forward-heading-same-level
-         - outline-forward-same-level
-         - org-get-next-sibling
-         - outline-get-next-sibling
-         - org-goto-sibling
-     - previous heading:
-       - any level:
-         - org-previous-visible-heading
-         - outline-previous-visible-heading
-         - outline-previous-heading
-       - same level (note that, if we're not on a heading, we want to
-         back up to the current heading, not the one before it):
-         - org-backward-heading-same-level: skips past current heading
-         - outline-backward-same-level: same problem as
-           org-backward-heading-same-level
-         - org-get-last-sibling: doesn't actually restrict point to
-           same-level headings (it returns nil but the point still
-           moves, which is almost definitely a bug)
-         - outline-get-last-sibling: same problem as
-           org-get-last-sibling
-         - org-goto-sibling: same problem as
-           org-backward-heading-same-level
-     - parent:
-       - org-up-heading-safe
-       - org-up-heading-all
-       - outline-up-heading
-     - child:
-       - org-goto-first-child
-   - change:
-     - item:
-       | ITEM    | org-metaleft          | org-metadown          | org-metaup          | org-metaright         |
-       |---------+-----------------------+-----------------------+---------------------+-----------------------|
-       | heading | org-do-promote        | org-move-subtree-down | org-move-subtree-up | org-do-demote         |
-       | list    | org-outdent-item      | org-move-item-down    | org-move-item-up    | org-indent-item       |
-       | table   | org-table-move-column | org-table-move-row    | org-table-move-row  | org-table-move-column |
-     - tree:
-       | TREE    | org-shiftmetaleft       | org-shiftmetadown     | org-shiftmetaup        | org-shiftmetaright      |
-       |---------+-------------------------+-----------------------+------------------------+-------------------------|
-       | heading | org-promote-subtree     | org-drag-line-forward | org-drag-line-backward | org-demote-subtree      |
-       | list    | org-outdent-item-tree   | org-drag-line-forward | org-drag-line-backward | org-indent-item-tree    |
-       | table   | org-table-delete-column | org-table-insert-row  | org-table-kill-row     | org-table-insert-column |
-   - Can we use the [[https://github.com/abo-abo/hydra/commit/763bb2a423c829dc145188718dcf9ee47480ed0a][:bind lambda]] to build bindings to the heads with
-     general (lambda gets invoked [[https://github.com/abo-abo/hydra/blob/master/hydra.el#L1302][here]]? Or do we have to manually bind
-     each head in private/with-local-leader?
-   - We should have a toggle in the hydra to allow moving to invisible
-     headings, which should default to off.
-   - Should we also operate on lists? org-previous-item and
-     org-next-item can navigate up/down, but they put the cursor in a
-     stupid position. There doesn't appear to be a way to navigate
-     up/down levels of a list. In addition, org-next-item does nothing
-     unless you're already in a list. We may need to resort to
-     [[http://orgmode.org/worg/dev/org-syntax.html][parsing]].
-   - Similarly, support for tables would also be interesting, but
-     there don't appear to be good ways to jump "into" a table.
-   - We should print a message to the minibuffer if we try to move
-     past the end of a direction. [[https://emacs.stackexchange.com/a/11024][save-excursion]] might help for this.
-*** Target UX
-    - heading state (default)
-      - ~hjkl~ (available outside hydra) :: parent heading, down same
-           level, up same level, child heading
-      - ~v~ :: radio toggle between three states: always move to
-               invisible, never move to invisible, only move to
-               invisible if there is none visible (default)
-      - ~<tab>~ :: org-cycle
-      - ~c~ :: enter heading change state
-        - ~jk~ :: move subtree down, move subtree up
-        - ~hl~ :: promote subtree, demote subtree
-        - ~HL~ :: promote heading, demote heading
-        - ~q~ :: go back to heading state
-      - ~i~ (available outside hydra) :: enter list state
-        - ~hjkl~ :: superlist, down same level, up same level, sublist
-        - ~v~ :: radio toggle to enable moving to (and revealing)
-                 invisible items (default off)
-        - ~<tab>~ :: org-cycle
-        - ~q~ :: go back to heading state
-        - ~c~ :: enter list change state
-          - ~jk~ :: move item tree down, move item tree up
-          - ~hl~ :: outdent item tree, indent item tree
-          - ~HL~ :: outdent item, indent item
-          - ~q~ :: go back to list state
-      - ~t~ (available outside hydra) :: enter table state
-        - ~hjkl~ :: left cell, down cell, up cell, right cell
-        - ~q~ :: go back to heading state
-        - ~c~ :: enter table change state
-          - ~jk~ :: move row down, move row up
-          - ~hl~ :: move column left, move column right
-          - ~JK~ :: insert row, delete row
-          - ~HL~ :: delete column, insert column
-          - ~q~ :: go back to table state
-** TODO Completion
-   I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
-   can type them in lowercase (which I should really start doing), but
-   even better would be autocomplete for them. Autocompletion is
-   unfortunately a TODO in its own right, but perhaps we can hack up
-   an interim solution with ivy.
-** TODO org-agenda
-   org-agenda is a large key tree that spawns a buffer just for
-   prompts. We could replace the prompts with which-key, but
-   org-agenda has some additional features. In particular, you can
-   press ~<>~ multiple times within an org-agenda buffer to adjust the
-   restriction level. This persistent binding would require a hydra to
-   replicate. Alternatively, we could approximate it with just a plain
-   key tree, which would probably be easier.
-
-   The basic key tree is implemented in
-   org-agenda-get-restriction-and-command. Note that org-agenda has a
-   bunch of custom command functionality as well
-   (org-agenda-custom-commands) and we have to decide how much of that
-   we want to implement. defhydradio can help us with the persistent
-   parts (~<>~), as it does in hydra-ox.
-* [[https://github.com/jrblevin/markdown-mode][Markdown]]
-  While I prefer working in org-mode, sometimes you have to write
-  markup that other people can edit, and org-mode is really not usable
-  in any editor but emacs. In those situations, Markdown is basically
-  inevitable.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package markdown-mode
-      :mode ("\\.md\\'" . markdown-mode)
-      :custom
-      (markdown-hide-urls t)
-      :hook (markdown-mode . visual-line-mode))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package edit-indirect
-      :defer t)
-  #+END_SRC
-* Built-ins
-  This is for built-in emacs miscellany that I want to reconfigure or
-  turn off. There's quite a bit of stuff in here.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq revert-without-query '(""))
-    (global-auto-revert-mode 1)
-    (setq auto-save-default nil)
-    (setq auto-save-list-file-prefix nil)
-    (setq create-lockfiles nil)
-    (setq make-backup-files nil)
-
-    (setq initial-major-mode 'org-mode)
-    (setq initial-scratch-message nil)
-    (setq inhibit-startup-screen t)
-
-    (setq sentence-end-double-space nil)
-
-    (tool-bar-mode 0)
-    (menu-bar-mode 0)
-    (blink-cursor-mode 0)
-
-    (setq line-number-display-limit nil)
-    (column-number-mode 1)
-
-    (setq frame-title-format "%b")
-
-    (setq save-interprogram-paste-before-kill t)
-
-    (setq global-hl-line-sticky-flag t)
-    (global-hl-line-mode 1)
-    (show-paren-mode 1)
-
-    (setq-default indent-tabs-mode nil)
-
-    (advice-add 'executable-make-buffer-file-executable-if-script-p
-                :before-while (lambda ()
-                                (and buffer-file-name
-                                     (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
-    (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-    (setq uniquify-buffer-name-style 'forward)
-
-    (setq require-final-newline t)
-
-    (setq load-prefer-newer t)
-  #+END_SRC
-** Fonts
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'window-system-default-frame-alist '(x . ((font . "Input-10"))))
-     (add-to-list 'window-system-default-frame-alist '(mac . ((font . "Menlo-14"))))
+     (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook
+                                                    (lambda ()
+                                                      (org-babel-tangle))
+                                                    nil t))
+   #+END_SRC
+*** TODO Async
+    Tangling produces a noticeable pause every time I save. This should
+    be pushed off the main thread.
+
+    - https://www.reddit.com/r/emacs/comments/5ej8by/
+    - https://emacs.stackexchange.com/q/22722
+
+
+    We have to be careful about tangling with the org that was
+    installed by straight.el, not the built-in one.
+*** TODO Read/Edit/Compile Loop
+    Before I started using a tangled init, I could just edit init.el
+    directly and eval-buffer to reload it. Having to
+    org-babel-load-file and then select init.org is noticeably less
+    convenient. I should make a wrapper for this. (And, while we're at
+    it, the wrapper should execute inside a single straight.el
+    transaction, just like it would when init.el is actually loaded.)
+** [[https://github.com/raxod502/straight.el][straight.el]], [[https://github.com/jwiegley/use-package][use-package]]
+   I like straight.el philosophically - clones and lockfiles "feels"
+   like the right way to solve this problem - and I don't mind having
+   to give up package.el for those benefits. Extensive documentation is
+   also greatly appreciated. UX is still rough around the edges - see
+   [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq straight-repository-branch "develop")
+     (setq straight-check-for-modifications 'never)
+
+     (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
+           (bootstrap-version 3))
+       (unless (file-exists-p bootstrap-file)
+         (with-current-buffer
+             (url-retrieve-synchronously
+              "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+              'silent 'inhibit-cookies)
+           (goto-char (point-max))
+           (eval-print-last-sexp)))
+       (load bootstrap-file nil 'nomessage))
+
+     (setq straight-use-package-by-default t)
+     (straight-use-package 'use-package)
+
+     (use-package diminish
+       :defer t)
    #+END_SRC
 
-   Note that I cannot set the font with set-frame-font (or its
-   deprecated cousin, set-default-font) because I use emacs in daemon
-   mode. Because the initial emacs instance doesn't have a GUI attached
-   to it, something goes horribly wrong at init time and the fonts just
-   don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's literally a
-   couple of pixels tall.
-
-   On top of that, emacs's fontconfig parsing seems to be highly
-   nonstandard. Normally, the pattern ~Foo-10~ (or equivalently
-   ~Foo:size=10~) specifies the height as 10pt, where as
-   ~Foo:pixelsize=10~ aims for a height of 10px. But in emacs,
-   ~Foo:size=10~ and ~Foo:pixelsize=10~ do the same thing. I also find
-   very different results between fc-pattern and describe-font using
-   the same pattern (eg ~fc-pattern -d Input-10 pixelsize~ reports
-   10.4167px on my current monitor, but if I use ~Input-10~ in emacs,
-   describe-font shows the pattern ~Input:pixelsize=13~).
-
-   Maybe I'm just crazy or confused. Font rendering is hard.
-** visual-line-mode
-   visual-line-mode is a built-in mode that truncates lines at word
-   boundaries. adaptive-wrap-mode (GNU ELPA) extends it to also
-   preserve leading indentation.
+   I disable straight's automatic rebuilding and invoke
+   straight-rebuild-package by hand. This avoids some nasty startup
+   delays ([[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]]). I don't need to rebuild all that often, so I don't
+   mind having to do it manually.
+** [[https://github.com/emacscollective/no-littering][no-littering]]
+   This keeps files like projectile-known-projects-file where they
+   belong.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq-default truncate-lines t)
-     (setq visual-line-fringe-indicators '(left-curly-arrow nil))
+     (use-package no-littering
+       :demand t)
+   #+END_SRC
+** [[https://github.com/noctuid/general.el][general]]
+   general provides a unified interface for binding keys. I use ~SPC~
+   and ~DEL~ as my leaders, since my keyboard puts them under my left
+   and right thumbs.
 
-     (use-package adaptive-wrap
-       :diminish 'adaptive-wrap-prefix-mode
-       :hook (visual-line-mode . adaptive-wrap-prefix-mode))
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package general
+       :demand t
+       :config
+       (general-create-definer private/with-leader
+                               :prefix "SPC"
+                               :non-normal-prefix "M-SPC"
+                               :states '(normal visual insert emacs))
+       (general-create-definer private/with-local-leader
+                               :prefix "DEL"
+                               :non-normal-prefix "M-DEL"
+                               :states '(normal visual insert emacs)))
+   #+END_SRC
+** [[https://github.com/abo-abo/hydra][hydra]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package hydra
+       :defer t)
+   #+END_SRC
+* UI Core
+** Built-ins
+   This is for built-in emacs miscellany that I want to reconfigure or
+   turn off. There's quite a bit of stuff in here.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq revert-without-query '(""))
+     (global-auto-revert-mode 1)
+     (setq auto-save-default nil)
+     (setq auto-save-list-file-prefix nil)
+     (setq create-lockfiles nil)
+     (setq make-backup-files nil)
+
+     (setq initial-major-mode 'org-mode)
+     (setq initial-scratch-message nil)
+     (setq inhibit-startup-screen t)
+
+     (setq sentence-end-double-space nil)
+
+     (tool-bar-mode 0)
+     (menu-bar-mode 0)
+     (blink-cursor-mode 0)
+
+     (setq line-number-display-limit nil)
+     (column-number-mode 1)
+
+     (setq frame-title-format "%b")
+
+     (setq save-interprogram-paste-before-kill t)
+
+     (setq global-hl-line-sticky-flag t)
+     (global-hl-line-mode 1)
+     (show-paren-mode 1)
+
+     (setq-default indent-tabs-mode nil)
+
+     (advice-add 'executable-make-buffer-file-executable-if-script-p
+                 :before-while (lambda ()
+                                 (and buffer-file-name
+                                      (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
+     (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+     (setq uniquify-buffer-name-style 'forward)
+
+     (setq require-final-newline t)
+
+     (setq load-prefer-newer t)
+   #+END_SRC
+*** Fonts
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (add-to-list 'window-system-default-frame-alist '(x . ((font . "Input-10"))))
+      (add-to-list 'window-system-default-frame-alist '(mac . ((font . "Menlo-14"))))
+    #+END_SRC
+
+    Note that I cannot set the font with set-frame-font (or its
+    deprecated cousin, set-default-font) because I use emacs in daemon
+    mode. Because the initial emacs instance doesn't have a GUI attached
+    to it, something goes horribly wrong at init time and the fonts just
+    don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's literally a
+    couple of pixels tall.
+
+    On top of that, emacs's fontconfig parsing seems to be highly
+    nonstandard. Normally, the pattern ~Foo-10~ (or equivalently
+    ~Foo:size=10~) specifies the height as 10pt, where as
+    ~Foo:pixelsize=10~ aims for a height of 10px. But in emacs,
+    ~Foo:size=10~ and ~Foo:pixelsize=10~ do the same thing. I also find
+    very different results between fc-pattern and describe-font using
+    the same pattern (eg ~fc-pattern -d Input-10 pixelsize~ reports
+    10.4167px on my current monitor, but if I use ~Input-10~ in emacs,
+    describe-font shows the pattern ~Input:pixelsize=13~).
+
+    Maybe I'm just crazy or confused. Font rendering is hard.
+*** visual-line-mode
+    visual-line-mode is a built-in mode that truncates lines at word
+    boundaries. adaptive-wrap-mode (GNU ELPA) extends it to also
+    preserve leading indentation.
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (setq-default truncate-lines t)
+      (setq visual-line-fringe-indicators '(left-curly-arrow nil))
+
+      (use-package adaptive-wrap
+        :diminish 'adaptive-wrap-prefix-mode
+        :hook (visual-line-mode . adaptive-wrap-prefix-mode))
+    #+END_SRC
+
+    I have not had positive experiences with this part of emacs:
+
+    - [[https://github.com/abo-abo/swiper/issues/227][swiper, org, and visual-line-mode]] cause some very strange issues
+      when used together
+    - apparently it doesn't like [[https://github.com/brentonk/adaptive-wrap-vp][variable-width fonts]] ([[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=15155][see also]])
+    - apparently it doesn't like [[https://gist.github.com/tsavola/6222431][hard tabs]] either
+
+
+    I consider hard-filling paragraphs to be an ugly implementation
+    detail that my editor is supposed to render irrelevant. It doesn't
+    help that auto-fill-mode is not applicable to everything I write.
+    emacs is really not doing the job here.
+*** generic-x
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package generic-x
+        :straight nil
+        :demand t
+        :custom
+        (generic-use-find-file-hook nil))
+    #+END_SRC
+*** TODO Indentation
+    You can see that I set indent-tabs-mode to nil by default. I really
+    do not like setting indentation behavior in my config. I used to
+    use [[https://github.com/tpope/vim-sleuth][vim-sleuth]] and it was magical. You never had to tell it
+    anything; it just knew what the right settings were. That's what
+    indentation configuration is supposed to feel like. I've heard that
+    [[https://github.com/jscheid/dtrt-indent][dtrt-indent]] can provide similar functionality for emacs.
+    [[https://github.com/editorconfig/editorconfig-emacs][editorconfig]] support is also applicable to this problem.
+
+    I haven't had to edit any "real" code in emacs yet, so remapping
+    org-return-indent was sufficient for me, but I'd also like to look
+    into electric-indent-mode (built-in) or [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] to
+    do this automatically.
+** [[https://github.com/emacs-evil/evil][evil]]
+   I never really became fluent in vim, but my brief experience made it
+   impossible to go back to any other editing system. The two big
+   innovations of vim were:
+
+   - separate modes for binding commands and inserting text
+   - composable operators and text objects
+
+
+   I'm not married to anything specific in vim or evil besides those
+   two principles, but nothing really comes close, and I'm not in the
+   mood to roll my own version of evil right now.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package evil
+       :demand t
+       :diminish 'undo-tree-mode
+       :custom
+       (evil-want-Y-yank-to-eol t)
+       (evil-disable-insert-state-bindings t)
+       (evil-motion-state-modes nil)
+       :config
+       (evil-mode 1)
+       :general
+       (:states '(normal visual)
+        ";" 'evil-ex
+        "s" 'save-buffer
+        "x" 'other-window
+        "r" 'universal-argument)
+       (:keymaps 'universal-argument-map
+        "r" 'universal-argument-more)
+       (private/with-leader
+        "SPC" 'execute-extended-command
+        ";" 'eval-expression
+        "f" 'find-file
+        "b" 'switch-buffer
+        "h" 'help-command)
+       (private/with-leader
+        :infix "d"
+        "" '(:wk "desktops"
+             :ignore t)
+        "h" 'split-window-vertically
+        "v" 'split-window-horizontally
+        "x" 'delete-window
+        "b" 'kill-this-buffer
+        "k" 'kill-buffer-and-window)
+       (:keymaps 'minibuffer-local-map
+        "<escape>" 'minibuffer-keyboard-quit))
+   #+END_SRC
+** [[https://github.com/justbur/emacs-which-key][which-key]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package which-key
+       :demand t
+       :diminish
+       :custom
+       (which-key-echo-keystrokes 0.01)
+       (which-key-idle-delay 0.5)
+       (which-key-idle-secondary-delay 0.01)
+       (which-key-popup-type 'minibuffer)
+       (which-key-show-prefix 'top)
+       (which-key-max-description-length nil)
+       (which-key-compute-remaps t)
+       (which-key-sort-order 'which-key-prefix-then-key-order-reverse)
+       :config
+       (which-key-mode 1))
    #+END_SRC
 
-   I have not had positive experiences with this part of emacs:
-
-   - [[https://github.com/abo-abo/swiper/issues/227][swiper, org, and visual-line-mode]] cause some very strange issues
-     when used together
-   - apparently it doesn't like [[https://github.com/brentonk/adaptive-wrap-vp][variable-width fonts]] ([[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=15155][see also]])
-   - apparently it doesn't like [[https://gist.github.com/tsavola/6222431][hard tabs]] either
-
-
-   I consider hard-filling paragraphs to be an ugly implementation
-   detail that my editor is supposed to render irrelevant. It doesn't
-   help that auto-fill-mode is not applicable to everything I write.
-   emacs is really not doing the job here.
-** generic-x
+   I could enable which-key-allow-evil-operators and
+   which-key-show-operator-states, but choose not to because the popup
+   is too large. There's just too much information in there.
+** [[https://github.com/lewang/ws-butler][ws-butler]]
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package generic-x
-       :straight nil
+     (use-package ws-butler
+       :demand t
+       :diminish
+       :custom
+       (ws-butler-keep-whitespace-before-point nil)
+       :config
+       (ws-butler-global-mode 1))
+   #+END_SRC
+** [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]], [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package ivy
+       :demand t
+       :diminish
+       :custom
+       (ivy-count-format "(%d/%d) ")
+       :config
+       (ivy-mode 1)
+       :general
+       ([remap switch-buffer] 'ivy-switch-buffer)
+       (:keymaps 'ivy-minibuffer-map
+        "<escape>" 'abort-recursive-edit)
+       (private/with-local-leader
+        :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
+        "DEL" 'ivy-occur-dispatch
+        "RET" 'ivy-occur-press-and-switch
+        "f" 'ivy-occur-press
+        "a" 'ivy-occur-read-action
+        "c" 'ivy-occur-toggle-calling
+        "d" 'ivy-occur-delete-candidate
+        "r" 'ivy-occur-revert-buffer)
+       (private/with-local-leader
+        :keymaps 'ivy-occur-grep-mode-map
+        "w" 'ivy-wgrep-change-to-wgrep-mode))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package counsel
+       :demand t
+       :diminish
+       :config
+       (counsel-mode 1))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package ivy-hydra
+       :commands (hydra-ivy/body))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package swiper
+       :general
+       (private/with-leader
+        "/" 'swiper))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package wgrep
+       :commands (wgrep-change-to-wgrep-mode)
+       :custom
+       (wgrep-auto-save-buffer t)
+       :general
+       (:keymaps 'wgrep-mode-map
+        [remap save-buffer] 'wgrep-finish-edit))
+   #+END_SRC
+*** TODO Structured Find/Replace
+    This is a big topic, but I'm just going to stick it here because
+    it's all going through ivy one way or another.
+**** swiper
+     swiper is my primary tool for structured find. It's incremental
+     (ie it shows me where I'm going before I decide to go there) and
+     ephemeral (ie if I dismiss the minibuffer it leaves no traces of
+     its presence). One useful addition would be an easy way to resume
+     the previous swiper search. ivy-resume, maybe?
+**** isearch
+     I have experimented with isearch (which is hooked into evil's ~/~
+     by default). I find it most useful as a motion - ie when I already
+     know exactly what I'm looking for with very high specificity - but
+     avy works almost as well in those situations.
+
+     I don't like using it for "searching". Jumping around with ~nN~ is
+     cumbersome, and often after a few jumps you realize that you
+     should have refined the search expression a bit more. With swiper,
+     you can just scroll the minibuffer, and if you need to narrow it
+     down, you can type in more text. I'm considering just binding
+     swiper directly to ~/~.
+**** occur/wgrep
+     I find wgrep very useful for transitioning from search to replace.
+     The key sequences are not too difficult to remember: ~C-o~ to
+     bring up hydra-ivy, ~u~ to occur, and ~DEL w~ to enable wgrep in
+     that buffer.
+**** rg
+     There's probably some argument to be made for using rg (already
+     projectile-integrated) in larger searches. We'll see where that
+     fits into the picture. I just haven't used it enough yet. I
+     believe the occur/wgrep system works just as well here as it does
+     for swiper.
+**** :s
+     For smaller find/replaces, I still use vim's trusty ~:s~. The
+     syntax of ~:s~ lets you write the find and replace halves of the
+     expression simultaneously in a very nimble way. Automatically
+     reusing the last pattern from ~/~ is also a nice feature, although
+     a bit niche. I only feel the need to do that when I'm replacing a
+     fairly complex pattern, which is usually a sign to reach for
+     another tool.
+
+     Once you start replacing a lot of stuff (more than a screenful) or
+     really complicated stuff (anything involving eval-based
+     expressions), ~:s~ becomes unpredictable and too cumbersome to use
+     off hand. It works best when its effects are transparent and
+     obvious.
+
+     Speaking of transparency, evil's live preview for ~:s~ is
+     extremely valuable. However, I've encountered some bugs with it
+     (typically when replacing leading whitespace) where the
+     preview markers don't go away after the command is done.
+
+     It probably sounds like I like ~:s~ and I'm happy with its place
+     in my workflow. For the most part, I am, but it's literally the
+     only ex command I use regularly. If I can replace it with
+     something else, that lets me completely rebind ~;:~ to other
+     commands. [[https://github.com/benma/visual-regexp.el][visual-regexp]] or [[https://github.com/zk-phi/phi-search][phi-search]]? My requirements:
+
+     - robust live preview
+     - edit find and replace sides simultaneously, ideally with similar
+       syntax to ~:s~
+     - a quick keybind to jump from find to replace or vice versa
+       (useful in longer expressions)
+     - easy integration with swiper/rg and occur/wgrep, if you realize
+       that you're biting off more than you can chew
+**** iedit/multiple-cursors
+     I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit, and I'm also interested in
+     multiple-cursors:
+
+     - [[https://github.com/victorhge/iedit][iedit]]
+     - [[https://github.com/syl20bnr/evil-iedit-state][evil-iedit-state]]
+     - [[https://github.com/hlissner/evil-multiedit][evil-multiedit]]
+     - [[https://github.com/gabesoft/evil-mc][evil-mc]]
+     - [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]]
+** [[https://github.com/bbatsov/projectile][projectile]] with [[https://github.com/ericdanan/counsel-projectile][ivy]] integration
+   I mainly use projectile for fuzzy searching an entire project's
+   files and buffers. It's quite refreshing to never think about which
+   files are "open" and which ones aren't. The concept of a "root"
+   directory is also important for things like rg searching.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package projectile
        :demand t
        :custom
-       (generic-use-find-file-hook nil))
+       (projectile-ignored-project-function
+        (lambda (project-root)
+          (or (file-remote-p project-root)
+              (string-prefix-p (straight--dir) project-root))))
+       (projectile-globally-ignored-file-suffixes '(".pdf"))
+       :config
+       (add-to-list 'safe-local-variable-values '(projectile-enable-caching . t))
+       (projectile-mode 1))
    #+END_SRC
-** TODO Indentation
-   You can see that I set indent-tabs-mode to nil by default. I really
-   do not like setting indentation behavior in my config. I used to
-   use [[https://github.com/tpope/vim-sleuth][vim-sleuth]] and it was magical. You never had to tell it
-   anything; it just knew what the right settings were. That's what
-   indentation configuration is supposed to feel like. I've heard that
-   [[https://github.com/jscheid/dtrt-indent][dtrt-indent]] can provide similar functionality for emacs.
-   [[https://github.com/editorconfig/editorconfig-emacs][editorconfig]] support is also applicable to this problem.
 
-   I haven't had to edit any "real" code in emacs yet, so remapping
-   org-return-indent was sufficient for me, but I'd also like to look
-   into electric-indent-mode (built-in) or [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] to
-   do this automatically.
-* [[https://github.com/lewang/ws-butler][ws-butler]]
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package ws-butler
-      :demand t
-      :diminish
-      :custom
-      (ws-butler-keep-whitespace-before-point nil)
-      :config
-      (ws-butler-global-mode 1))
-  #+END_SRC
-* [[https://github.com/bbatsov/projectile][projectile]] with [[https://github.com/ericdanan/counsel-projectile][ivy]] integration
-  I mainly use projectile for fuzzy searching an entire project's
-  files and buffers. It's quite refreshing to never think about which
-  files are "open" and which ones aren't. The concept of a "root"
-  directory is also important for things like rg searching.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package counsel-projectile
+       :config
+       (counsel-projectile-mode 1)
+       :general
+       (private/with-leader
+        :infix "p"
+        "" '(:wk "projectile"
+             :ignore t)
+        "f" 'counsel-projectile
+        "/" 'counsel-projectile-rg
+        "p" 'counsel-projectile-switch-project))
+   #+END_SRC
+*** TODO Creating New Files
+    The original projectile-find-file allows you to create a new file
+    if there's no match (similar to the default behavior of find-file).
+    However, counsel-projectile-find-file and counsel-projectile don't
+    let you do this; they require a match. I'd prefer to be able to
+    make new files.
+*** TODO Disambiguated Buffer/File Names
+    Suppose I have a project with two files, "foo/README" and
+    "bar/README". If I open "foo/README", it'll show up in
+    counsel-projectile as just "README", because now it's a buffer.
+    Meanwhile "bar/README" continues to show up by its full name
+    because it hasn't been opened yet.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package projectile
-      :demand t
-      :custom
-      (projectile-ignored-project-function
-       (lambda (project-root)
-         (or (file-remote-p project-root)
-             (string-prefix-p (straight--dir) project-root))))
-      (projectile-globally-ignored-file-suffixes '(".pdf"))
-      :config
-      (add-to-list 'safe-local-variable-values '(projectile-enable-caching . t))
-      (projectile-mode 1))
-  #+END_SRC
+    In my head, I know the layout of this project, so I know "README"
+    alone is an ambiguous name. If I'm looking for "foo/README", I will
+    therefore type "foo" first, and counsel-projectile will have no
+    matches.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package counsel-projectile
-      :config
-      (counsel-projectile-mode 1)
-      :general
-      (private/with-leader
-       :infix "p"
-       "" '(:wk "projectile"
-            :ignore t)
-       "f" 'counsel-projectile
-       "/" 'counsel-projectile-rg
-       "p" 'counsel-projectile-switch-project))
-  #+END_SRC
-** TODO Creating New Files
-   The original projectile-find-file allows you to create a new file
-   if there's no match (similar to the default behavior of find-file).
-   However, counsel-projectile-find-file and counsel-projectile don't
-   let you do this; they require a match. I'd prefer to be able to
-   make new files.
-** TODO Disambiguated Buffer/File Names
-   Suppose I have a project with two files, "foo/README" and
-   "bar/README". If I open "foo/README", it'll show up in
-   counsel-projectile as just "README", because now it's a buffer.
-   Meanwhile "bar/README" continues to show up by its full name
-   because it hasn't been opened yet.
+    If I open "bar/README" as well, then emacs is forced to
+    disambiguate names, which it does the way I expect
+    (uniquify-buffer-name-style). I should teach counsel-projectile how
+    to keep names unique even when some are open buffers and some
+    aren't.
 
-   In my head, I know the layout of this project, so I know "README"
-   alone is an ambiguous name. If I'm looking for "foo/README", I will
-   therefore type "foo" first, and counsel-projectile will have no
-   matches.
+    Another example of this problem: you have READMEs open in two
+    separate projects, "foo/README" and "bar/README". uniquify will do
+    its job and disambiguate the names. But now if you switch between
+    projects, you'll see a buffer named "foo/README" where you expected
+    just "README". In this case, counsel-projectile should discard
+    uniquification. Basically, inside counsel-projectile, buffer names
+    should always be based at the project root, even if uniquification
+    (or lack thereof) would display otherwise.
+** [[https://github.com/abo-abo/avy][avy]]
+   One of the unpleasant truths of vim is that, although there are
+   structured motions for everything, you're probably going to start
+   out by holding down hjkl a lot. It takes a long time for all those
+   other motions to seep into your muscle memory. avy provides a
+   command that quickly gets anywhere on the screen, regardless of how
+   the buffer is formatted. It reflects a "lazy vim" approach of using
+   cheap, general commands that you'll never have to think about.
 
-   If I open "bar/README" as well, then emacs is forced to
-   disambiguate names, which it does the way I expect
-   (uniquify-buffer-name-style). I should teach counsel-projectile how
-   to keep names unique even when some are open buffers and some
-   aren't.
+   evil actually [[https://github.com/emacs-evil/evil/blob/master/evil-integration.el][defines]] motion wrappers for avy. However, its wrappers
+   are inclusive, and I vastly prefer exclusivity for "jump to first
+   instance" motions, so I redefine them.
 
-   Another example of this problem: you have READMEs open in two
-   separate projects, "foo/README" and "bar/README". uniquify will do
-   its job and disambiguate the names. But now if you switch between
-   projects, you'll see a buffer named "foo/README" where you expected
-   just "README". In this case, counsel-projectile should discard
-   uniquification. Basically, inside counsel-projectile, buffer names
-   should always be based at the project root, even if uniquification
-   (or lack thereof) would display otherwise.
-* [[https://github.com/abo-abo/avy][avy]]
-  One of the unpleasant truths of vim is that, although there are
-  structured motions for everything, you're probably going to start
-  out by holding down hjkl a lot. It takes a long time for all those
-  other motions to seep into your muscle memory. avy provides a
-  command that quickly gets anywhere on the screen, regardless of how
-  the buffer is formatted. It reflects a "lazy vim" approach of using
-  cheap, general commands that you'll never have to think about.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package avy
+       :custom
+       (avy-all-windows nil)
+       :config
+       (defun avy-goto-char-2-esc (&optional arg beg end)
+         "Like avy-goto-char-2, but cancels the prompt if you press ESC."
+         (interactive (list current-prefix-arg nil nil))
+         (catch 'escaped
+           (let ((char1 (read-char "char 1: " t)))
+             (when (eq char1 ?\e)
+               (throw 'escaped "Quit"))
+             (let ((char2 (read-char "char 2: " t)))
+               (when (eq char2 ?\e)
+                 (throw 'escaped "Quit"))
+               (avy-goto-char-2 char1 char2 arg beg end)))))
+       (evil-define-avy-motion avy-goto-char-2 exclusive)
+       :general
+       (:states '(motion)
+        "f" 'avy-goto-char-2-esc))
+   #+END_SRC
+*** read-char ~ESC~
+    avy-goto-char-2 uses read-char to request the target characters.
+    This function is pretty low-level - it can only be cancelled with
+    ~C-g~, and does not support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps. read-key does
+    support key translations, but not the way I want: if you remap
+    ~ESC~ to ~C-g~, read-key will return 7 (the ~C-g~ keycode) instead
+    of 27 (the ~ESC~ keycode) Either way, pressing ~ESC~ doesn't
+    actually quit.
 
-  evil actually [[https://github.com/emacs-evil/evil/blob/master/evil-integration.el][defines]] motion wrappers for avy. However, its wrappers
-  are inclusive, and I vastly prefer exclusivity for "jump to first
-  instance" motions, so I redefine them.
+    I hacked around this by rolling my own version of avy-goto-char-2,
+    which checks if you pressed ~ESC~ for the prompt and bails out
+    early. I suspect this is extremely unidiomatic elisp the way I've
+    written it, but oh well. Pull requests are welcome to address my
+    atrocious lack of style.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package avy
-      :custom
-      (avy-all-windows nil)
-      :config
-      (defun avy-goto-char-2-esc (&optional arg beg end)
-        "Like avy-goto-char-2, but cancels the prompt if you press ESC."
-        (interactive (list current-prefix-arg nil nil))
-        (catch 'escaped
-          (let ((char1 (read-char "char 1: " t)))
-            (when (eq char1 ?\e)
-              (throw 'escaped "Quit"))
-            (let ((char2 (read-char "char 2: " t)))
-              (when (eq char2 ?\e)
-                (throw 'escaped "Quit"))
-              (avy-goto-char-2 char1 char2 arg beg end)))))
-      (evil-define-avy-motion avy-goto-char-2 exclusive)
-      :general
-      (:states '(motion)
-       "f" 'avy-goto-char-2-esc))
-  #+END_SRC
-** read-char ~ESC~
-   avy-goto-char-2 uses read-char to request the target characters.
-   This function is pretty low-level - it can only be cancelled with
-   ~C-g~, and does not support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps. read-key does
-   support key translations, but not the way I want: if you remap
-   ~ESC~ to ~C-g~, read-key will return 7 (the ~C-g~ keycode) instead
-   of 27 (the ~ESC~ keycode) Either way, pressing ~ESC~ doesn't
-   actually quit.
+    Note that, although pressing ~ESC~ will end the avy prompt, evil
+    still thinks that the motion completed (eg ~cf ESC~ will still go
+    into insert mode). Is there a way to signal that the motion was
+    canceled?
+*** TODO Repeat
+    One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
+    you can mash the key to go to the next or previous instance. Such
+    behavior could also be useful here. It would be something like this:
 
-   I hacked around this by rolling my own version of avy-goto-char-2,
-   which checks if you pressed ~ESC~ for the prompt and bails out
-   early. I suspect this is extremely unidiomatic elisp the way I've
-   written it, but oh well. Pull requests are welcome to address my
-   atrocious lack of style.
-
-   Note that, although pressing ~ESC~ will end the avy prompt, evil
-   still thinks that the motion completed (eg ~cf ESC~ will still go
-   into insert mode). Is there a way to signal that the motion was
-   canceled?
-** TODO Repeat
-   One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
-   you can mash the key to go to the next or previous instance. Such
-   behavior could also be useful here. It would be something like this:
-
-   - when you first press ~fF~, you get prompted for the search
-     argument (same as existing avy)
-   - the matching candidates get highlighted under a trie (same as
-     existing avy)
-   - typing the keys for that candidate jumps you to it (same as
-     existing avy)
-   - after the first jump, mashing ~fF~ takes you to the next/previous
-     instance of the same search argument
-   - the jumplist only gets updated once for the entire search chain
+    - when you first press ~fF~, you get prompted for the search
+      argument (same as existing avy)
+    - the matching candidates get highlighted under a trie (same as
+      existing avy)
+    - typing the keys for that candidate jumps you to it (same as
+      existing avy)
+    - after the first jump, mashing ~fF~ takes you to the next/previous
+      instance of the same search argument
+    - the jumplist only gets updated once for the entire search chain
 
 
-   Look into [[https://github.com/hlissner/evil-snipe][evil-snipe]], perhaps?
-* [[https://github.com/abo-abo/ace-window][ace-window]]
-  Forget obtuse up/down/left/right-based window switching. It takes up
-  a ton of binding space and it's not even the fastest way to move
-  around. ace-window lets you jump to any window with one key. You can
-  hook into it to do a lot of other window-management-related things,
-  but I use it for its barebones functionality, and it works like a
-  charm.
+    Look into [[https://github.com/hlissner/evil-snipe][evil-snipe]], perhaps?
+** [[https://github.com/abo-abo/ace-window][ace-window]]
+   Forget obtuse up/down/left/right-based window switching. It takes up
+   a ton of binding space and it's not even the fastest way to move
+   around. ace-window lets you jump to any window with one key. You can
+   hook into it to do a lot of other window-management-related things,
+   but I use it for its barebones functionality, and it works like a
+   charm.
 
-  I use a nasty hack to increase the size of the ace-window marker
-  character. You can probably do this with custom-set-faces, whose use
-  I try to avoid. Perhaps set-face-attribute would be cleaner.
+   I use a nasty hack to increase the size of the ace-window marker
+   character. You can probably do this with custom-set-faces, whose use
+   I try to avoid. Perhaps set-face-attribute would be cleaner.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package ace-window
-      :custom
-      (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-      (aw-scope 'frame)
-      :custom-face
-      (aw-leading-char-face ((t (:foreground "red"
-                                 :height 3.0))))
-      :init
-      (setq aw-dispatch-alist '((?x aw-flip-window)))
-      :general
-      ([remap other-window] 'ace-window))
-  #+END_SRC
-** TODO Dispatch
-   You can do a lot of interesting window related stuff with
-   aw-dispatch-alist, which could probably replace my entire ~SPC d~
-   leader tree. Definitely worth investigating. Integrating desktop
-   management keybinds (eg eyebrowse, see below) would also be
-   appropriate.
-* [[https://github.com/wasamasa/shackle][shackle]]
-  shackle keeps temporary windows out of the way. emacs has a nasty
-  tendency to spawn them in the first free window it can find, and if
-  you have your windows laid out just right, that's usually not what
-  you wanted. I'm used to vim's "help pops up at the bottom" approach,
-  and shackle lets me have that.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package ace-window
+       :custom
+       (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+       (aw-scope 'frame)
+       :custom-face
+       (aw-leading-char-face ((t (:foreground "red"
+                                  :height 3.0))))
+       :init
+       (setq aw-dispatch-alist '((?x aw-flip-window)))
+       :general
+       ([remap other-window] 'ace-window))
+   #+END_SRC
+*** TODO Dispatch
+    You can do a lot of interesting window related stuff with
+    aw-dispatch-alist, which could probably replace my entire ~SPC d~
+    leader tree. Definitely worth investigating. Integrating desktop
+    management keybinds (eg eyebrowse, see below) would also be
+    appropriate.
+** [[https://github.com/wasamasa/shackle][shackle]]
+   shackle keeps temporary windows out of the way. emacs has a nasty
+   tendency to spawn them in the first free window it can find, and if
+   you have your windows laid out just right, that's usually not what
+   you wanted. I'm used to vim's "help pops up at the bottom" approach,
+   and shackle lets me have that.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package shackle
-      :demand t
-      :diminish
-      :custom
-      (shackle-rules '((help-mode :select t
-                                  :popup t
-                                  :align 'below
-                                  :size 0.5)))
-      :config
-      (shackle-mode 1))
-  #+END_SRC
-* [[http://furius.ca/beancount/][beancount]]
-  The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight.el
-  doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine substitute,
-  since the mode doesn't appear to be modified often.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package shackle
+       :demand t
+       :diminish
+       :custom
+       (shackle-rules '((help-mode :select t
+                                   :popup t
+                                   :align 'below
+                                   :size 0.5)))
+       :config
+       (shackle-mode 1))
+   #+END_SRC
+* Major Modes and Filetypes
+** [[http://orgmode.org/][org]]
+   Note that straight.el will always install a fresh org-mode from
+   [[https://github.com/emacsmirror/org][emacsmirror]] (which, unlike org's ELPA, can be cloned over TLS). This
+   repository is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package beancount
-      :straight (:host github
-                 :repo "beancount/beancount"
-                 :branch "master"
-                 :files ("editors/emacs/beancount.el"))
-      :defer t
-      :mode ("\\.beancount\\'" . org-mode)
-      :custom
-      (beancount-use-ido nil)
-      :hook (org-mode . private/org-beancount)
-      :config
-      (defun private/org-beancount ()
-        (when (and buffer-file-name
-                   (string= (file-name-extension buffer-file-name) "beancount"))
-          (beancount-mode 1)
-          (set (make-local-variable 'org-adapt-indentation) nil)
-          (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
-                                                                   (plain-list-item . nil))))))
-  #+END_SRC
-** org-beancount
-   beancount-mode is actually a minor mode, and its directives can be
-   embedded in other major modes. The author of beancount uses
-   org-mode for this, probably via a file-local property (~-*- mode:
-   org; mode: beancount -*-~).
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package org
+       :custom
+       (org-M-RET-may-split-line nil)
+       (org-blank-before-new-entry '((heading . nil)
+                                     (plain-list-item . nil)))
+       (org-catch-invisible-edits 'smart)
+       (org-ellipsis "⤵")
+       (org-src-fontify-natively t)
+       (org-src-tab-acts-natively t)
+       (org-src-window-setup 'current-window)
+       (org-file-apps '(("pdf" . system)
+                        (auto-mode . emacs)
+                        (system . "xdg-open %s")
+                        (t . system)))
+       (org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
+       :hook (org-mode . private/org-agenda-file-to-back-if-new)
+       :config
+       (defun private/org-agenda-file-to-back-if-new ()
+         (when (and buffer-file-name
+                    (not (org-agenda-file-p buffer-file-name)))
+           (org-agenda-file-to-front t)))
+       (defun private/org-meta-return-before (arg)
+         (interactive "P")
+         (beginning-of-line)
+         (org-meta-return arg)
+         (evil-append nil))
+       (defun private/org-meta-return-after (arg)
+         (interactive "P")
+         (end-of-line)
+         (org-meta-return arg)
+         (evil-append nil))
+       (defun private/org-up-heading-safe ()
+         (interactive)
+         (org-up-heading-safe))
+       (defun private/org-goto-first-child ()
+         (interactive)
+         (org-goto-first-child)
+         (org-reveal))
+       (defhydra private/hydra-worf ()
+         "navigate and move org headings"
+         ("<tab>" org-cycle "cycle")
+         ("h" private/org-up-heading-safe "parent")
+         ("j" org-forward-heading-same-level "next")
+         ("k" org-backward-heading-same-level "prev")
+         ("l" private/org-goto-first-child "child"))
+       (when (and (stringp org-agenda-files)
+                  (not (file-exists-p org-agenda-files)))
+         (with-temp-buffer (write-file org-agenda-files)))
+       (advice-add 'org-element-property
+                   :after-until (lambda (property element)
+                                  (and (eq (org-element-type element) 'src-block)
+                                       (eq property :language)
+                                       "fundamental")))
+       :general
+       (:states '(insert emacs)
+        :keymaps 'org-mode-map
+        "RET" 'org-return-indent)
+       (private/with-local-leader
+        :keymaps 'org-mode-map
+        "h" '(private/hydra-worf/private/org-up-heading-safe
+              :wk "parent heading")
+        "j" '(private/hydra-worf/org-forward-heading-same-level
+              :wk "next heading")
+        "k" '(private/hydra-worf/org-backward-heading-same-level
+              :wk "prev heading")
+        "l" '(private/hydra-worf/private/org-goto-first-child
+              :wk "child heading")
+        "/" 'counsel-org-goto
+        "r" 'org-reveal
+        "e" 'org-edit-special
+        "x" 'org-export-dispatch
+        "RET" 'org-open-at-point
+        "o" 'private/org-meta-return-after
+        "O" 'private/org-meta-return-before)
+       (private/with-local-leader
+        :keymaps 'org-mode-map
+        :infix "z"
+        "" '(:wk "toggles"
+             :ignore t)
+        "h" 'org-toggle-heading
+        "i" 'org-toggle-item
+        "l" 'org-toggle-link-display)
+       (private/with-local-leader
+        :keymaps 'org-src-mode-map
+        "e" 'org-edit-src-exit))
+   #+END_SRC
 
-   I implemented similar behavior via a hook, so that I wouldn't need
-   file-specific cruft. This hook also disables indentation in
-   org-mode, which is necessary because beancount does not support
-   leading whitespace on directives. Since the file is unindented, I
-   add a blank line above each heading to make them more visible.
-** TODO Mode Improvements
-   beancount-mode is rather anemic, and there's a lot of stuff I would
-   like to improve:
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package htmlize
+       :defer t)
+   #+END_SRC
 
-   - quick key to insert the current YYYY-MM-DD
-   - fontification of comments, strings, numbers, and commodities
-   - keywords (eg open, balance, document) are fontified in comments
-     and strings, where they should be treated as regular text
-   - automatic reinitialization of accounts without having to manually
-     invoke beancount-init-accounts
-   - beancount-account-regexp does not recognize custom naming options
-     (see beancount-account-categories)
-   - shorter key sequence for beancount-insert-account
-   - clean auto align for the entire file, even for non-transaction
-     directives (bean-format can help, but it only aligns amounts)
-   - indentation should default to 2 spaces after a transaction,
-     returning to 0 after an empty line (Can we use TAB to cycle
-     between valid indentation levels? We're in org-mode...)
-   - flycheck invocation of bean-check
-* [[https://github.com/holomorph/systemd-mode][systemd]]
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package systemd
-      :defer t)
-  #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package hydra-ox
+       :straight hydra
+       :general
+       ([remap org-export-dispatch] 'hydra-ox/body))
+   #+END_SRC
+
+   Note that MELPA does not split hydra and hydra-ox into separate
+   packages, so straight.el doesn't know how to install hydra-ox. It
+   has to explicitly be told that this package comes from the hydra
+   repo. I would prefer to straight-get-recipe this, but hardcoding it
+   is basically the same thing.
+*** Navigation
+    I'm very fond of counsel-org-goto. It Just Works, which can't be
+    said for some of the things I tried in the past.
+
+    org has org-goto built-in. However, I despise org's "open another
+    buffer and fumble around in here" approach to navigation. You can
+    customize org-goto to use ivy (org-goto-interface and
+    org-outline-complete-in-steps), but I found that it choked on
+    headlines with slashes in them. Perhaps it was an ivy bug.
+
+    Rather than investigate the slashes problem with org-goto, I
+    tolerated counsel-imenu for a while. You need to futz around with
+    some variables (imenu-auto-rescan, imenu-auto-rescan-timeout) to
+    make it rescan every time you use it. The real problem is that it
+    only displays leaf-level headings, so you can't jump directly to
+    intermediate headings.
+
+    I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
+    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
+    ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
+**** TODO Out-of-Order Search
+     In my typical use of counsel-org-goto, I search for the last
+     segment of the exact heading I'm aiming for. If that isn't
+     specific enough, I end up having to backspace over my search query
+     and enter a higher-level heading first, to disambiguate. For
+     example, in a file with headings "foo/bar/baz" and "foo/qux/baz",
+     I might search for "baz", then have to backspace and search for
+     "bar baz".
+
+     The solution to this problem would be to relax matching order, so
+     that "baz bar" could match "foo/bar/baz". ivy--regex-ignore-order
+     might be perfect for this.
+*** Indentation
+    By default, plain text in org-mode is indented to match the level
+    of the headline. This is controlled by org-adapt-indentation,
+    org-cycle-emulate-tab, and my binding of org-return-indent.
+
+    I actually like the indentation, because it helps distinguish
+    headlines (you can scan the left edge of the buffer to locate
+    them). It also increases the vertical density of my org files,
+    since I don't need empty lines (org-blank-before-new-entry) or
+    larger fonts to make the headlines stand out. I do disable the
+    indentation for beancount buffers; see below.
+*** org-src Default Language
+    I want to use fundamental-mode in org-src blocks that have no
+    language, but there is no supported way to set a [[https://emacs.stackexchange.com/q/8314][default language]]
+    for org-src blocks. However, you can hack it in by advising
+    org-element-property. If org-element-property returns nil for an
+    org-src block's language, this advice will treat the block's
+    language as fundamental instead.
+*** TODO [[https://github.com/abo-abo/ace-link][ace-link]]/[[https://github.com/noctuid/link-hint.el][link-hint]]
+    A more powerful alternative to org-open-at-point. This should open
+    the link at point (if any), and otherwise select one avy-style.
+    Note that org-return-follows-link doesn't work in evil normal
+    state.
+*** TODO [[https://github.com/abo-abo/worf][worf]] Tree Mutation
+    It's fine to use counsel-org-goto for large jumps, but for shorter
+    movements, it's much faster to go up or down headings. worf has an
+    especially elegant way of combining navigation and mutation of org
+    trees. Unfortunately it doesn't play nice with evil.
+
+    One important caveat of any up/down heading navigation is that it
+    tends to pollute the jumplist. Ideally, you want to "enter" heading
+    navigation mode, jump around headings freely, and add to the
+    jumplist when you "exit" heading navigation mode. I used to have a
+    hydra for this, and might rebuild it.
+
+    Some considerations for this development:
+
+    - movements:
+      - next heading:
+        - any level:
+          - org-next-visible-heading
+          - outline-next-visible-heading
+          - outline-next-heading
+        - same level:
+          - org-forward-heading-same-level
+          - outline-forward-same-level
+          - org-get-next-sibling
+          - outline-get-next-sibling
+          - org-goto-sibling
+      - previous heading:
+        - any level:
+          - org-previous-visible-heading
+          - outline-previous-visible-heading
+          - outline-previous-heading
+        - same level (note that, if we're not on a heading, we want to
+          back up to the current heading, not the one before it):
+          - org-backward-heading-same-level: skips past current heading
+          - outline-backward-same-level: same problem as
+            org-backward-heading-same-level
+          - org-get-last-sibling: doesn't actually restrict point to
+            same-level headings (it returns nil but the point still
+            moves, which is almost definitely a bug)
+          - outline-get-last-sibling: same problem as
+            org-get-last-sibling
+          - org-goto-sibling: same problem as
+            org-backward-heading-same-level
+      - parent:
+        - org-up-heading-safe
+        - org-up-heading-all
+        - outline-up-heading
+      - child:
+        - org-goto-first-child
+    - change:
+      - item:
+        | ITEM    | org-metaleft          | org-metadown          | org-metaup          | org-metaright         |
+        |---------+-----------------------+-----------------------+---------------------+-----------------------|
+        | heading | org-do-promote        | org-move-subtree-down | org-move-subtree-up | org-do-demote         |
+        | list    | org-outdent-item      | org-move-item-down    | org-move-item-up    | org-indent-item       |
+        | table   | org-table-move-column | org-table-move-row    | org-table-move-row  | org-table-move-column |
+      - tree:
+        | TREE    | org-shiftmetaleft       | org-shiftmetadown     | org-shiftmetaup        | org-shiftmetaright      |
+        |---------+-------------------------+-----------------------+------------------------+-------------------------|
+        | heading | org-promote-subtree     | org-drag-line-forward | org-drag-line-backward | org-demote-subtree      |
+        | list    | org-outdent-item-tree   | org-drag-line-forward | org-drag-line-backward | org-indent-item-tree    |
+        | table   | org-table-delete-column | org-table-insert-row  | org-table-kill-row     | org-table-insert-column |
+    - Can we use the [[https://github.com/abo-abo/hydra/commit/763bb2a423c829dc145188718dcf9ee47480ed0a][:bind lambda]] to build bindings to the heads with
+      general (lambda gets invoked [[https://github.com/abo-abo/hydra/blob/master/hydra.el#L1302][here]]? Or do we have to manually bind
+      each head in private/with-local-leader?
+    - We should have a toggle in the hydra to allow moving to invisible
+      headings, which should default to off.
+    - Should we also operate on lists? org-previous-item and
+      org-next-item can navigate up/down, but they put the cursor in a
+      stupid position. There doesn't appear to be a way to navigate
+      up/down levels of a list. In addition, org-next-item does nothing
+      unless you're already in a list. We may need to resort to
+      [[http://orgmode.org/worg/dev/org-syntax.html][parsing]].
+    - Similarly, support for tables would also be interesting, but
+      there don't appear to be good ways to jump "into" a table.
+    - We should print a message to the minibuffer if we try to move
+      past the end of a direction. [[https://emacs.stackexchange.com/a/11024][save-excursion]] might help for this.
+**** Target UX
+     - heading state (default)
+       - ~hjkl~ (available outside hydra) :: parent heading, down same
+            level, up same level, child heading
+       - ~v~ :: radio toggle between three states: always move to
+                invisible, never move to invisible, only move to
+                invisible if there is none visible (default)
+       - ~<tab>~ :: org-cycle
+       - ~c~ :: enter heading change state
+         - ~jk~ :: move subtree down, move subtree up
+         - ~hl~ :: promote subtree, demote subtree
+         - ~HL~ :: promote heading, demote heading
+         - ~q~ :: go back to heading state
+       - ~i~ (available outside hydra) :: enter list state
+         - ~hjkl~ :: superlist, down same level, up same level, sublist
+         - ~v~ :: radio toggle to enable moving to (and revealing)
+                  invisible items (default off)
+         - ~<tab>~ :: org-cycle
+         - ~q~ :: go back to heading state
+         - ~c~ :: enter list change state
+           - ~jk~ :: move item tree down, move item tree up
+           - ~hl~ :: outdent item tree, indent item tree
+           - ~HL~ :: outdent item, indent item
+           - ~q~ :: go back to list state
+       - ~t~ (available outside hydra) :: enter table state
+         - ~hjkl~ :: left cell, down cell, up cell, right cell
+         - ~q~ :: go back to heading state
+         - ~c~ :: enter table change state
+           - ~jk~ :: move row down, move row up
+           - ~hl~ :: move column left, move column right
+           - ~JK~ :: insert row, delete row
+           - ~HL~ :: delete column, insert column
+           - ~q~ :: go back to table state
+*** TODO Completion
+    I hate typing out org keywords (~#+BEGIN_SRC~, etc) by hand. You
+    can type them in lowercase (which I should really start doing), but
+    even better would be autocomplete for them. Autocompletion is
+    unfortunately a TODO in its own right, but perhaps we can hack up
+    an interim solution with ivy.
+*** TODO org-agenda
+    org-agenda is a large key tree that spawns a buffer just for
+    prompts. We could replace the prompts with which-key, but
+    org-agenda has some additional features. In particular, you can
+    press ~<>~ multiple times within an org-agenda buffer to adjust the
+    restriction level. This persistent binding would require a hydra to
+    replicate. Alternatively, we could approximate it with just a plain
+    key tree, which would probably be easier.
+
+    The basic key tree is implemented in
+    org-agenda-get-restriction-and-command. Note that org-agenda has a
+    bunch of custom command functionality as well
+    (org-agenda-custom-commands) and we have to decide how much of that
+    we want to implement. defhydradio can help us with the persistent
+    parts (~<>~), as it does in hydra-ox.
+** [[https://github.com/jrblevin/markdown-mode][Markdown]]
+   While I prefer working in org-mode, sometimes you have to write
+   markup that other people can edit, and org-mode is really not usable
+   in any editor but emacs. In those situations, Markdown is basically
+   inevitable.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package markdown-mode
+       :mode ("\\.md\\'" . markdown-mode)
+       :custom
+       (markdown-hide-urls t)
+       :hook (markdown-mode . visual-line-mode))
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package edit-indirect
+       :defer t)
+   #+END_SRC
+** [[http://furius.ca/beancount/][beancount]]
+   The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight.el
+   doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine substitute,
+   since the mode doesn't appear to be modified often.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package beancount
+       :straight (:host github
+                  :repo "beancount/beancount"
+                  :branch "master"
+                  :files ("editors/emacs/beancount.el"))
+       :defer t
+       :mode ("\\.beancount\\'" . org-mode)
+       :custom
+       (beancount-use-ido nil)
+       :hook (org-mode . private/org-beancount)
+       :config
+       (defun private/org-beancount ()
+         (when (and buffer-file-name
+                    (string= (file-name-extension buffer-file-name) "beancount"))
+           (beancount-mode 1)
+           (set (make-local-variable 'org-adapt-indentation) nil)
+           (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
+                                                                    (plain-list-item . nil))))))
+   #+END_SRC
+*** org-beancount
+    beancount-mode is actually a minor mode, and its directives can be
+    embedded in other major modes. The author of beancount uses
+    org-mode for this, probably via a file-local property (~-*- mode:
+    org; mode: beancount -*-~).
+
+    I implemented similar behavior via a hook, so that I wouldn't need
+    file-specific cruft. This hook also disables indentation in
+    org-mode, which is necessary because beancount does not support
+    leading whitespace on directives. Since the file is unindented, I
+    add a blank line above each heading to make them more visible.
+*** TODO Mode Improvements
+    beancount-mode is rather anemic, and there's a lot of stuff I would
+    like to improve:
+
+    - quick key to insert the current YYYY-MM-DD
+    - fontification of comments, strings, numbers, and commodities
+    - keywords (eg open, balance, document) are fontified in comments
+      and strings, where they should be treated as regular text
+    - automatic reinitialization of accounts without having to manually
+      invoke beancount-init-accounts
+    - beancount-account-regexp does not recognize custom naming options
+      (see beancount-account-categories)
+    - shorter key sequence for beancount-insert-account
+    - clean auto align for the entire file, even for non-transaction
+      directives (bean-format can help, but it only aligns amounts)
+    - indentation should default to 2 spaces after a transaction,
+      returning to 0 after an empty line (Can we use TAB to cycle
+      between valid indentation levels? We're in org-mode...)
+    - flycheck invocation of bean-check
+** [[https://github.com/holomorph/systemd-mode][systemd]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package systemd
+       :defer t)
+   #+END_SRC
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
@@ -1012,10 +1015,6 @@
     [[https://github.com/dgutov/robe][robe]].
 *** TODO Go
     See [[https://github.com/dominikh/go-mode.el][go-mode]] (unmaintained?) and [[https://github.com/nsf/gocode/tree/master/emacs-company][company-go]].
-** TODO Better Heading Tree
-   This file is manageable thanks to org-mode, but the heading
-   organization is rather haphazard. In particular, we should separate
-   type-specific major modes from other packages.
 ** TODO Modeline and Frame Title
    I'm pretty happy with the built-in emacs modeline in terms of
    information, but it doesn't look flattering. Could use some
