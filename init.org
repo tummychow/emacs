@@ -759,6 +759,7 @@
              (string-prefix-p (straight--dir) project-root))))
       (projectile-globally-ignored-file-suffixes '(".pdf"))
       :config
+      (add-to-list 'safe-local-variable-values '(projectile-enable-caching . t))
       (projectile-mode 1))
   #+END_SRC
 
