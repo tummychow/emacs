@@ -116,7 +116,7 @@
       (which-key-compute-remaps t)
       (which-key-sort-order 'which-key-prefix-then-key-order-reverse)
       :config
-      (which-key-mode t))
+      (which-key-mode 1))
   #+END_SRC
 
   I could enable which-key-allow-evil-operators and
@@ -144,7 +144,7 @@
       (evil-disable-insert-state-bindings t)
       (evil-motion-state-modes nil)
       :config
-      (evil-mode t)
+      (evil-mode 1)
       :general
       (:states '(normal visual)
        ";" 'evil-ex
@@ -179,7 +179,7 @@
       :custom
       (ivy-count-format "(%d/%d) ")
       :config
-      (ivy-mode t)
+      (ivy-mode 1)
       :general
       ([remap switch-buffer] 'ivy-switch-buffer)
       (:keymaps 'ivy-minibuffer-map
@@ -203,7 +203,7 @@
       :demand t
       :diminish
       :config
-      (counsel-mode t))
+      (counsel-mode 1))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -636,15 +636,15 @@
     (setq tool-bar-mode nil)
 
     (setq line-number-display-limit nil)
-    (column-number-mode t)
+    (column-number-mode 1)
 
     (setq frame-title-format "%b")
 
     (setq save-interprogram-paste-before-kill t)
 
     (setq global-hl-line-sticky-flag t)
-    (global-hl-line-mode t)
-    (show-paren-mode t)
+    (global-hl-line-mode 1)
+    (show-paren-mode 1)
 
     (setq-default indent-tabs-mode nil)
 
@@ -738,7 +738,7 @@
       :custom
       (ws-butler-keep-whitespace-before-point nil)
       :config
-      (ws-butler-global-mode t))
+      (ws-butler-global-mode 1))
   #+END_SRC
 * [[https://github.com/bbatsov/projectile][projectile]] with [[https://github.com/ericdanan/counsel-projectile][ivy]] integration
   I mainly use projectile for fuzzy searching an entire project's
@@ -756,13 +756,13 @@
              (string-prefix-p (straight--dir) project-root))))
       (projectile-globally-ignored-file-suffixes '(".pdf"))
       :config
-      (projectile-mode t))
+      (projectile-mode 1))
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package counsel-projectile
       :config
-      (counsel-projectile-mode t)
+      (counsel-projectile-mode 1)
       :general
       (private/with-leader
        :infix "p"
@@ -922,7 +922,7 @@
                                   :align 'below
                                   :size 0.5)))
       :config
-      (shackle-mode t))
+      (shackle-mode 1))
   #+END_SRC
 * [[http://furius.ca/beancount/][beancount]]
   The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight.el
@@ -944,7 +944,7 @@
       (defun private/org-beancount ()
         (when (and buffer-file-name
                    (string= (file-name-extension buffer-file-name) "beancount"))
-          (beancount-mode t)
+          (beancount-mode 1)
           (set (make-local-variable 'org-adapt-indentation) nil)
           (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
                                                                    (plain-list-item . nil))))))
