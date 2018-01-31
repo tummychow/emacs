@@ -664,7 +664,8 @@
   #+END_SRC
 ** Fonts
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'default-frame-alist '(font . "Input-10"))
+     (add-to-list 'window-system-default-frame-alist '(x . ((font . "Input-10"))))
+     (add-to-list 'window-system-default-frame-alist '(mac . ((font . "Menlo-14"))))
    #+END_SRC
 
    Note that I cannot set the font with set-frame-font (or its
