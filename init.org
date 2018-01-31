@@ -629,11 +629,13 @@
 
     (setq initial-major-mode 'org-mode)
     (setq initial-scratch-message nil)
+    (setq inhibit-startup-screen t)
 
     (setq sentence-end-double-space nil)
 
-    (setq menu-bar-mode nil)
-    (setq tool-bar-mode nil)
+    (tool-bar-mode 0)
+    (menu-bar-mode 0)
+    (blink-cursor-mode 0)
 
     (setq line-number-display-limit nil)
     (column-number-mode 1)
