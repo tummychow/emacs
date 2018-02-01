@@ -447,6 +447,7 @@
           (or (file-remote-p project-root)
               (string-prefix-p (straight--dir) project-root))))
        (projectile-globally-ignored-file-suffixes '(".pdf"))
+       (projectile-globally-unignored-files '(".projectile" ".dir-locals.el"))
        :config
        (add-to-list 'safe-local-variable-values '(projectile-enable-caching . t))
        (projectile-mode 1))
