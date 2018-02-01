@@ -11,6 +11,7 @@
  ("epkgs" . "f827e97d00bdb54748975ca9ab38f3d4abe62b7e")
  ("epl" . "83797835f729f39b80acba4c7e83d73a2e410e26")
  ("evil" . "3475b3260c290e5ea5e45d9bfc89005c06846152")
+ ("exec-path-from-shell" . "5e355fbc50913d1ffe48bf86df0bcecd8b369ffb")
  ("general.el" . "846ca8c4727e919bc5440a9e787e1d14b8b5aaa0")
  ("goto-chg" . "81fca94d2592cf32bab451c39a9cd2d9b03fbd6b")
  ("hydra" . "1deed8a00e6936903cace1dac123364b6c0cde90")

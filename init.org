@@ -103,6 +103,17 @@
      (use-package hydra
        :defer t)
    #+END_SRC
+** [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package exec-path-from-shell
+       :if (eq system-type 'darwin)
+       :custom
+       (exec-path-from-shell-check-startup-files nil)
+       :config
+       (exec-path-from-shell-initialize))
+   #+END_SRC
+
+   Thanks, Apple. This atrocious hack is dedicated to you.
 * UI Core
 ** Built-ins
    This is for built-in emacs miscellany that I want to reconfigure or
