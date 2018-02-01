@@ -460,7 +460,7 @@
        (projectile-globally-ignored-file-suffixes '(".pdf"))
        (projectile-globally-unignored-files '(".projectile" ".dir-locals.el"))
        :config
-       (put 'projectile-enable-caching 'safe-local-variable (symbol-function 'booleanp))
+       (put 'projectile-enable-caching 'safe-local-variable 'booleanp)
        (projectile-mode 1))
    #+END_SRC
 
