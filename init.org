@@ -629,6 +629,34 @@
        :config
        (shackle-mode 1))
    #+END_SRC
+** [[https://github.com/flycheck/flycheck][Flycheck]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package flycheck
+       :demand t
+       :init
+       (add-hook 'org-src-mode-hook (lambda () (flycheck-mode 0)))
+       :config
+       (global-flycheck-mode 1)
+       :general
+       (private/with-leader
+        :infix "y"
+        "" '(:wk "flycheck"
+             :ignore t)
+        "c" 'flycheck-buffer
+        "C" 'flycheck-clear
+        "v" 'flycheck-verify-setup
+        "RET" 'flycheck-explain-error-at-point
+        "r" 'flycheck-display-error-at-point
+        "y" 'flycheck-copy-errors-as-kill
+        "j" 'flycheck-next-error
+        "k" 'flycheck-previous-error
+        "l" 'flycheck-list-errors))
+   #+END_SRC
+
+   Unfortunately, there's no good way to run Flycheck across a tangled
+   file when editing just one of the many blocks in that file. This
+   leads to Flycheck getting very confused, so I turn it off in that
+   context only.
 * Major Modes and Filetypes
 ** [[http://orgmode.org/][org]]
    Note that straight.el will always install a fresh org-mode from
