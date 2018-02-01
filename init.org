@@ -466,6 +466,7 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package counsel-projectile
+       :demand t
        :config
        (counsel-projectile-mode 1)
        :general
@@ -477,6 +478,12 @@
         "/" 'counsel-projectile-rg
         "p" 'counsel-projectile-switch-project))
    #+END_SRC
+
+   Demanding projectile causes its autoloaded functions to be bound
+   under the ~C-c p~ prefix. However, if counsel-projectile hasn't
+   been loaded yet, the functions under that prefix will be
+   un-counseled versions (because counsel-projectile-mode hasn't run).
+   I fix this problem by demanding both packages up front.
 *** TODO Creating New Files
     The original projectile-find-file allows you to create a new file
     if there's no match (similar to the default behavior of find-file).
