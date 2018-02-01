@@ -643,6 +643,8 @@
        :init
        (add-hook 'org-src-mode-hook (lambda () (flycheck-mode 0)))
        :config
+       (put 'flycheck-ruby-executable 'safe-local-variable 'stringp)
+       (put 'flycheck-ruby-rubocop-executable 'safe-local-variable 'stringp)
        (global-flycheck-mode 1)
        :general
        (private/with-leader
