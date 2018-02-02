@@ -1041,6 +1041,20 @@
      (use-package systemd
        :defer t)
    #+END_SRC
+** [[https://github.com/yoshiki/yaml-mode][YAML]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package yaml-mode
+       :defer t)
+   #+END_SRC
+
+   The docs for this mode mention that you have to bind ~RET~ yourself
+   if you want auto-indenting, but evil-mode seems to have me covered
+   there.
+
+   Frankly, this mode is not very good, but that's not its fault. It's
+   just that YAML is [[https://github.com/tummychow/typhon/blob/master/STYLE.md][incredibly difficult to parse correctly]]. This
+   leads to some [[https://github.com/yoshiki/yaml-mode/issues/20][delightful bugs]] which are probably never going to be
+   fixed.
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/.emacs.d/
@@ -1051,8 +1065,6 @@
    on this subject.
 *** TODO epub
     See [[https://github.com/wasamasa/nov.el][nov.el]].
-*** TODO YAML
-    See [[https://github.com/yoshiki/yaml-mode][yaml-mode]].
 *** TODO Bash
     See [[https://github.com/Alexander-Miller/company-shell][company-shell]].
 *** TODO Python

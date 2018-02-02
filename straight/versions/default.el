@@ -29,5 +29,6 @@
  ("systemd-mode" . "22f024fe8f433af7b6a6b99520cea1e766894fe5")
  ("undo-tree" . "e9a9102f515acd7523158f20e83f300600374989")
  ("use-package" . "5a50f6703140992723a434b9a733644bfab15306")
- ("ws-butler" . "80dabd5d158929e8433e46207bb521282b21e4f3"))
+ ("ws-butler" . "80dabd5d158929e8433e46207bb521282b21e4f3")
+ ("yaml-mode" . "28c34033194130d452d5c958b5241c88d42ca02b"))
 :jupiter
