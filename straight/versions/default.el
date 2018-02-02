@@ -3,7 +3,7 @@
  ("adaptive-wrap" . "b17b789221eacc75cb610093e44795efd1c6b3a8")
  ("avy" . "6459f7f12aef1e71ff5e265b1edb414fd81123e6")
  ("beancount" . "c67f9b22973f032080f20f6ca42d39b74cfae8db")
- ("counsel-projectile" . "d68af72c9ee399fbf85e88f66127d9e4b175886d")
+ ("counsel-projectile" . "7817fe8895eda0236f06abeb53eaf8e1e5b3b8ce")
  ("dash.el" . "c1991d4c22f356be21df6b3badd7233a94df7937")
  ("diminish.el" . "565a983a39d2e2cffab5df13b34f3b6116723208")
  ("edit-indirect" . "032ac0ec690d4999d564fd882588c7a197efe8dd")
