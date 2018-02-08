@@ -164,10 +164,10 @@
    #+END_SRC
 *** Fonts
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (cond ((eq window-system 'x)
+      (cond ((eq system-type 'gnu/linux)
              (set-face-attribute 'default nil :family "Input"
                                               :height 100))
-            ((eq window-system 'mac)
+            ((eq system-type 'darwin)
              (set-face-attribute 'default nil :family "Menlo"
                                               :height 140)))
       (set-face-attribute 'fixed-pitch nil :family 'unspecified
@@ -181,7 +181,9 @@
       initial emacs instance doesn't have a GUI attached to it,
       something goes horribly wrong at init time and the fonts just
       don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's
-      literally a couple of pixels tall.
+      literally a couple of pixels tall. By the way, this is also true
+      for terminal-local variables like window-system, which are not
+      set at daemon initialization time.
     - default-frame-alist and window-system-default-frame-alist
       provide an alist with a font key, which lets you specify a
       string to use as the default font. However, emacs faces are
