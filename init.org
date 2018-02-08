@@ -667,9 +667,9 @@
    context only.
 * Major Modes and Filetypes
 ** [[http://orgmode.org/][org]]
-   Note that straight.el will always install a fresh org-mode from
-   [[https://github.com/emacsmirror/org][emacsmirror]] (which, unlike org's ELPA, can be cloned over TLS). This
-   repository is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
+   Note that straight.el will always clone a fresh org-mode from their
+   [[https://code.orgmode.org/bzg/org-mode][git repository]], which is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]]
+   support.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package org
