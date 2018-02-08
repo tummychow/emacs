@@ -164,28 +164,53 @@
    #+END_SRC
 *** Fonts
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (add-to-list 'window-system-default-frame-alist '(x . ((font . "Input-10"))))
-      (add-to-list 'window-system-default-frame-alist '(mac . ((font . "Menlo-14"))))
+      (cond ((eq window-system 'x)
+             (set-face-attribute 'default nil :family "Input"
+                                              :height 100))
+            ((eq window-system 'mac)
+             (set-face-attribute 'default nil :family "Menlo"
+                                              :height 140)))
+      (set-face-attribute 'fixed-pitch nil :family 'unspecified
+                                           :inherit 'default)
     #+END_SRC
 
-    Note that I cannot set the font with set-frame-font (or its
-    deprecated cousin, set-default-font) because I use emacs in daemon
-    mode. Because the initial emacs instance doesn't have a GUI attached
-    to it, something goes horribly wrong at init time and the fonts just
-    don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's literally a
-    couple of pixels tall.
+    I have tried many techniques to configure emacs faces:
 
-    On top of that, emacs's fontconfig parsing seems to be highly
-    nonstandard. Normally, the pattern ~Foo-10~ (or equivalently
-    ~Foo:size=10~) specifies the height as 10pt, where as
-    ~Foo:pixelsize=10~ aims for a height of 10px. But in emacs,
-    ~Foo:size=10~ and ~Foo:pixelsize=10~ do the same thing. I also find
-    very different results between fc-pattern and describe-font using
-    the same pattern (eg ~fc-pattern -d Input-10 pixelsize~ reports
-    10.4167px on my current monitor, but if I use ~Input-10~ in emacs,
-    describe-font shows the pattern ~Input:pixelsize=13~).
+    - set-frame-font (or its deprecated cousin, set-default-font) are
+      horribly broken if you use emacs in daemon mode. Because the
+      initial emacs instance doesn't have a GUI attached to it,
+      something goes horribly wrong at init time and the fonts just
+      don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's
+      literally a couple of pixels tall.
+    - default-frame-alist and window-system-default-frame-alist
+      provide an alist with a font key, which lets you specify a
+      string to use as the default font. However, emacs faces are
+      quite a bit more complicated than that. On top of that, emacs's
+      fontconfig parsing seems to be highly nonstandard. Normally, the
+      pattern ~Foo-10~ (or equivalently ~Foo:size=10~) specifies the
+      height as 10pt, where as ~Foo:pixelsize=10~ aims for a height of
+      10px. But in emacs, ~Foo:size=10~ and ~Foo:pixelsize=10~ do the
+      same thing. I also find very different results between
+      fc-pattern and describe-font using the same pattern (eg
+      ~fc-pattern -d Input-10 pixelsize~ reports 10.4167px on my
+      current monitor, but if I use ~Input-10~ in emacs, describe-font
+      shows the pattern ~Input:pixelsize=13~).
+    - face-spec-set lets you dig into the innards of an emacs face,
+      but you have to specify the whole thing from start to finish. An
+      emacs face actually has several layered attributes, and you
+      probably don't want to rewrite all of them just to change one or
+      two.
+    - custom-set-faces hooks into the Customize interface, which is
+      the blessed high-level approach. However, Customize works by
+      mutating your init file, which is not great if you're an
+      opinionated version control user.
 
-    Maybe I'm just crazy or confused. Font rendering is hard.
+
+    After all of the above, I have settled on set-face-attribute for
+    global faces. It lets me twiddle any individual part of any face
+    without going through Customize. For package-specific faces,
+    use-package offers the ~:custom-face~ keyword, which goes through
+    Customize while avoiding its major downside.
 *** visual-line-mode
     visual-line-mode is a built-in mode that truncates lines at word
     boundaries. adaptive-wrap-mode (GNU ELPA) extends it to also
