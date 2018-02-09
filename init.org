@@ -1133,6 +1133,13 @@
 ** TODO More File Types
    Spacemacs layers for [[https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang][various languages]] can give us useful direction
    on this subject.
+*** TODO LSP
+    The Language Server Protocol gives me hope that my editor will
+    stop being completely terrible some day. A list of implementations
+    can be found [[https://github.com/Microsoft/language-server-protocol/blob/gh-pages/_implementors/servers.md][here]].
+
+    - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+    - [[https://github.com/tigersoldier/company-lsp][company-lsp]]
 *** TODO epub
     See [[https://github.com/wasamasa/nov.el][nov.el]].
 *** TODO Bash
