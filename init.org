@@ -697,7 +697,9 @@
    Unfortunately, there's no good way to run Flycheck across a tangled
    file when editing just one of the many blocks in that file. This
    leads to Flycheck getting very confused, so I turn it off in that
-   context only.
+   context only. Note that you do need a hook for this, because
+   ~flycheck-global-modes~ only checks major modes and ~org-src-mode~
+   is a minor mode.
 * Major Modes and Filetypes
 ** [[http://orgmode.org/][org]]
    straight will install a full clone of org's [[https://code.orgmode.org/bzg/org-mode][git repository]], which
