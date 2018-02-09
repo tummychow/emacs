@@ -282,6 +282,12 @@
    mood to roll my own version of evil right now.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package undo-tree
+       :defer t
+       :diminish)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package evil
        :custom
        (evil-want-Y-yank-to-eol t)
@@ -314,8 +320,7 @@
         "<escape>" 'minibuffer-keyboard-quit)
        :demand t
        :config
-       (evil-mode 1)
-       :diminish 'undo-tree-mode)
+       (evil-mode 1))
    #+END_SRC
 ** [[https://github.com/justbur/emacs-which-key][which-key]]
    #+BEGIN_SRC emacs-lisp :tangle yes
