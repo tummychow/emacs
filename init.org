@@ -93,13 +93,16 @@
      (use-package general
        :demand t
        :config
+       (general-override-mode 1)
        (general-create-definer private/with-leader
                                :prefix "SPC"
                                :non-normal-prefix "M-SPC"
+                               :keymaps 'override
                                :states '(normal visual insert emacs))
        (general-create-definer private/with-local-leader
                                :prefix "DEL"
                                :non-normal-prefix "M-DEL"
+                               :keymaps 'override
                                :states '(normal visual insert emacs)))
    #+END_SRC
 ** [[https://github.com/abo-abo/hydra][hydra]]
