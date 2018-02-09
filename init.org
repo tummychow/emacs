@@ -297,7 +297,8 @@
        (evil-disable-insert-state-bindings t)
        (evil-motion-state-modes nil)
        :general
-       (:states '(normal visual)
+       (:keymaps 'override
+        :states '(normal visual)
         ";" 'evil-ex
         "s" 'save-buffer
         "x" 'other-window
