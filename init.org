@@ -231,8 +231,8 @@
       (setq visual-line-fringe-indicators '(left-curly-arrow nil))
 
       (use-package adaptive-wrap
-        :diminish 'adaptive-wrap-prefix-mode
-        :hook (visual-line-mode . adaptive-wrap-prefix-mode))
+        :hook (visual-line-mode . adaptive-wrap-prefix-mode)
+        :diminish 'adaptive-wrap-prefix-mode)
     #+END_SRC
 
     I have not had positive experiences with this part of emacs:
@@ -251,9 +251,9 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package generic-x
         :straight nil
-        :demand t
         :custom
-        (generic-use-find-file-hook nil))
+        (generic-use-find-file-hook nil)
+        :demand t)
     #+END_SRC
 *** TODO Indentation
     You can see that I set indent-tabs-mode to nil by default. I really
@@ -283,14 +283,10 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package evil
-       :demand t
-       :diminish 'undo-tree-mode
        :custom
        (evil-want-Y-yank-to-eol t)
        (evil-disable-insert-state-bindings t)
        (evil-motion-state-modes nil)
-       :config
-       (evil-mode 1)
        :general
        (:states '(normal visual)
         ";" 'evil-ex
@@ -315,13 +311,15 @@
         "b" 'kill-this-buffer
         "k" 'kill-buffer-and-window)
        (:keymaps 'minibuffer-local-map
-        "<escape>" 'minibuffer-keyboard-quit))
+        "<escape>" 'minibuffer-keyboard-quit)
+       :demand t
+       :config
+       (evil-mode 1)
+       :diminish 'undo-tree-mode)
    #+END_SRC
 ** [[https://github.com/justbur/emacs-which-key][which-key]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package which-key
-       :demand t
-       :diminish
        :custom
        (which-key-echo-keystrokes 0.01)
        (which-key-idle-delay 0.5)
@@ -331,8 +329,10 @@
        (which-key-max-description-length nil)
        (which-key-compute-remaps t)
        (which-key-sort-order 'which-key-prefix-then-key-order-reverse)
+       :demand t
        :config
-       (which-key-mode 1))
+       (which-key-mode 1)
+       :diminish)
    #+END_SRC
 
    I could enable ~which-key-allow-evil-operators~ and
@@ -341,22 +341,18 @@
 ** [[https://github.com/lewang/ws-butler][ws-butler]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package ws-butler
-       :demand t
-       :diminish
        :custom
        (ws-butler-keep-whitespace-before-point nil)
+       :demand t
        :config
-       (ws-butler-global-mode 1))
+       (ws-butler-global-mode 1)
+       :diminish)
    #+END_SRC
 ** [[https://github.com/abo-abo/swiper][ivy, counsel, swiper]], [[https://github.com/mhayashi1120/Emacs-wgrep][wgrep]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package ivy
-       :demand t
-       :diminish
        :custom
        (ivy-count-format "(%d/%d) ")
-       :config
-       (ivy-mode 1)
        :general
        ([remap switch-buffer] 'ivy-switch-buffer)
        (:keymaps 'ivy-minibuffer-map
@@ -372,15 +368,19 @@
         "r" 'ivy-occur-revert-buffer)
        (private/with-local-leader
         :keymaps 'ivy-occur-grep-mode-map
-        "w" 'ivy-wgrep-change-to-wgrep-mode))
+        "w" 'ivy-wgrep-change-to-wgrep-mode)
+       :demand t
+       :config
+       (ivy-mode 1)
+       :diminish)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package counsel
        :demand t
-       :diminish
        :config
-       (counsel-mode 1))
+       (counsel-mode 1)
+       :diminish)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -397,12 +397,12 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package wgrep
-       :commands (wgrep-change-to-wgrep-mode)
        :custom
        (wgrep-auto-save-buffer t)
        :general
        (:keymaps 'wgrep-mode-map
-        [remap save-buffer] 'wgrep-finish-edit))
+        [remap save-buffer] 'wgrep-finish-edit)
+       :commands (wgrep-change-to-wgrep-mode))
    #+END_SRC
 *** TODO Structured Find/Replace
     This is a big topic, but I'm just going to stick it here because
@@ -486,7 +486,6 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package projectile
-       :demand t
        :custom
        (projectile-ignored-project-function
         (lambda (project-root)
@@ -494,6 +493,7 @@
               (string-prefix-p (straight--dir) project-root))))
        (projectile-globally-ignored-file-suffixes '(".pdf"))
        (projectile-globally-unignored-files '(".projectile" ".dir-locals.el"))
+       :demand t
        :config
        (put 'projectile-enable-caching 'safe-local-variable 'booleanp)
        (projectile-mode 1))
@@ -501,9 +501,6 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package counsel-projectile
-       :demand t
-       :config
-       (counsel-projectile-mode 1)
        :general
        (private/with-leader
         :infix "p"
@@ -511,7 +508,10 @@
              :ignore t)
         "f" 'counsel-projectile
         "/" 'counsel-projectile-rg
-        "p" 'counsel-projectile-switch-project))
+        "p" 'counsel-projectile-switch-project)
+       :demand t
+       :config
+       (counsel-projectile-mode 1))
    #+END_SRC
 
    Demanding projectile causes its autoloaded functions to be bound
@@ -562,6 +562,9 @@
      (use-package avy
        :custom
        (avy-all-windows nil)
+       :general
+       (:states '(motion)
+        "f" 'avy-goto-char-2-esc)
        :config
        (defun avy-goto-char-2-esc (&optional arg beg end)
          "Like avy-goto-char-2, but cancels the prompt if you press ESC."
@@ -574,10 +577,7 @@
                (when (eq char2 ?\e)
                  (throw 'escaped "Quit"))
                (avy-goto-char-2 char1 char2 arg beg end)))))
-       (evil-define-avy-motion avy-goto-char-2 exclusive)
-       :general
-       (:states '(motion)
-        "f" 'avy-goto-char-2-esc))
+       (evil-define-avy-motion avy-goto-char-2 exclusive))
    #+END_SRC
 *** read-char ~ESC~
     ~avy-goto-char-2~ uses ~read-char~ to request the target
@@ -631,10 +631,10 @@
        :custom-face
        (aw-leading-char-face ((t (:foreground "red"
                                   :height 3.0))))
-       :init
-       (setq aw-dispatch-alist '((?x aw-flip-window)))
        :general
-       ([remap other-window] 'ace-window))
+       ([remap other-window] 'ace-window)
+       :init
+       (setq aw-dispatch-alist '((?x aw-flip-window))))
    #+END_SRC
 *** TODO Dispatch
     You can do a lot of window-related stuff with ~aw-dispatch-alist~,
@@ -650,25 +650,19 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package shackle
-       :demand t
-       :diminish
        :custom
        (shackle-rules '((help-mode :select t
                                    :popup t
                                    :align 'below
                                    :size 0.5)))
+       :demand t
        :config
-       (shackle-mode 1))
+       (shackle-mode 1)
+       :diminish)
    #+END_SRC
 ** [[https://github.com/flycheck/flycheck][Flycheck]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flycheck
-       :demand t
-       :hook (org-src-mode . (lambda () (flycheck-mode 0)))
-       :config
-       (put 'flycheck-ruby-executable 'safe-local-variable 'stringp)
-       (put 'flycheck-ruby-rubocop-executable 'safe-local-variable 'stringp)
-       (global-flycheck-mode 1)
        :general
        (private/with-leader
         :infix "y"
@@ -682,7 +676,13 @@
         "y" 'flycheck-copy-errors-as-kill
         "j" 'flycheck-next-error
         "k" 'flycheck-previous-error
-        "l" 'flycheck-list-errors))
+        "l" 'flycheck-list-errors)
+       :hook (org-src-mode . (lambda () (flycheck-mode 0)))
+       :demand t
+       :config
+       (put 'flycheck-ruby-executable 'safe-local-variable 'stringp)
+       (put 'flycheck-ruby-rubocop-executable 'safe-local-variable 'stringp)
+       (global-flycheck-mode 1))
    #+END_SRC
 
    Unfortunately, there's no good way to run Flycheck across a tangled
@@ -710,6 +710,38 @@
                         (system . "xdg-open %s")
                         (t . system)))
        (org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
+       :general
+       (:states '(insert emacs)
+        :keymaps 'org-mode-map
+        "RET" 'org-return-indent)
+       (private/with-local-leader
+        :keymaps 'org-mode-map
+        "h" '(private/hydra-worf/private/org-up-heading-safe
+              :wk "parent heading")
+        "j" '(private/hydra-worf/org-forward-heading-same-level
+              :wk "next heading")
+        "k" '(private/hydra-worf/org-backward-heading-same-level
+              :wk "prev heading")
+        "l" '(private/hydra-worf/private/org-goto-first-child
+              :wk "child heading")
+        "/" 'counsel-org-goto
+        "r" 'org-reveal
+        "e" 'org-edit-special
+        "x" 'org-export-dispatch
+        "RET" 'org-open-at-point
+        "o" 'private/org-meta-return-after
+        "O" 'private/org-meta-return-before)
+       (private/with-local-leader
+        :keymaps 'org-mode-map
+        :infix "z"
+        "" '(:wk "toggles"
+             :ignore t)
+        "h" 'org-toggle-heading
+        "i" 'org-toggle-item
+        "l" 'org-toggle-link-display)
+       (private/with-local-leader
+        :keymaps 'org-src-mode-map
+        "e" 'org-edit-src-exit)
        :hook (org-mode . private/org-agenda-file-to-back-if-new)
        :config
        (defun private/org-agenda-file-to-back-if-new ()
@@ -747,39 +779,7 @@
                    :after-until (lambda (property element)
                                   (and (eq (org-element-type element) 'src-block)
                                        (eq property :language)
-                                       "fundamental")))
-       :general
-       (:states '(insert emacs)
-        :keymaps 'org-mode-map
-        "RET" 'org-return-indent)
-       (private/with-local-leader
-        :keymaps 'org-mode-map
-        "h" '(private/hydra-worf/private/org-up-heading-safe
-              :wk "parent heading")
-        "j" '(private/hydra-worf/org-forward-heading-same-level
-              :wk "next heading")
-        "k" '(private/hydra-worf/org-backward-heading-same-level
-              :wk "prev heading")
-        "l" '(private/hydra-worf/private/org-goto-first-child
-              :wk "child heading")
-        "/" 'counsel-org-goto
-        "r" 'org-reveal
-        "e" 'org-edit-special
-        "x" 'org-export-dispatch
-        "RET" 'org-open-at-point
-        "o" 'private/org-meta-return-after
-        "O" 'private/org-meta-return-before)
-       (private/with-local-leader
-        :keymaps 'org-mode-map
-        :infix "z"
-        "" '(:wk "toggles"
-             :ignore t)
-        "h" 'org-toggle-heading
-        "i" 'org-toggle-item
-        "l" 'org-toggle-link-display)
-       (private/with-local-leader
-        :keymaps 'org-src-mode-map
-        "e" 'org-edit-src-exit))
+                                       "fundamental"))))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -996,9 +996,9 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package markdown-mode
-       :mode ("\\.md\\'" . markdown-mode)
        :custom
        (markdown-hide-urls t)
+       :mode ("\\.md\\'" . markdown-mode)
        :hook (markdown-mode . visual-line-mode))
    #+END_SRC
 
@@ -1017,10 +1017,9 @@
                   :repo "beancount/beancount"
                   :branch "master"
                   :files ("editors/emacs/beancount.el"))
-       :defer t
-       :mode ("\\.beancount\\'" . org-mode)
        :custom
        (beancount-use-ido nil)
+       :mode ("\\.beancount\\'" . org-mode)
        :hook (org-mode . private/org-beancount)
        :init
        (defun private/org-beancount ()
@@ -1029,7 +1028,8 @@
            (beancount-mode 1)
            (set (make-local-variable 'org-adapt-indentation) nil)
            (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
-                                                                    (plain-list-item . nil))))))
+                                                                    (plain-list-item . nil)))))
+       :defer t)
    #+END_SRC
 *** org-beancount
     ~beancount-mode~ is actually a minor mode, and its directives can
@@ -1093,8 +1093,8 @@
 ** [[https://github.com/dominikh/go-mode.el][Go]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-mode
-       :defer t
-       :hook (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t))))
+       :hook (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t)))
+       :defer t)
    #+END_SRC
 
    We don't want to add ~gofmt-before-save~ to the global
