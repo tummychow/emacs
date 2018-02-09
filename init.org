@@ -1026,7 +1026,7 @@
        :custom
        (beancount-use-ido nil)
        :hook (org-mode . private/org-beancount)
-       :config
+       :init
        (defun private/org-beancount ()
          (when (and buffer-file-name
                     (string= (file-name-extension buffer-file-name) "beancount"))
@@ -1046,6 +1046,16 @@
     org-mode, which is necessary because beancount does not support
     leading whitespace on directives. Since the file is unindented, I
     add a blank line above each heading to make them more visible.
+
+    If the hook function is created at ~:config~ time, beancount-mode
+    will be loaded as soon as you open any org-mode file, regardless
+    of whether that is a beancount file. This is because any function
+    used in ~:hook~ will have an autoload created for it if it's not
+    already defined. Then, when you open an org-mode file, the hook
+    gets run, triggering the autoload, which also loads all of
+    beancount-mode. By creating the hook at ~:init~ time instead,
+    beancount-mode will only be autoloaded if the hook actually turns
+    the mode on.
 *** TODO Mode Improvements
     beancount-mode is rather anemic, and there's a lot of stuff I would
     like to improve:
