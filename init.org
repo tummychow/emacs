@@ -2,19 +2,20 @@
 
 * Libraries and Plumbing
 ** Tangling Hook
-   There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration in
-   org-mode:
+   There are [[https://www.reddit.com/r/emacs/comments/372nxd/][two main approaches]] to writing your emacs configuration
+   in org:
 
-   - org-babel-load-file :: This approach is very simple to implement,
-        but has to tangle each file when emacs starts.
-   - org-babel-tangle :: This approach stores the tangled file on disk,
-        but you have to remember to re-tangle after each edit.
+   - ~org-babel-load-file~ :: This approach is very simple to
+        implement, but has to tangle each file when emacs starts.
+   - ~org-babel-tangle~ :: This approach stores the tangled file on
+        disk, but you have to remember to re-tangle after each edit.
 
 
-   We can use a file-local after-save-hook to do the tangling
-   automatically. However, this file variable is not considered safe by
-   default, so emacs will prompt you the first time you open this
-   file.
+   We can use a local ~after-save-hook~ to do the tangling
+   automatically. However, this file-local variable is not considered
+   safe by default, so emacs will prompt you the first time you open
+   this file. I recommend saying ~n~ to the prompt and tangling
+   manually.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook
@@ -31,24 +32,26 @@
 
 
     We have to be careful about tangling with the org that was
-    installed by straight.el, not the built-in one.
+    installed by straight, not the built-in one.
 *** TODO Read/Edit/Compile Loop
-    Before I started using a tangled init, I could just edit init.el
-    directly and eval-buffer to reload it. Having to
-    org-babel-load-file and then select init.org is noticeably less
-    convenient. I should make a wrapper for this. (And, while we're at
-    it, the wrapper should execute inside a single straight.el
-    transaction, just like it would when init.el is actually loaded.)
-** [[https://github.com/raxod502/straight.el][straight.el]], [[https://github.com/jwiegley/use-package][use-package]]
-   I like straight.el philosophically - clones and lockfiles "feels"
-   like the right way to solve this problem - and I don't mind having
-   to give up package.el for those benefits. Extensive documentation is
-   also greatly appreciated. UX is still rough around the edges - see
-   [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
+    Before I started using a tangled init, I could just edit ~init.el~
+    directly and ~eval-buffer~ to reload it. Having to
+    ~org-babel-load-file~ and then select ~init.org~ is noticeably
+    less convenient. I should make a wrapper for this. (And, while
+    we're at it, the wrapper should execute inside a single straight
+    transaction, just like it would when ~init.el~ is actually
+    loaded.)
+** [[https://github.com/raxod502/straight.el][straight]], [[https://github.com/jwiegley/use-package][use-package]]
+   I like straight philosophically - clones and lockfiles "feels" like
+   the right way to solve this problem - and I don't mind having to
+   give up the built-in package management for those benefits.
+   Extensive documentation is also greatly appreciated. UX is still
+   rough around the edges - see [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq straight-repository-branch "develop")
      (setq straight-check-for-modifications 'never)
+     (setq straight-use-package-by-default t)
 
      (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
            (bootstrap-version 3))
@@ -61,19 +64,20 @@
            (eval-print-last-sexp)))
        (load bootstrap-file nil 'nomessage))
 
-     (setq straight-use-package-by-default t)
      (straight-use-package 'use-package)
-
-     (use-package diminish
-       :defer t)
    #+END_SRC
 
    I disable straight's automatic rebuilding and invoke
-   straight-rebuild-package by hand. This avoids some nasty startup
+   ~straight-rebuild-package~ by hand. This avoids some nasty startup
    delays ([[https://github.com/raxod502/straight.el/issues/9#issuecomment-337435499][#9]]/[[https://github.com/raxod502/straight.el/issues/41][#41]]). I don't need to rebuild all that often, so I don't
    mind having to do it manually.
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package diminish
+       :defer t)
+   #+END_SRC
 ** [[https://github.com/emacscollective/no-littering][no-littering]]
-   This keeps files like projectile-known-projects-file where they
+   This keeps files like ~projectile-known-projects-file~ where they
    belong.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -165,7 +169,7 @@
 
      (setq load-prefer-newer t)
    #+END_SRC
-*** Fonts
+*** Fonts and Faces
     #+BEGIN_SRC emacs-lisp :tangle yes
       (cond ((eq system-type 'gnu/linux)
              (set-face-attribute 'default nil :family "Input"
@@ -179,15 +183,15 @@
 
     I have tried many techniques to configure emacs faces:
 
-    - set-frame-font (or its deprecated cousin, set-default-font) are
-      horribly broken if you use emacs in daemon mode. Because the
+    - ~set-frame-font~ (or its deprecated cousin, ~set-default-font~)
+      are horribly broken if you use emacs in daemon mode. Because the
       initial emacs instance doesn't have a GUI attached to it,
       something goes horribly wrong at init time and the fonts just
       don't get set ([[https://www.reddit.com/r/emacs/comments/6hogfs/][1]], [[https://stackoverflow.com/q/3984730][2]], [[http://heyrod.com/snippets/emacsclient-daemon-default-font.html][3]], [[https://stackoverflow.com/q/25221960][4]]). You end up with text that's
       literally a couple of pixels tall. By the way, this is also true
-      for terminal-local variables like window-system, which are not
+      for terminal-local variables like ~window-system~, which are not
       set at daemon initialization time.
-    - default-frame-alist and window-system-default-frame-alist
+    - ~default-frame-alist~ and ~window-system-default-frame-alist~
       provide an alist with a font key, which lets you specify a
       string to use as the default font. However, emacs faces are
       quite a bit more complicated than that. On top of that, emacs's
@@ -196,30 +200,31 @@
       height as 10pt, where as ~Foo:pixelsize=10~ aims for a height of
       10px. But in emacs, ~Foo:size=10~ and ~Foo:pixelsize=10~ do the
       same thing. I also find very different results between
-      fc-pattern and describe-font using the same pattern (eg
+      ~fc-pattern~ and ~describe-font~ using the same pattern (eg
       ~fc-pattern -d Input-10 pixelsize~ reports 10.4167px on my
-      current monitor, but if I use ~Input-10~ in emacs, describe-font
-      shows the pattern ~Input:pixelsize=13~).
-    - face-spec-set lets you dig into the innards of an emacs face,
+      current monitor, but if I use ~Input-10~ in emacs,
+      ~describe-font~ shows the pattern ~Input:pixelsize=13~).
+    - ~face-spec-set~ lets you dig into the innards of an emacs face,
       but you have to specify the whole thing from start to finish. An
       emacs face actually has several layered attributes, and you
       probably don't want to rewrite all of them just to change one or
       two.
-    - custom-set-faces hooks into the Customize interface, which is
+    - ~custom-set-faces~ hooks into the Customize interface, which is
       the blessed high-level approach. However, Customize works by
       mutating your init file, which is not great if you're an
       opinionated version control user.
 
 
-    After all of the above, I have settled on set-face-attribute for
+    After all of the above, I have settled on ~set-face-attribute~ for
     global faces. It lets me twiddle any individual part of any face
-    without going through Customize. For package-specific faces,
-    use-package offers the ~:custom-face~ keyword, which goes through
-    Customize while avoiding its major downside.
+    (the full list of attributes is [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html][here]]) without going through
+    Customize. For package-specific faces, use-package offers the
+    ~:custom-face~ keyword, which goes through Customize while
+    avoiding its major downside.
 *** visual-line-mode
     visual-line-mode is a built-in mode that truncates lines at word
-    boundaries. adaptive-wrap-mode (GNU ELPA) extends it to also
-    preserve leading indentation.
+    boundaries. adaptive-wrap-mode extends it to also preserve leading
+    indentation.
 
     #+BEGIN_SRC emacs-lisp :tangle yes
       (setq-default truncate-lines t)
@@ -260,9 +265,9 @@
     [[https://github.com/editorconfig/editorconfig-emacs][editorconfig]] support is also applicable to this problem.
 
     I haven't had to edit any "real" code in emacs yet, so remapping
-    org-return-indent was sufficient for me, but I'd also like to look
-    into electric-indent-mode (built-in) or [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] to
-    do this automatically.
+    ~org-return-indent~ was sufficient for me, but I'd also like to
+    look into electric-indent-mode (built-in) or
+    [[https://github.com/Malabarba/aggressive-indent-mode][aggressive-indent-mode]] to do this automatically.
 ** [[https://github.com/emacs-evil/evil][evil]]
    I never really became fluent in vim, but my brief experience made it
    impossible to go back to any other editing system. The two big
@@ -330,9 +335,9 @@
        (which-key-mode 1))
    #+END_SRC
 
-   I could enable which-key-allow-evil-operators and
-   which-key-show-operator-states, but choose not to because the popup
-   is too large. There's just too much information in there.
+   I could enable ~which-key-allow-evil-operators~ and
+   ~which-key-show-operator-states~, but choose not to because the
+   popup is too large. There's just too much information in there.
 ** [[https://github.com/lewang/ws-butler][ws-butler]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package ws-butler
@@ -407,7 +412,7 @@
      (ie it shows me where I'm going before I decide to go there) and
      ephemeral (ie if I dismiss the minibuffer it leaves no traces of
      its presence). One useful addition would be an easy way to resume
-     the previous swiper search. ivy-resume, maybe?
+     the previous swiper search. ~ivy-resume~, maybe?
 **** isearch
      I have experimented with isearch (which is hooked into evil's ~/~
      by default). I find it most useful as a motion - ie when I already
@@ -432,13 +437,13 @@
      believe the occur/wgrep system works just as well here as it does
      for swiper.
 **** :s
-     For smaller find/replaces, I still use vim's trusty ~:s~. The
-     syntax of ~:s~ lets you write the find and replace halves of the
-     expression simultaneously in a very nimble way. Automatically
-     reusing the last pattern from ~/~ is also a nice feature, although
-     a bit niche. I only feel the need to do that when I'm replacing a
-     fairly complex pattern, which is usually a sign to reach for
-     another tool.
+     For smaller find/replaces, I still use vim's trusty ~:s~
+     (~evil-ex-substitute~). The syntax of ~:s~ lets you write the
+     find and replace halves of the expression simultaneously in a
+     very nimble way. Automatically reusing the last pattern from ~/~
+     is also a nice feature, although a bit niche. I only feel the
+     need to do that when I'm replacing a fairly complex pattern,
+     which is usually a sign to reach for another tool.
 
      Once you start replacing a lot of stuff (more than a screenful) or
      really complicated stuff (anything involving eval-based
@@ -512,45 +517,39 @@
    Demanding projectile causes its autoloaded functions to be bound
    under the ~C-c p~ prefix. However, if counsel-projectile hasn't
    been loaded yet, the functions under that prefix will be
-   un-counseled versions (because counsel-projectile-mode hasn't run).
-   I fix this problem by demanding both packages up front.
-*** TODO Creating New Files
-    The original projectile-find-file allows you to create a new file
-    if there's no match (similar to the default behavior of find-file).
-    However, counsel-projectile-find-file and counsel-projectile don't
-    let you do this; they require a match. I'd prefer to be able to
-    make new files.
+   un-counseled versions (because ~counsel-projectile-mode~ hasn't
+   run). I fix this problem by demanding both packages up front.
 *** TODO Disambiguated Buffer/File Names
-    Suppose I have a project with two files, "foo/README" and
-    "bar/README". If I open "foo/README", it'll show up in
-    counsel-projectile as just "README", because now it's a buffer.
-    Meanwhile "bar/README" continues to show up by its full name
+    Suppose I have a project with two files, ~foo/README~ and
+    ~bar/README~. If I open ~foo/README~, it'll show up in
+    counsel-projectile as just ~README~, because now it's a buffer.
+    Meanwhile ~bar/README~ continues to show up by its full name
     because it hasn't been opened yet.
 
-    In my head, I know the layout of this project, so I know "README"
-    alone is an ambiguous name. If I'm looking for "foo/README", I will
-    therefore type "foo" first, and counsel-projectile will have no
-    matches.
+    In my head, I know the layout of this project, so I know ~README~
+    alone is an ambiguous name. If I'm looking for ~foo/README~, I
+    will therefore type ~foo~ first, and counsel-projectile will have
+    no matches.
 
-    If I open "bar/README" as well, then emacs is forced to
+    If I open ~bar/README~ as well, then emacs is forced to
     disambiguate names, which it does the way I expect
-    (uniquify-buffer-name-style). I should teach counsel-projectile how
-    to keep names unique even when some are open buffers and some
+    (uniquify-buffer-name-style). I should teach counsel-projectile
+    how to keep names unique even when some are open buffers and some
     aren't.
 
     Another example of this problem: you have READMEs open in two
-    separate projects, "foo/README" and "bar/README". uniquify will do
+    separate projects, ~foo/README~ and ~bar/README~. uniquify will do
     its job and disambiguate the names. But now if you switch between
-    projects, you'll see a buffer named "foo/README" where you expected
-    just "README". In this case, counsel-projectile should discard
-    uniquification. Basically, inside counsel-projectile, buffer names
-    should always be based at the project root, even if uniquification
-    (or lack thereof) would display otherwise.
+    projects, you'll see a buffer named ~foo/README~ where you
+    expected just ~README~. In this case, counsel-projectile should
+    discard uniquification. Basically, inside counsel-projectile,
+    buffer names should always be based at the project root, even if
+    uniquification (or lack thereof) would display otherwise.
 ** [[https://github.com/abo-abo/avy][avy]]
    One of the unpleasant truths of vim is that, although there are
    structured motions for everything, you're probably going to start
-   out by holding down hjkl a lot. It takes a long time for all those
-   other motions to seep into your muscle memory. avy provides a
+   out by holding down ~hjkl~ a lot. It takes a long time for all
+   those other motions to seep into your muscle memory. avy provides a
    command that quickly gets anywhere on the screen, regardless of how
    the buffer is formatted. It reflects a "lazy vim" approach of using
    cheap, general commands that you'll never have to think about.
@@ -581,19 +580,19 @@
         "f" 'avy-goto-char-2-esc))
    #+END_SRC
 *** read-char ~ESC~
-    avy-goto-char-2 uses read-char to request the target characters.
-    This function is pretty low-level - it can only be cancelled with
-    ~C-g~, and does not support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps. read-key does
-    support key translations, but not the way I want: if you remap
-    ~ESC~ to ~C-g~, read-key will return 7 (the ~C-g~ keycode) instead
-    of 27 (the ~ESC~ keycode) Either way, pressing ~ESC~ doesn't
-    actually quit.
+    ~avy-goto-char-2~ uses ~read-char~ to request the target
+    characters. This function is pretty low-level - it can only be
+    cancelled with ~C-g~, and does not support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps.
+    ~read-key~ does support key translations, but not the way I want:
+    if you remap ~ESC~ to ~C-g~, ~read-key~ will return 7 (the ~C-g~
+    keycode) instead of 27 (the ~ESC~ keycode) Either way, pressing
+    ~ESC~ doesn't actually quit.
 
-    I hacked around this by rolling my own version of avy-goto-char-2,
-    which checks if you pressed ~ESC~ for the prompt and bails out
-    early. I suspect this is extremely unidiomatic elisp the way I've
-    written it, but oh well. Pull requests are welcome to address my
-    atrocious lack of style.
+    I hacked around this by rolling my own version of
+    ~avy-goto-char-2~, which checks if you pressed ~ESC~ for the
+    prompt and bails out early. I suspect this is extremely
+    unidiomatic elisp the way I've written it, but oh well. Pull
+    requests are welcome to address my atrocious lack of style.
 
     Note that, although pressing ~ESC~ will end the avy prompt, evil
     still thinks that the motion completed (eg ~cf ESC~ will still go
@@ -624,10 +623,6 @@
    but I use it for its barebones functionality, and it works like a
    charm.
 
-   I use a nasty hack to increase the size of the ace-window marker
-   character. You can probably do this with custom-set-faces, whose use
-   I try to avoid. Perhaps set-face-attribute would be cleaner.
-
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package ace-window
        :custom
@@ -642,11 +637,10 @@
        ([remap other-window] 'ace-window))
    #+END_SRC
 *** TODO Dispatch
-    You can do a lot of interesting window related stuff with
-    aw-dispatch-alist, which could probably replace my entire ~SPC d~
-    leader tree. Definitely worth investigating. Integrating desktop
-    management keybinds (eg eyebrowse, see below) would also be
-    appropriate.
+    You can do a lot of window-related stuff with ~aw-dispatch-alist~,
+    which could probably replace my entire ~SPC d~ leader tree.
+    Definitely worth investigating. Integrating desktop management
+    keybinds (eg eyebrowse, see below) would also be appropriate.
 ** [[https://github.com/wasamasa/shackle][shackle]]
    shackle keeps temporary windows out of the way. emacs has a nasty
    tendency to spawn them in the first free window it can find, and if
@@ -697,9 +691,8 @@
    context only.
 * Major Modes and Filetypes
 ** [[http://orgmode.org/][org]]
-   Note that straight.el will always clone a fresh org-mode from their
-   [[https://code.orgmode.org/bzg/org-mode][git repository]], which is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]]
-   support.
+   straight will install a full clone of org's [[https://code.orgmode.org/bzg/org-mode][git repository]], which
+   is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package org
@@ -802,70 +795,71 @@
    #+END_SRC
 
    Note that MELPA does not split hydra and hydra-ox into separate
-   packages, so straight.el doesn't know how to install hydra-ox. It
-   has to explicitly be told that this package comes from the hydra
-   repo. I would prefer to straight-get-recipe this, but hardcoding it
-   is basically the same thing.
+   packages, so straight doesn't know how to install hydra-ox. It has
+   to explicitly be told that this package comes from the hydra repo.
+   I would prefer to ~straight-get-recipe~ this, but hardcoding it is
+   basically the same thing.
 *** Navigation
-    I'm very fond of counsel-org-goto. It Just Works, which can't be
+    I'm very fond of ~counsel-org-goto~. It Just Works, which can't be
     said for some of the things I tried in the past.
 
-    org has org-goto built-in. However, I despise org's "open another
-    buffer and fumble around in here" approach to navigation. You can
-    customize org-goto to use ivy (org-goto-interface and
-    org-outline-complete-in-steps), but I found that it choked on
+    org has ~org-goto~ built-in. However, I despise org's "open
+    another buffer and fumble around in here" approach to navigation.
+    You can customize ~org-goto~ to use ivy (~org-goto-interface~ and
+    ~org-outline-complete-in-steps~), but I found that it choked on
     headlines with slashes in them. Perhaps it was an ivy bug.
 
-    Rather than investigate the slashes problem with org-goto, I
-    tolerated counsel-imenu for a while. You need to futz around with
-    some variables (imenu-auto-rescan, imenu-auto-rescan-timeout) to
-    make it rescan every time you use it. The real problem is that it
-    only displays leaf-level headings, so you can't jump directly to
-    intermediate headings.
+    Rather than investigate the slashes problem with ~org-goto~, I
+    tolerated ~counsel-imenu~ for a while. You need to futz around
+    with some variables (~imenu-auto-rescan~,
+    ~imenu-auto-rescan-timeout~) to make it rescan every time you use
+    it. The real problem is that it only displays leaf-level headings,
+    so you can't jump directly to intermediate headings.
 
     I've also heard of some other options like [[https://github.com/jrblevin/deft][deft]], [[https://github.com/facetframer/orgnav][orgnav]], and
-    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, counsel-org-goto is so close to my
+    [[https://github.com/alphapapa/helm-org-rifle][helm-org-rifle]], but for now, ~counsel-org-goto~ is so close to my
     ideal implementation that I'm no longer shopping around. [[https://www.reddit.com/r/emacs/comments/4a4a8n/better_system_than_defthelmorgmode_to_manage_many/][See also]].
 **** TODO Out-of-Order Search
-     In my typical use of counsel-org-goto, I search for the last
+     In my typical use of ~counsel-org-goto~, I search for the last
      segment of the exact heading I'm aiming for. If that isn't
-     specific enough, I end up having to backspace over my search query
-     and enter a higher-level heading first, to disambiguate. For
-     example, in a file with headings "foo/bar/baz" and "foo/qux/baz",
-     I might search for "baz", then have to backspace and search for
-     "bar baz".
+     specific enough, I end up having to backspace over my search
+     query and enter a higher-level heading first, to disambiguate.
+     For example, in a file with headings ~foo/bar/baz~ and
+     ~foo/qux/baz~, I might search for ~baz~, then have to backspace
+     and search for ~bar baz~.
 
      The solution to this problem would be to relax matching order, so
-     that "baz bar" could match "foo/bar/baz". ivy--regex-ignore-order
-     might be perfect for this.
+     that ~baz bar~ could match ~foo/bar/baz~.
+     ~ivy--regex-ignore-order~ might be perfect for this.
 *** Indentation
-    By default, plain text in org-mode is indented to match the level
-    of the headline. This is controlled by org-adapt-indentation,
-    org-cycle-emulate-tab, and my binding of org-return-indent.
+    By default, plain text in org is indented to match the level of
+    the headline. This is controlled by ~org-adapt-indentation~,
+    ~org-cycle-emulate-tab~, and my binding of ~org-return-indent~.
 
     I actually like the indentation, because it helps distinguish
     headlines (you can scan the left edge of the buffer to locate
     them). It also increases the vertical density of my org files,
-    since I don't need empty lines (org-blank-before-new-entry) or
+    since I don't need empty lines (~org-blank-before-new-entry~) or
     larger fonts to make the headlines stand out. I do disable the
     indentation for beancount buffers; see below.
 *** org-src Default Language
     I want to use fundamental-mode in org-src blocks that have no
     language, but there is no supported way to set a [[https://emacs.stackexchange.com/q/8314][default language]]
     for org-src blocks. However, you can hack it in by advising
-    org-element-property. If org-element-property returns nil for an
-    org-src block's language, this advice will treat the block's
+    ~org-element-property~. If ~org-element-property~ returns nil for
+    an org-src block's language, this advice will treat the block's
     language as fundamental instead.
 *** TODO [[https://github.com/abo-abo/ace-link][ace-link]]/[[https://github.com/noctuid/link-hint.el][link-hint]]
-    A more powerful alternative to org-open-at-point. This should open
-    the link at point (if any), and otherwise select one avy-style.
-    Note that org-return-follows-link doesn't work in evil normal
-    state.
+    A more powerful alternative to ~org-open-at-point~. This should
+    open the link at point (if any), and otherwise select one
+    avy-style. Note that ~org-return-follows-link~ doesn't work in
+    evil normal state.
 *** TODO [[https://github.com/abo-abo/worf][worf]] Tree Mutation
-    It's fine to use counsel-org-goto for large jumps, but for shorter
-    movements, it's much faster to go up or down headings. worf has an
-    especially elegant way of combining navigation and mutation of org
-    trees. Unfortunately it doesn't play nice with evil.
+    It's fine to use ~counsel-org-goto~ for large jumps, but for
+    shorter movements, it's much faster to go up or down headings.
+    worf has an especially elegant way of combining navigation and
+    mutation of org trees. Unfortunately it doesn't play nice with
+    evil.
 
     One important caveat of any up/down heading navigation is that it
     tends to pollute the jumplist. Ideally, you want to "enter" heading
@@ -878,66 +872,68 @@
     - movements:
       - next heading:
         - any level:
-          - org-next-visible-heading
-          - outline-next-visible-heading
-          - outline-next-heading
+          - ~org-next-visible-heading~
+          - ~outline-next-visible-heading~
+          - ~outline-next-heading~
         - same level:
-          - org-forward-heading-same-level
-          - outline-forward-same-level
-          - org-get-next-sibling
-          - outline-get-next-sibling
-          - org-goto-sibling
+          - ~org-forward-heading-same-level~
+          - ~outline-forward-same-level~
+          - ~org-get-next-sibling~
+          - ~outline-get-next-sibling~
+          - ~org-goto-sibling~
       - previous heading:
         - any level:
-          - org-previous-visible-heading
-          - outline-previous-visible-heading
-          - outline-previous-heading
+          - ~org-previous-visible-heading~
+          - ~outline-previous-visible-heading~
+          - ~outline-previous-heading~
         - same level (note that, if we're not on a heading, we want to
           back up to the current heading, not the one before it):
-          - org-backward-heading-same-level: skips past current heading
-          - outline-backward-same-level: same problem as
-            org-backward-heading-same-level
-          - org-get-last-sibling: doesn't actually restrict point to
+          - ~org-backward-heading-same-level~: skips past current
+            heading
+          - ~outline-backward-same-level~: same problem as
+            ~org-backward-heading-same-level~
+          - ~org-get-last-sibling~: doesn't actually restrict point to
             same-level headings (it returns nil but the point still
             moves, which is almost definitely a bug)
-          - outline-get-last-sibling: same problem as
-            org-get-last-sibling
-          - org-goto-sibling: same problem as
-            org-backward-heading-same-level
+          - ~outline-get-last-sibling~: same problem as
+            ~org-get-last-sibling~
+          - ~org-goto-sibling~: same problem as
+            ~org-backward-heading-same-level~
       - parent:
-        - org-up-heading-safe
-        - org-up-heading-all
-        - outline-up-heading
+        - ~org-up-heading-safe~
+        - ~org-up-heading-all~
+        - ~outline-up-heading~
       - child:
-        - org-goto-first-child
+        - ~org-goto-first-child~
     - change:
       - item:
-        | ITEM    | org-metaleft          | org-metadown          | org-metaup          | org-metaright         |
-        |---------+-----------------------+-----------------------+---------------------+-----------------------|
-        | heading | org-do-promote        | org-move-subtree-down | org-move-subtree-up | org-do-demote         |
-        | list    | org-outdent-item      | org-move-item-down    | org-move-item-up    | org-indent-item       |
-        | table   | org-table-move-column | org-table-move-row    | org-table-move-row  | org-table-move-column |
+        | ITEM    | ~org-metaleft~          | ~org-metadown~          | ~org-metaup~          | ~org-metaright~         |
+        |---------+-------------------------+-------------------------+-----------------------+-------------------------|
+        | heading | ~org-do-promote~        | ~org-move-subtree-down~ | ~org-move-subtree-up~ | ~org-do-demote~         |
+        | list    | ~org-outdent-item~      | ~org-move-item-down~    | ~org-move-item-up~    | ~org-indent-item~       |
+        | table   | ~org-table-move-column~ | ~org-table-move-row~    | ~org-table-move-row~  | ~org-table-move-column~ |
       - tree:
-        | TREE    | org-shiftmetaleft       | org-shiftmetadown     | org-shiftmetaup        | org-shiftmetaright      |
-        |---------+-------------------------+-----------------------+------------------------+-------------------------|
-        | heading | org-promote-subtree     | org-drag-line-forward | org-drag-line-backward | org-demote-subtree      |
-        | list    | org-outdent-item-tree   | org-drag-line-forward | org-drag-line-backward | org-indent-item-tree    |
-        | table   | org-table-delete-column | org-table-insert-row  | org-table-kill-row     | org-table-insert-column |
-    - Can we use the [[https://github.com/abo-abo/hydra/commit/763bb2a423c829dc145188718dcf9ee47480ed0a][:bind lambda]] to build bindings to the heads with
-      general (lambda gets invoked [[https://github.com/abo-abo/hydra/blob/master/hydra.el#L1302][here]]? Or do we have to manually bind
-      each head in private/with-local-leader?
+        | TREE    | ~org-shiftmetaleft~       | ~org-shiftmetadown~     | ~org-shiftmetaup~        | ~org-shiftmetaright~      |
+        |---------+---------------------------+-------------------------+--------------------------+---------------------------|
+        | heading | ~org-promote-subtree~     | ~org-drag-line-forward~ | ~org-drag-line-backward~ | ~org-demote-subtree~      |
+        | list    | ~org-outdent-item-tree~   | ~org-drag-line-forward~ | ~org-drag-line-backward~ | ~org-indent-item-tree~    |
+        | table   | ~org-table-delete-column~ | ~org-table-insert-row~  | ~org-table-kill-row~     | ~org-table-insert-column~ |
+    - Can we use the [[https://github.com/abo-abo/hydra/commit/763bb2a423c829dc145188718dcf9ee47480ed0a][~:bind~ lambda]] to build bindings to the heads
+      with general (lambda gets invoked [[https://github.com/abo-abo/hydra/blob/master/hydra.el#L1309][here]])? Or do we have to
+      manually bind each head in ~private/with-local-leader~?
     - We should have a toggle in the hydra to allow moving to invisible
       headings, which should default to off.
-    - Should we also operate on lists? org-previous-item and
-      org-next-item can navigate up/down, but they put the cursor in a
-      stupid position. There doesn't appear to be a way to navigate
-      up/down levels of a list. In addition, org-next-item does nothing
-      unless you're already in a list. We may need to resort to
-      [[http://orgmode.org/worg/dev/org-syntax.html][parsing]].
+    - Should we also operate on lists? ~org-previous-item~ and
+      ~org-next-item~ can navigate up/down, but they put the cursor in
+      a stupid position. There doesn't appear to be a way to navigate
+      up/down levels of a list. In addition, ~org-next-item~ does
+      nothing unless you're already in a list. We may need to resort
+      to [[http://orgmode.org/worg/dev/org-syntax.html][parsing]].
     - Similarly, support for tables would also be interesting, but
       there don't appear to be good ways to jump "into" a table.
     - We should print a message to the minibuffer if we try to move
-      past the end of a direction. [[https://emacs.stackexchange.com/a/11024][save-excursion]] might help for this.
+      past the end of a direction. [[https://emacs.stackexchange.com/a/11024][~save-excursion~]] might help for
+      this.
 **** Target UX
      - heading state (default)
        - ~hjkl~ (available outside hydra) :: parent heading, down same
@@ -945,7 +941,7 @@
        - ~v~ :: radio toggle between three states: always move to
                 invisible, never move to invisible, only move to
                 invisible if there is none visible (default)
-       - ~<tab>~ :: org-cycle
+       - ~<tab>~ :: ~org-cycle~
        - ~c~ :: enter heading change state
          - ~jk~ :: move subtree down, move subtree up
          - ~hl~ :: promote subtree, demote subtree
@@ -955,7 +951,7 @@
          - ~hjkl~ :: superlist, down same level, up same level, sublist
          - ~v~ :: radio toggle to enable moving to (and revealing)
                   invisible items (default off)
-         - ~<tab>~ :: org-cycle
+         - ~<tab>~ :: ~org-cycle~
          - ~q~ :: go back to heading state
          - ~c~ :: enter list change state
            - ~jk~ :: move item tree down, move item tree up
@@ -978,24 +974,24 @@
     unfortunately a TODO in its own right, but perhaps we can hack up
     an interim solution with ivy.
 *** TODO org-agenda
-    org-agenda is a large key tree that spawns a buffer just for
+    ~org-agenda~ is a large key tree that spawns a buffer just for
     prompts. We could replace the prompts with which-key, but
-    org-agenda has some additional features. In particular, you can
-    press ~<>~ multiple times within an org-agenda buffer to adjust the
-    restriction level. This persistent binding would require a hydra to
-    replicate. Alternatively, we could approximate it with just a plain
-    key tree, which would probably be easier.
+    ~org-agenda~ has some additional features. In particular, you can
+    press ~<>~ multiple times within an ~org-agenda~ buffer to adjust
+    the restriction level. This persistent binding would require a
+    hydra to replicate. Alternatively, we could approximate it with
+    just a plain key tree, which would probably be easier.
 
     The basic key tree is implemented in
-    org-agenda-get-restriction-and-command. Note that org-agenda has a
-    bunch of custom command functionality as well
-    (org-agenda-custom-commands) and we have to decide how much of that
-    we want to implement. defhydradio can help us with the persistent
-    parts (~<>~), as it does in hydra-ox.
+    ~org-agenda-get-restriction-and-command~. Note that ~org-agenda~
+    has a bunch of custom command functionality as well
+    (~org-agenda-custom-commands~) and we have to decide how much of
+    that we want to implement. ~defhydradio~ can help us with the
+    persistent parts (~<>~), as it does in hydra-ox.
 ** [[https://github.com/jrblevin/markdown-mode][Markdown]]
-   While I prefer working in org-mode, sometimes you have to write
-   markup that other people can edit, and org-mode is really not usable
-   in any editor but emacs. In those situations, Markdown is basically
+   While I prefer working in org, sometimes you have to write markup
+   that other people can edit, and org is really not usable in any
+   editor but emacs. In those situations, Markdown is basically
    inevitable.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1011,9 +1007,9 @@
        :defer t)
    #+END_SRC
 ** [[http://furius.ca/beancount/][beancount]]
-   The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight.el
-   doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine substitute,
-   since the mode doesn't appear to be modified often.
+   The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight
+   doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine
+   substitute, since the mode doesn't appear to be modified often.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package beancount
@@ -1036,45 +1032,45 @@
                                                                     (plain-list-item . nil))))))
    #+END_SRC
 *** org-beancount
-    beancount-mode is actually a minor mode, and its directives can be
-    embedded in other major modes. The author of beancount uses
-    org-mode for this, probably via a file-local property (~-*- mode:
-    org; mode: beancount -*-~).
+    ~beancount-mode~ is actually a minor mode, and its directives can
+    be embedded in other major modes. The author of beancount uses org
+    for this, probably via a file-local property (~-*- mode: org;
+    mode: beancount -*-~).
 
     I implemented similar behavior via a hook, so that I wouldn't need
-    file-specific cruft. This hook also disables indentation in
-    org-mode, which is necessary because beancount does not support
-    leading whitespace on directives. Since the file is unindented, I
-    add a blank line above each heading to make them more visible.
+    file-specific cruft. This hook also disables indentation in org,
+    which is necessary because beancount does not support leading
+    whitespace on directives. Since the file is unindented, I add a
+    blank line above each heading to make them more visible.
 
-    If the hook function is created at ~:config~ time, beancount-mode
-    will be loaded as soon as you open any org-mode file, regardless
-    of whether that is a beancount file. This is because any function
-    used in ~:hook~ will have an autoload created for it if it's not
-    already defined. Then, when you open an org-mode file, the hook
-    gets run, triggering the autoload, which also loads all of
-    beancount-mode. By creating the hook at ~:init~ time instead,
-    beancount-mode will only be autoloaded if the hook actually turns
-    the mode on.
+    If the hook function is created at ~:config~ time,
+    ~beancount-mode~ will be loaded as soon as you open any org file,
+    regardless of whether that is a beancount file. This is because
+    any function used in ~:hook~ will have an autoload created for it
+    if it's not already defined. Then, when you open an org file, the
+    hook gets run, triggering the autoload, which also loads all of
+    ~beancount-mode~. By creating the hook at ~:init~ time instead,
+    the mode will only be autoloaded if the hook actually tries to
+    turn it on.
 *** TODO Mode Improvements
-    beancount-mode is rather anemic, and there's a lot of stuff I would
-    like to improve:
+    ~beancount-mode~ is rather anemic, and there's a lot of stuff I
+    would like to improve:
 
     - quick key to insert the current YYYY-MM-DD
     - fontification of comments, strings, numbers, and commodities
     - keywords (eg open, balance, document) are fontified in comments
       and strings, where they should be treated as regular text
-    - automatic reinitialization of accounts without having to manually
-      invoke beancount-init-accounts
-    - beancount-account-regexp does not recognize custom naming options
-      (see beancount-account-categories)
+    - automatic reinitialization of accounts without having to
+      manually invoke beancount-init-accounts
+    - ~beancount-account-regexp~ does not recognize custom naming
+      options (see ~beancount-account-categories~)
     - shorter key sequence for beancount-insert-account
     - clean auto align for the entire file, even for non-transaction
-      directives (bean-format can help, but it only aligns amounts)
+      directives (~bean-format~ can help, but it only aligns amounts)
     - indentation should default to 2 spaces after a transaction,
       returning to 0 after an empty line (Can we use TAB to cycle
-      between valid indentation levels? We're in org-mode...)
-    - flycheck invocation of bean-check
+      between valid indentation levels? We're in org...)
+    - Flycheck invocation of ~bean-check~
 ** [[https://github.com/holomorph/systemd-mode][systemd]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package systemd
@@ -1087,7 +1083,7 @@
    #+END_SRC
 
    The docs for this mode mention that you have to bind ~RET~ yourself
-   if you want auto-indenting, but evil-mode seems to have me covered
+   if you want auto-indenting, but evil seems to have me covered
    there.
 
    Frankly, this mode is not very good, but that's not its fault. It's
@@ -1104,13 +1100,13 @@
    We don't want to add ~gofmt-before-save~ to the global
    ~before-save-hook~, because that would cause go-mode to be loaded
    in every buffer, whether it was a go buffer or not. Instead we add
-   to the buffer-local ~before-save-hook~. We then have to explicitly
-   request deferred loading. Normally ~:hook~ implies ~:defer t~, but
-   [[https://github.com/jwiegley/use-package/commit/b0e53b4][only]] if the target of the hook is a function symbol. If it's a
-   lambda, then use-package will resort to its default behavior of
-   demanding the package, to ensure that the package is loaded when
-   the lambda runs. In our case, we know the lambda doesn't need that,
-   so we can safely ask for deferral.
+   to the local ~before-save-hook~. We then have to explicitly request
+   deferred loading. Normally ~:hook~ implies ~:defer t~, but [[https://github.com/jwiegley/use-package/commit/b0e53b4][only]] if
+   the target of the hook is a function symbol. If it's a lambda, then
+   use-package will resort to its default behavior of demanding the
+   package, to ensure that the package is loaded when the lambda runs.
+   In our case, we know the lambda doesn't need that, so we can safely
+   ask for deferral.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-eldoc
@@ -1180,8 +1176,8 @@
    don't really need anything else. Besides smartparens, there's also
    the built-in electric-pair-mode.
 ** TODO Comments
-   emacs has two built-in commenting functions, comment-dwim and
-   comment-line. There are some packages as well:
+   emacs has two built-in commenting functions, ~comment-dwim~ and
+   ~comment-line~. There are some packages as well:
 
    - [[https://github.com/linktohack/evil-commentary][evil-commentary]]
    - [[https://github.com/redguardtoo/evil-nerd-commenter][evil-nerd-commenter]]
