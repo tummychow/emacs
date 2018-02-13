@@ -672,7 +672,7 @@
        :custom
        (shackle-rules '((help-mode :select t
                                    :popup t
-                                   :align 'below
+                                   :align below
                                    :size 0.5)))
        :demand t
        :config
