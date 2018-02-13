@@ -680,7 +680,11 @@
                         (flycheck-error-list-mode :select t
                                                   :popup t
                                                   :align right
-                                                  :size 0.3)))
+                                                  :size 0.3)
+                        (compilation-mode :select t
+                                          :popup t
+                                          :align right
+                                          :size 0.5)))
        :demand t
        :config
        (shackle-mode 1)
