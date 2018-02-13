@@ -515,11 +515,21 @@
         :infix "p"
         "" '(:wk "projectile"
              :ignore t)
-        "f" 'counsel-projectile
+        "f" 'private/counsel-projectile-find-file
         "/" 'counsel-projectile-rg
-        "p" 'counsel-projectile-switch-project)
+        "p" 'counsel-projectile-switch-project
+        "b" 'counsel-projectile-switch-to-buffer)
        :demand t
        :config
+       (setcar counsel-projectile-switch-project-action
+               (counsel-projectile--action-index
+                'counsel-projectile-switch-project-action-find-file
+                counsel-projectile-switch-project-action))
+       (defun private/counsel-projectile-find-file (arg)
+         (interactive "P")
+         (if (not (projectile-project-p))
+             (counsel-projectile-switch-project)
+           (counsel-projectile-find-file arg)))
        (counsel-projectile-mode 1))
    #+END_SRC
 
@@ -528,32 +538,32 @@
    been loaded yet, the functions under that prefix will be
    un-counseled versions (because ~counsel-projectile-mode~ hasn't
    run). I fix this problem by demanding both packages up front.
-*** TODO Disambiguated Buffer/File Names
-    Suppose I have a project with two files, ~foo/README~ and
-    ~bar/README~. If I open ~foo/README~, it'll show up in
-    counsel-projectile as just ~README~, because now it's a buffer.
-    Meanwhile ~bar/README~ continues to show up by its full name
-    because it hasn't been opened yet.
+*** Finding Files vs Finding Buffers or Files
+    I used to use ~counsel-projectile~, which lists buffers and files,
+    but have now moved to ~counsel-projectile-find-file~ (with a
+    wrapper when not in a project). This way, I can always navigate to
+    a file by its project-rooted filename.
 
-    In my head, I know the layout of this project, so I know ~README~
-    alone is an ambiguous name. If I'm looking for ~foo/README~, I
-    will therefore type ~foo~ first, and counsel-projectile will have
-    no matches.
+    Consider a project with two files, ~foo/README~ and ~bar/README~.
+    If I open ~foo/README~ and then ~counsel-projectile~, I will see
+    ~README~ (the buffer for ~foo/README~) and ~bar/README~. This
+    means there are no matches for ~foo/README~.
+    ~counsel-projectile-find-file~ avoids this problem.
 
-    If I open ~bar/README~ as well, then emacs is forced to
-    disambiguate names, which it does the way I expect
-    (uniquify-buffer-name-style). I should teach counsel-projectile
-    how to keep names unique even when some are open buffers and some
-    aren't.
+    Another issue arises if you have two separate projects, ~foo~ and
+    ~bar~, that each have their own ~README~. If both ~README~s are
+    open at the same time, the buffer names will be disambiguated by
+    uniquify, which will appear in ~counsel-projectile~. Again,
+    ~counsel-projectile-find-file~ avoids this problem.
 
-    Another example of this problem: you have READMEs open in two
-    separate projects, ~foo/README~ and ~bar/README~. uniquify will do
-    its job and disambiguate the names. But now if you switch between
-    projects, you'll see a buffer named ~foo/README~ where you
-    expected just ~README~. In this case, counsel-projectile should
-    discard uniquification. Basically, inside counsel-projectile,
-    buffer names should always be based at the project root, even if
-    uniquification (or lack thereof) would display otherwise.
+    I also want ~counsel-projectile-switch-project~ to use
+    ~counsel-projectile-find-file~ as its action (the default action
+    selects a file or buffer, like ~counsel-projectile~).
+    Unfortunately, there's no good way to change the default action.
+    Either you copy the entire action list into your config, or you
+    mutate the action list to change the leading integer that selects
+    the default. Both options are unpleasant, but the latter is
+    shorter.
 ** [[https://github.com/abo-abo/avy][avy]]
    One of the unpleasant truths of vim is that, although there are
    structured motions for everything, you're probably going to start
