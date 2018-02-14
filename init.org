@@ -1151,7 +1151,7 @@
    See also: [[https://github.com/nsf/gocode/tree/master/emacs-company][company-go]].
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
-  - https://github.com/hlissner/.emacs.d/
+  - https://github.com/hlissner/doom-emacs
   - https://github.com/noctuid/evil-guide
   - https://github.com/jojojames/evil-collection
 ** TODO More File Types
