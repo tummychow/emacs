@@ -1175,6 +1175,43 @@
     Default indentation behavior for ruby seemed particularly
     atrocious when I last encountered it. See [[https://github.com/zenspider/enhanced-ruby-mode][enhanced-ruby-mode]] and
     [[https://github.com/dgutov/robe][robe]].
+** TODO Preserving Locals After Major Mode Change
+   An excellent write up on this topic is [[https://stackoverflow.com/a/19295380][here]]. Opening a file runs
+   ~normal-mode~, which invokes ~hack-local-variables~ to set dir and
+   file locals. But when a new major mode is run, the call chain
+   propagates up to its parent, ~fundamental-mode~, which runs
+   ~kill-all-local-variables~. ~hack-local-variables~ doesn't get
+   called again, so the local variables are lost.
+
+   You can add ~hack-local-variables~ to
+   ~after-change-major-mode-hook~ to ensure that it gets rerun after
+   any major mode change. However, ~normal-mode~ also runs
+   ~set-auto-mode~, which performs major mode autodetection and also
+   triggers that hook. So if you add ~hack-local-variables~ to that
+   hook, then ~normal-mode~ will run it twice. It's unclear if this is
+   actually harmful, but it's probably wrong.
+
+   The solution in that Stack Overflow answer is to add
+   ~hack-local-variables~ to the hook, but with a flag to skip it.
+   Then you advise ~normal-mode~ to set the flag, so when
+   ~set-auto-mode~ triggers the hook, ~hack-local-variables~ gets
+   skipped. ~normal-mode~ will then invoke ~hack-local-variables~
+   directly to achieve the original effect. Meanwhile, other major
+   mode changes will run the hook with the flag unset, so
+   ~hack-local-variables~ will be rerun as desired.
+
+   I like the concept of this solution, but it also feels ugly. Maybe
+   there's a way to add some ~:before-while~ advice to
+   ~hack-local-variables~, to achieve the same thing without a custom
+   flag. Needs more investigation.
+
+   Note that, if a file's major mode is configured by a local
+   variable, rerunning ~hack-local-variables~ makes it impossible to
+   change that major mode manually. If you attempted to do so,
+   ~hack-local-variables~ would detect the local variable and
+   immediately change the mode back. Maybe we could add a flag to
+   ~hack-local-variables~ to skip major modes. (It currently has a
+   flag that does the opposite - major modes only.)
 ** TODO Modeline and Frame Title
    I'm pretty happy with the built-in emacs modeline in terms of
    information, but it doesn't look flattering. Could use some
