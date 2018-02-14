@@ -320,7 +320,7 @@
         "x" 'delete-window
         "b" 'kill-this-buffer
         "k" 'kill-buffer-and-window)
-       (:keymaps 'special-mode-map
+       (:keymaps '(special-mode-map tabulated-list-mode-map)
         :states 'normal
         "q" 'kill-buffer-and-window)
        (:keymaps 'minibuffer-local-map
