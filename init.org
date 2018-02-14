@@ -46,6 +46,7 @@
    rough around the edges - see [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq load-prefer-newer t)
      (setq straight-repository-branch "develop")
      (setq straight-check-for-modifications 'never)
      (setq straight-use-package-by-default t)
@@ -157,18 +158,23 @@
 
      (setq-default indent-tabs-mode nil)
 
-     (advice-add 'executable-make-buffer-file-executable-if-script-p
-                 :before-while (lambda ()
-                                 (and buffer-file-name
-                                      (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
-     (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
      (setq uniquify-buffer-name-style 'forward)
 
      (setq require-final-newline t)
-
-     (setq load-prefer-newer t)
    #+END_SRC
+*** Executable Script Hook
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (advice-add 'executable-make-buffer-file-executable-if-script-p
+                  :before-while (lambda ()
+                                  (and buffer-file-name
+                                       (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
+      (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+    #+END_SRC
+
+    This useful built-in function makes a file executable if it starts
+    with a shebang. Unfortunately, this also hits my dotfiles (eg
+    ~.bashrc~), so I advise the function to skip any file with a
+    leading dot.
 *** Fonts and Faces
     #+BEGIN_SRC emacs-lisp :tangle yes
       (cond ((eq system-type 'gnu/linux)
