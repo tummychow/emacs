@@ -1149,6 +1149,20 @@
    #+END_SRC
 
    See also: [[https://github.com/nsf/gocode/tree/master/emacs-company][company-go]].
+** [[https://github.com/rust-lang/rust-mode][Rust]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package rust-mode
+       :custom
+       (rust-format-on-save t)
+       :defer t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package flycheck-rust
+       :hook (rust-mode . flycheck-rust-setup))
+   #+END_SRC
+
+   See also: [[https://github.com/racer-rust/emacs-racer][racer]].
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/doom-emacs
