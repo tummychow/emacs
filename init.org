@@ -1163,6 +1163,46 @@
    #+END_SRC
 
    See also: [[https://github.com/racer-rust/emacs-racer][racer]].
+** [[https://github.com/skeeto/elfeed][elfeed]]
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package elfeed
+       :general
+       (:keymaps 'elfeed-search-mode-map
+        :states 'normal
+        "q" (lambda ()
+              (interactive)
+              (elfeed-db-save)
+              (kill-this-buffer)))
+       (private/with-local-leader
+        :keymaps 'elfeed-search-mode-map
+        "g" 'elfeed-search-update--force
+        "G" 'elfeed-search-fetch
+        "RET" 'elfeed-search-browse-url
+        "y" 'elfeed-search-yank
+        "s" 'elfeed-search-live-filter
+        "S" 'elfeed-search-set-filter
+        "u" 'elfeed-search-tag-all-unread
+        "r" 'elfeed-search-untag-all-unread)
+       :defer t
+       :config
+       (let ((opml (no-littering-expand-var-file-name "elfeed/elfeed.opml")))
+         (when (file-exists-p opml)
+           (elfeed-load-opml opml))))
+   #+END_SRC
+
+   I actually don't read feed items in emacs at all. I vastly prefer
+   the rendering of my browser and would prefer to handle all my feeds
+   there. Unfortunately, my old feed reader (Sage++) died in the
+   Firefox 57 WebExtensions migration, and I have yet to find anything
+   remotely satisfactory to replace it. While I plan to write my own
+   feed reader someday, elfeed is a pretty reasonable feed organizer,
+   and it lets me do the reading in the browser, so it'll do for now.
+
+   I don't want to store my feeds list in git, so I currently load it
+   from an OPML file rather than using ~elfeed-feeds~. There is
+   probably a good way to store ~elfeed-feeds~ in a separate file
+   (similar to ~projectile-known-projects-file~) but I haven't
+   bothered to implement it yet.
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/doom-emacs
