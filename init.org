@@ -100,7 +100,6 @@
        (general-create-definer private/with-local-leader
                                :prefix "DEL"
                                :non-normal-prefix "M-DEL"
-                               :keymaps 'override
                                :states '(normal visual insert emacs)))
    #+END_SRC
 ** [[https://github.com/abo-abo/hydra][hydra]]
