@@ -703,6 +703,7 @@
         "c" 'flycheck-buffer
         "C" 'flycheck-clear
         "v" 'flycheck-verify-setup
+        "x" 'flycheck-disable-checker
         "RET" 'flycheck-explain-error-at-point
         "r" 'flycheck-display-error-at-point
         "y" 'flycheck-copy-errors-as-kill
