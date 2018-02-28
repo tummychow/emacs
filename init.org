@@ -1129,6 +1129,8 @@
 ** [[https://github.com/dominikh/go-mode.el][Go]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-mode
+       :custom
+       (gofmt-show-errors nil)
        :hook (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t)))
        :defer t)
    #+END_SRC
