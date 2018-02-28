@@ -156,6 +156,7 @@
      (show-paren-mode 1)
 
      (setq-default indent-tabs-mode nil)
+     (setq-default tab-width 4)
 
      (setq uniquify-buffer-name-style 'forward)
 
