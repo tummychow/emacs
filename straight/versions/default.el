@@ -21,7 +21,7 @@
  ("go-mode.el" . "7eb5b3dd0ac31d176e9d56da4172f66aef8fae47")
  ("goto-chg" . "e5b38e4e1378f6ea48fa9e8439f49c2998654aa4")
  ("hydra" . "cf961400796aea8b385b64ac0ad31c1e2500cf6a")
- ("markdown-mode" . "cde5c5d2bcce470c494b76e23cfe1364b6291c20")
+ ("markdown-mode" . "668de4a965980d618637a3b5754e721b54c51e83")
  ("melpa" . "7fface90a81b0cd252e9b52deba548c08ef7b213")
  ("no-littering" . "5156e005d59453f2608b9c38e9fe92ba8df550db")
  ("org" . "7e8e12be21e3fca4351748c3780b486e4daedf16")
