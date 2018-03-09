@@ -687,12 +687,16 @@
                         (compilation-mode :select t
                                           :popup t
                                           :align right
-                                          :size 0.5)))
+                                          :size 0.5)
+                        ("*Local Variables*" :select t
+                                             :same t)))
        :demand t
        :config
        (shackle-mode 1)
        :diminish)
    #+END_SRC
+
+   ~*Local Variables*~ comes from ~hack-local-variables-confirm~.
 ** [[https://github.com/flycheck/flycheck][Flycheck]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flycheck
