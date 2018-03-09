@@ -697,6 +697,33 @@
    #+END_SRC
 
    ~*Local Variables*~ comes from ~hack-local-variables-confirm~.
+*** TODO Comprehensive Popup System
+    I rather envy [[https://github.com/hlissner/doom-emacs/blob/master/core/core-popups.el][doom-popups]]. This system hooks into evil's normal
+    state ~ESC~ to close the current window (if it is a popup), and to
+    close all open popups (if it is not a popup). The definition of
+    "popup" is applied through shackle.
+
+    This system has a few notable advantages. First, recycling ~ESC~
+    for this feels appropriate and avoids changing the normal state
+    ~q~ binding. In addition, if I had an easy way to close popups
+    without selecting them, I wouldn't need as much ~:select t~ in my
+    shackle rules.
+*** TODO Inhibit Window Quit
+    Sometimes, a special buffer gets opened in a window I was actually
+    using, instead of in a popup (maybe intentionally, or maybe
+    because I haven't shackled that buffer yet). This is fine until I
+    attempt to dismiss the window, because I bind ~q~ to
+    ~kill-buffer-and-window~. In these situations I only want to kill
+    the buffer and keep the window around.
+
+    shackle already includes a feature for this
+    (~inhibit-window-quit~), which hooks into the regular
+    ~quit-window~ function (the default binding of ~q~ in special
+    buffers). However, ~quit-window~ does not kill the buffer by
+    default (which is why I changed the ~q~ binding in the first
+    place); it only pushes it to the bottom of the buffer list. I want
+    it to kill buffers unless I ask to bury them instead. This
+    probably requires some ~:filter-args~ advice.
 ** [[https://github.com/flycheck/flycheck][Flycheck]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flycheck
