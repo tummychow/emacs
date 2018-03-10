@@ -1412,6 +1412,7 @@
    - [[https://www.gnu.org/software/emms/][EMMS]]
    - [[https://github.com/pft/mingus][mingus]]
    - [[https://github.com/nlamirault/dionysos][dionysos]]
+   - [[https://github.com/mpdel/mpdel][MPDel]]
 ** TODO Miscellaneous Packages
    - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
      use-package)
