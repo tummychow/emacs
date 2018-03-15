@@ -323,9 +323,6 @@
         "x" 'delete-window
         "b" 'kill-this-buffer
         "k" 'kill-buffer-and-window)
-       (:keymaps '(special-mode-map tabulated-list-mode-map)
-        :states 'normal
-        "q" 'kill-buffer-and-window)
        (:keymaps 'minibuffer-local-map
         "<escape>" 'minibuffer-keyboard-quit)
        :demand t
@@ -676,6 +673,7 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package shackle
        :custom
+       (shackle-inhibit-window-quit-on-same-windows t)
        (shackle-rules '((help-mode :select t
                                    :popup t
                                    :align below
@@ -691,12 +689,24 @@
                         ("*Local Variables*" :select t
                                              :same t)))
        :demand t
+       :general
+       (:keymaps '(special-mode-map tabulated-list-mode-map)
+        :states 'normal
+        "q" 'quit-window)
+       ([remap quit-window] 'private/quit-window)
        :config
+       (defun private/quit-window (arg)
+         (interactive "P")
+         (quit-window (if arg nil 'kill)))
        (shackle-mode 1)
        :diminish)
    #+END_SRC
 
    ~*Local Variables*~ comes from ~hack-local-variables-confirm~.
+
+   I remap ~quit-window~ so that it kills buffers by default instead
+   of burying them. Since evil has its own binding of ~q~ in normal
+   state, that has to be mapped back to ~quit-window~.
 *** TODO Comprehensive Popup System
     I rather envy [[https://github.com/hlissner/doom-emacs/blob/master/core/core-popups.el][doom-popups]]. This system hooks into evil's normal
     state ~ESC~ to close the current window (if it is a popup), and to
@@ -708,22 +718,6 @@
     ~q~ binding. In addition, if I had an easy way to close popups
     without selecting them, I wouldn't need as much ~:select t~ in my
     shackle rules.
-*** TODO Inhibit Window Quit
-    Sometimes, a special buffer gets opened in a window I was actually
-    using, instead of in a popup (maybe intentionally, or maybe
-    because I haven't shackled that buffer yet). This is fine until I
-    attempt to dismiss the window, because I bind ~q~ to
-    ~kill-buffer-and-window~. In these situations I only want to kill
-    the buffer and keep the window around.
-
-    shackle already includes a feature for this
-    (~inhibit-window-quit~), which hooks into the regular
-    ~quit-window~ function (the default binding of ~q~ in special
-    buffers). However, ~quit-window~ does not kill the buffer by
-    default (which is why I changed the ~q~ binding in the first
-    place); it only pushes it to the bottom of the buffer list. I want
-    it to kill buffers unless I ask to bury them instead. This
-    probably requires some ~:filter-args~ advice.
 ** [[https://github.com/flycheck/flycheck][Flycheck]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flycheck
