@@ -707,6 +707,8 @@
    I remap ~quit-window~ so that it kills buffers by default instead
    of burying them. Since evil has its own binding of ~q~ in normal
    state, that has to be mapped back to ~quit-window~.
+   (~tabulated-list-mode-map~ does not derive from ~special-mode-map~,
+   so it also has to be set explicitly. I filed [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30452][a bug]] for that.)
 *** TODO Comprehensive Popup System
     I rather envy [[https://github.com/hlissner/doom-emacs/blob/master/core/core-popups.el][doom-popups]]. This system hooks into evil's normal
     state ~ESC~ to close the current window (if it is a popup), and to
