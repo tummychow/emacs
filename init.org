@@ -430,6 +430,12 @@
         [remap save-buffer] 'wgrep-finish-edit)
        :commands (wgrep-change-to-wgrep-mode))
    #+END_SRC
+*** TODO Dismissing ~ivy-hydra~
+    If I open ~ivy-hydra~ and then close the minibuffer, the hydra is
+    actually still there. If I open the minibuffer, it becomes
+    apparent that the hydra was open the whole time, and is eating all
+    my keystrokes until I exit it with ~C-o~. The hydra should
+    terminate whenever the minibuffer closes.
 *** TODO Structured Find/Replace
     This is a big topic, but I'm just going to stick it here because
     it's all going through ivy one way or another.
