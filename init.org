@@ -166,10 +166,10 @@
    #+END_SRC
 *** Executable Script Hook
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (advice-add 'executable-make-buffer-file-executable-if-script-p
-                  :before-while (lambda ()
-                                  (and buffer-file-name
-                                       (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
+      (advice-add 'executable-make-buffer-file-executable-if-script-p :before-while
+                  (lambda ()
+                    (and buffer-file-name
+                         (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
       (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
     #+END_SRC
 
@@ -843,11 +843,11 @@
        (when (and (stringp org-agenda-files)
                   (not (file-exists-p org-agenda-files)))
          (with-temp-buffer (write-file org-agenda-files)))
-       (advice-add 'org-element-property
-                   :after-until (lambda (property element)
-                                  (and (eq (org-element-type element) 'src-block)
-                                       (eq property :language)
-                                       "fundamental"))))
+       (advice-add 'org-element-property :after-until
+                   (lambda (property element)
+                     (and (eq (org-element-type element) 'src-block)
+                          (eq property :language)
+                          "fundamental"))))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
