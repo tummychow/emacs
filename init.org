@@ -1,4 +1,4 @@
--*- eval: (add-hook 'after-save-hook 'org-babel-tangle nil t) -*-
+-*- eval: (add-hook 'after-save-hook #'org-babel-tangle nil t) -*-
 
 * Libraries and Plumbing
 ** Tangling Hook
@@ -18,7 +18,7 @@
    manually.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook 'org-babel-tangle nil t))
+     (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'org-babel-tangle nil t))
    #+END_SRC
 *** TODO Async
     Tangling produces a noticeable pause every time I save. This should
@@ -134,7 +134,7 @@
      (setq create-lockfiles nil)
      (setq make-backup-files nil)
 
-     (setq initial-major-mode 'org-mode)
+     (setq initial-major-mode #'org-mode)
      (setq initial-scratch-message nil)
      (setq inhibit-startup-screen t)
 
@@ -166,11 +166,11 @@
    #+END_SRC
 *** Executable Script Hook
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (advice-add 'executable-make-buffer-file-executable-if-script-p :before-while
+      (advice-add #'executable-make-buffer-file-executable-if-script-p :before-while
                   (lambda ()
                     (and buffer-file-name
                          (not (string-prefix-p "." (file-name-nondirectory buffer-file-name))))))
-      (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+      (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
     #+END_SRC
 
     This useful built-in function makes a file executable if it starts
@@ -305,36 +305,36 @@
        :general
        (:keymaps 'override
         :states '(normal visual)
-        ";" 'evil-ex
-        "s" 'save-buffer
-        "x" 'other-window
-        "r" 'universal-argument)
+        ";" #'evil-ex
+        "s" #'save-buffer
+        "x" #'other-window
+        "r" #'universal-argument)
        (:keymaps 'universal-argument-map
-        "r" 'universal-argument-more)
+        "r" #'universal-argument-more)
        (private/with-leader
-        "SPC" 'execute-extended-command
-        ";" 'eval-expression
-        "f" 'find-file
-        "b" 'switch-buffer
-        "h" 'help-command)
+        "SPC" #'execute-extended-command
+        ";" #'eval-expression
+        "f" #'find-file
+        "b" #'switch-buffer
+        "h" #'help-command)
        (private/with-leader
         :infix "d"
         "" '(:wk "desktops"
              :ignore t)
-        "h" 'split-window-vertically
-        "v" 'split-window-horizontally
-        "x" 'delete-window
-        "b" 'kill-this-buffer
-        "k" 'kill-buffer-and-window)
+        "h" #'split-window-vertically
+        "v" #'split-window-horizontally
+        "x" #'delete-window
+        "b" #'kill-this-buffer
+        "k" #'kill-buffer-and-window)
        (:keymaps 'minibuffer-local-map
-        "<escape>" 'minibuffer-keyboard-quit)
+        "<escape>" #'minibuffer-keyboard-quit)
        :hook
        (private/evil-esc . (lambda ()
                              (when (minibuffer-window-active-p (minibuffer-window))
                                (abort-recursive-edit))))
        :demand t
        :config
-       (advice-add 'evil-force-normal-state :after
+       (advice-add #'evil-force-normal-state :after
                    (lambda () (run-hooks 'private/evil-esc-hook)))
        (evil-mode 1))
    #+END_SRC
@@ -380,21 +380,21 @@
        :custom
        (ivy-count-format "(%d/%d) ")
        :general
-       ([remap switch-buffer] 'ivy-switch-buffer)
+       ([remap switch-buffer] #'ivy-switch-buffer)
        (:keymaps 'ivy-minibuffer-map
-        "<escape>" 'abort-recursive-edit)
+        "<escape>" #'abort-recursive-edit)
        (private/with-local-leader
         :keymaps '(ivy-occur-mode-map ivy-occur-grep-mode-map)
-        "DEL" 'ivy-occur-dispatch
-        "RET" 'ivy-occur-press-and-switch
-        "f" 'ivy-occur-press
-        "a" 'ivy-occur-read-action
-        "c" 'ivy-occur-toggle-calling
-        "d" 'ivy-occur-delete-candidate
-        "r" 'ivy-occur-revert-buffer)
+        "DEL" #'ivy-occur-dispatch
+        "RET" #'ivy-occur-press-and-switch
+        "f" #'ivy-occur-press
+        "a" #'ivy-occur-read-action
+        "c" #'ivy-occur-toggle-calling
+        "d" #'ivy-occur-delete-candidate
+        "r" #'ivy-occur-revert-buffer)
        (private/with-local-leader
         :keymaps 'ivy-occur-grep-mode-map
-        "w" 'ivy-wgrep-change-to-wgrep-mode)
+        "w" #'ivy-wgrep-change-to-wgrep-mode)
        :demand t
        :config
        (ivy-mode 1)
@@ -418,7 +418,7 @@
      (use-package swiper
        :general
        (private/with-leader
-        "/" 'swiper))
+        "/" #'swiper))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -427,7 +427,7 @@
        (wgrep-auto-save-buffer t)
        :general
        (:keymaps 'wgrep-mode-map
-        [remap save-buffer] 'wgrep-finish-edit)
+        [remap save-buffer] #'wgrep-finish-edit)
        :commands (wgrep-change-to-wgrep-mode))
    #+END_SRC
 *** TODO Dismissing ~ivy-hydra~
@@ -527,7 +527,7 @@
        (projectile-globally-unignored-files '(".projectile" ".dir-locals.el"))
        :demand t
        :config
-       (put 'projectile-enable-caching 'safe-local-variable 'booleanp)
+       (put 'projectile-enable-caching 'safe-local-variable #'booleanp)
        (projectile-mode 1))
    #+END_SRC
 
@@ -538,15 +538,15 @@
         :infix "p"
         "" '(:wk "projectile"
              :ignore t)
-        "f" 'private/counsel-projectile-find-file
-        "/" 'counsel-projectile-rg
-        "p" 'counsel-projectile-switch-project
-        "b" 'counsel-projectile-switch-to-buffer)
+        "f" #'private/counsel-projectile-find-file
+        "/" #'counsel-projectile-rg
+        "p" #'counsel-projectile-switch-project
+        "b" #'counsel-projectile-switch-to-buffer)
        :demand t
        :config
        (setcar counsel-projectile-switch-project-action
                (counsel-projectile--action-index
-                'counsel-projectile-switch-project-action-find-file
+                #'counsel-projectile-switch-project-action-find-file
                 counsel-projectile-switch-project-action))
        (defun private/counsel-projectile-find-file (arg)
          (interactive "P")
@@ -606,7 +606,7 @@
        (avy-all-windows nil)
        :general
        (:states '(motion)
-        "f" 'avy-goto-char-2-esc)
+        "f" #'avy-goto-char-2-esc)
        :config
        (defun avy-goto-char-2-esc (&optional arg beg end)
          "Like avy-goto-char-2, but cancels the prompt if you press ESC."
@@ -674,7 +674,7 @@
        (aw-leading-char-face ((t (:foreground "red"
                                   :height 3.0))))
        :general
-       ([remap other-window] 'ace-window)
+       ([remap other-window] #'ace-window)
        :init
        (setq aw-dispatch-alist '((?x aw-flip-window))))
    #+END_SRC
@@ -712,8 +712,8 @@
        :general
        (:keymaps '(special-mode-map tabulated-list-mode-map)
         :states 'normal
-        "q" 'quit-window)
-       ([remap quit-window] 'private/quit-window)
+        "q" #'quit-window)
+       ([remap quit-window] #'private/quit-window)
        :config
        (defun private/quit-window (arg)
          (interactive "P")
@@ -748,22 +748,22 @@
         :infix "y"
         "" '(:wk "flycheck"
              :ignore t)
-        "c" 'flycheck-buffer
-        "C" 'flycheck-clear
-        "v" 'flycheck-verify-setup
-        "x" 'flycheck-disable-checker
-        "RET" 'flycheck-explain-error-at-point
-        "r" 'flycheck-display-error-at-point
-        "y" 'flycheck-copy-errors-as-kill
-        "j" 'flycheck-next-error
-        "k" 'flycheck-previous-error
-        "l" 'flycheck-list-errors)
+        "c" #'flycheck-buffer
+        "C" #'flycheck-clear
+        "v" #'flycheck-verify-setup
+        "x" #'flycheck-disable-checker
+        "RET" #'flycheck-explain-error-at-point
+        "r" #'flycheck-display-error-at-point
+        "y" #'flycheck-copy-errors-as-kill
+        "j" #'flycheck-next-error
+        "k" #'flycheck-previous-error
+        "l" #'flycheck-list-errors)
        :hook
        (org-src-mode . (lambda () (flycheck-mode 0)))
        :demand t
        :config
-       (put 'flycheck-ruby-executable 'safe-local-variable 'stringp)
-       (put 'flycheck-ruby-rubocop-executable 'safe-local-variable 'stringp)
+       (put 'flycheck-ruby-executable 'safe-local-variable #'stringp)
+       (put 'flycheck-ruby-rubocop-executable 'safe-local-variable #'stringp)
        (global-flycheck-mode 1))
    #+END_SRC
 
@@ -797,7 +797,7 @@
        :general
        (:states '(insert emacs)
         :keymaps 'org-mode-map
-        "RET" 'org-return-indent)
+        "RET" #'org-return-indent)
        (private/with-local-leader
         :keymaps 'org-mode-map
         "h" '(private/hydra-worf/private/org-up-heading-safe
@@ -808,24 +808,24 @@
               :wk "prev heading")
         "l" '(private/hydra-worf/private/org-goto-first-child
               :wk "child heading")
-        "/" 'counsel-org-goto
-        "r" 'org-reveal
-        "e" 'org-edit-special
-        "x" 'org-export-dispatch
-        "RET" 'org-open-at-point
-        "o" 'private/org-meta-return-after
-        "O" 'private/org-meta-return-before)
+        "/" #'counsel-org-goto
+        "r" #'org-reveal
+        "e" #'org-edit-special
+        "x" #'org-export-dispatch
+        "RET" #'org-open-at-point
+        "o" #'private/org-meta-return-after
+        "O" #'private/org-meta-return-before)
        (private/with-local-leader
         :keymaps 'org-mode-map
         :infix "z"
         "" '(:wk "toggles"
              :ignore t)
-        "h" 'org-toggle-heading
-        "i" 'org-toggle-item
-        "l" 'org-toggle-link-display)
+        "h" #'org-toggle-heading
+        "i" #'org-toggle-item
+        "l" #'org-toggle-link-display)
        (private/with-local-leader
         :keymaps 'org-src-mode-map
-        "e" 'org-edit-src-exit)
+        "e" #'org-edit-src-exit)
        :hook
        (org-mode . private/org-agenda-file-to-back-if-new)
        :config
@@ -860,7 +860,7 @@
        (when (and (stringp org-agenda-files)
                   (not (file-exists-p org-agenda-files)))
          (with-temp-buffer (write-file org-agenda-files)))
-       (advice-add 'org-element-property :after-until
+       (advice-add #'org-element-property :after-until
                    (lambda (property element)
                      (and (eq (org-element-type element) 'src-block)
                           (eq property :language)
@@ -876,7 +876,7 @@
      (use-package hydra-ox
        :straight hydra
        :general
-       ([remap org-export-dispatch] 'hydra-ox/body))
+       ([remap org-export-dispatch] #'hydra-ox/body))
    #+END_SRC
 
    Note that MELPA does not split hydra and hydra-ox into separate
@@ -1183,7 +1183,7 @@
        :custom
        (gofmt-show-errors nil)
        :hook
-       (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t)))
+       (go-mode . (lambda () (add-hook 'before-save-hook #'gofmt-before-save nil t)))
        :defer t)
    #+END_SRC
 
@@ -1232,14 +1232,14 @@
               (kill-this-buffer)))
        (private/with-local-leader
         :keymaps 'elfeed-search-mode-map
-        "g" 'elfeed-search-update--force
-        "G" 'elfeed-search-fetch
-        "RET" 'elfeed-search-browse-url
-        "y" 'elfeed-search-yank
-        "s" 'elfeed-search-live-filter
-        "S" 'elfeed-search-set-filter
-        "u" 'elfeed-search-tag-all-unread
-        "r" 'elfeed-search-untag-all-unread)
+        "g" #'elfeed-search-update--force
+        "G" #'elfeed-search-fetch
+        "RET" #'elfeed-search-browse-url
+        "y" #'elfeed-search-yank
+        "s" #'elfeed-search-live-filter
+        "S" #'elfeed-search-set-filter
+        "u" #'elfeed-search-tag-all-unread
+        "r" #'elfeed-search-untag-all-unread)
        :defer t
        :config
        (let ((opml (no-littering-expand-var-file-name "elfeed/elfeed.opml")))
