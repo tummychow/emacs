@@ -239,7 +239,8 @@
       (setq visual-line-fringe-indicators '(left-curly-arrow nil))
 
       (use-package adaptive-wrap
-        :hook (visual-line-mode . adaptive-wrap-prefix-mode)
+        :hook
+        (visual-line-mode . adaptive-wrap-prefix-mode)
         :diminish 'adaptive-wrap-prefix-mode)
     #+END_SRC
 
@@ -740,7 +741,8 @@
         "j" 'flycheck-next-error
         "k" 'flycheck-previous-error
         "l" 'flycheck-list-errors)
-       :hook (org-src-mode . (lambda () (flycheck-mode 0)))
+       :hook
+       (org-src-mode . (lambda () (flycheck-mode 0)))
        :demand t
        :config
        (put 'flycheck-ruby-executable 'safe-local-variable 'stringp)
@@ -807,7 +809,8 @@
        (private/with-local-leader
         :keymaps 'org-src-mode-map
         "e" 'org-edit-src-exit)
-       :hook (org-mode . private/org-agenda-file-to-back-if-new)
+       :hook
+       (org-mode . private/org-agenda-file-to-back-if-new)
        :config
        (defun private/org-agenda-file-to-back-if-new ()
          (when (and buffer-file-name
@@ -1064,7 +1067,8 @@
        :custom
        (markdown-hide-urls t)
        :mode ("\\.md\\'" . markdown-mode)
-       :hook (markdown-mode . visual-line-mode))
+       :hook
+       (markdown-mode . visual-line-mode))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1085,7 +1089,8 @@
        :custom
        (beancount-use-ido nil)
        :mode ("\\.beancount\\'" . org-mode)
-       :hook (org-mode . private/org-beancount)
+       :hook
+       (org-mode . private/org-beancount)
        :init
        (defun private/org-beancount ()
          (when (and buffer-file-name
@@ -1160,7 +1165,8 @@
      (use-package go-mode
        :custom
        (gofmt-show-errors nil)
-       :hook (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t)))
+       :hook
+       (go-mode . (lambda () (add-hook 'before-save-hook 'gofmt-before-save nil t)))
        :defer t)
    #+END_SRC
 
@@ -1177,7 +1183,8 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package go-eldoc
-       :hook (go-mode . go-eldoc-setup))
+       :hook
+       (go-mode . go-eldoc-setup))
    #+END_SRC
 
    See also: [[https://github.com/nsf/gocode/tree/master/emacs-company][company-go]].
@@ -1191,7 +1198,8 @@
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flycheck-rust
-       :hook (rust-mode . flycheck-rust-setup))
+       :hook
+       (rust-mode . flycheck-rust-setup))
    #+END_SRC
 
    See also: [[https://github.com/racer-rust/emacs-racer][racer]].
