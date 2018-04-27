@@ -1442,6 +1442,7 @@
    - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
      use-package)
    - [[https://github.com/bbatsov/crux][crux]]
+   - [[https://github.com/m00natic/vlfi][vlf]]
    - [[https://github.com/bbatsov/super-save][super-save]]
    - [[https://github.com/joaotavora/yasnippet][yasnippet]]
    - [[https://github.com/dacap/keyfreq][keyfreq]]
