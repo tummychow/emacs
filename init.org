@@ -1220,6 +1220,12 @@
    #+END_SRC
 
    See also: [[https://github.com/racer-rust/emacs-racer][racer]].
+** Ruby
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq ruby-insert-encoding-magic-comment nil)
+   #+END_SRC
+
+   See also: [[https://github.com/zenspider/enhanced-ruby-mode][enhanced-ruby-mode]] and [[https://github.com/dgutov/robe][robe]].
 ** [[https://github.com/skeeto/elfeed][elfeed]]
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package elfeed
@@ -1282,10 +1288,6 @@
 *** TODO Python
     See [[https://github.com/jorgenschaefer/elpy][elpy]], [[https://github.com/proofit404/anaconda-mode][anaconda-mode]], [[https://github.com/proofit404/company-anaconda][company-anaconda]], and [[https://github.com/JorisE/yapfify][yapfify]]. (elpy vs
     anaconda: [[https://github.com/proofit404/anaconda-mode/issues/38][further reading]].)
-*** TODO Ruby
-    Default indentation behavior for ruby seemed particularly
-    atrocious when I last encountered it. See [[https://github.com/zenspider/enhanced-ruby-mode][enhanced-ruby-mode]] and
-    [[https://github.com/dgutov/robe][robe]].
 ** TODO Preserving Locals After Major Mode Change
    An excellent write up on this topic is [[https://stackoverflow.com/a/19295380][here]]. Opening a file runs
    ~normal-mode~, which invokes ~hack-local-variables~ to set dir and
