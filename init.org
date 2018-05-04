@@ -25,11 +25,22 @@
     be pushed off the main thread.
 
     - https://www.reddit.com/r/emacs/comments/5ej8by/
+    - https://www.reddit.com/r/emacs/comments/8eozfl/advanced_techniques_for_reducing_emacs_startup/dxy5437/
     - https://emacs.stackexchange.com/q/22722
 
 
     We have to be careful about tangling with the org that was
     installed by straight, not the built-in one.
+*** TODO Faster Tangling
+    ~org-babel-tangle~ is really not that fast. It (absurdly, but
+    perhaps unsurprisingly) opens the output file once for each
+    tangled block. The mere act of loading org is also expensive in
+    its own right. People have written custom functions that imitate
+    the behavior of ~org-babel-tangle~, but much faster. These are
+    probably worth exploring.
+
+    - http://www.holgerschurig.de/en/emacs-efficiently-untangling-elisp/
+    - http://endlessparentheses.com/init-org-Without-org-mode.html
 *** TODO Read/Edit/Compile Loop
     Before I started using a tangled init, I could just edit ~init.el~
     directly and ~eval-buffer~ to reload it. Having to
@@ -444,7 +455,9 @@
      (ie it shows me where I'm going before I decide to go there) and
      ephemeral (ie if I dismiss the minibuffer it leaves no traces of
      its presence). One useful addition would be an easy way to resume
-     the previous swiper search. ~ivy-resume~, maybe?
+     the previous swiper search. ~ivy-resume~, maybe? I also don't
+     make much use of ~swiper-query-replace~ (~M-q~ binding), which
+     seems useful.
 **** isearch
      I have experimented with isearch (which is hooked into evil's ~/~
      by default). I find it most useful as a motion - ie when I already
