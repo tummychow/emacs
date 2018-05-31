@@ -7,7 +7,7 @@
  ("dash.el" . "48a5015dd1314a8bcad48f2ad8866dd911001b01")
  ("diminish.el" . "565a983a39d2e2cffab5df13b34f3b6116723208")
  ("edit-indirect" . "032ac0ec690d4999d564fd882588c7a197efe8dd")
- ("elfeed" . "fc49bee1f7ca74dd160111173aad35b1af304494")
+ ("elfeed" . "40d3463ca2c4380d2d9aaf79b0ad8583f464d81b")
  ("emacs-go-eldoc" . "cbbd2ea1e94a36004432a9ac61414cb5a95a39bd")
  ("emacs-htmlize" . "a0b55cba65a225df8d9e17a3ac448ce9e8ec962d")
  ("emacs-which-key" . "fce520f8af727bd33861f8d0f7655c01ea84ad85")
