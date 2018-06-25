@@ -481,6 +481,11 @@
      fits into the picture. I just haven't used it enough yet. I
      believe the occur/wgrep system works just as well here as it does
      for swiper.
+
+     One thing I don't like about ~counsel-projectile-rg~ is that it's
+     very difficult to constrain my search to a subfolder of the
+     project. Perhaps [[https://github.com/Wilfred/deadgrep][deadgrep]], which is highly rg-native, would be a
+     good choice for a less incremental, more precise interface.
 **** :s
      For smaller find/replaces, I still use vim's trusty ~:s~
      (~evil-ex-substitute~). The syntax of ~:s~ lets you write the
