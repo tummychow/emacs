@@ -174,6 +174,10 @@
      (setq uniquify-buffer-name-style 'forward)
 
      (setq require-final-newline t)
+
+     (when (eq system-type 'darwin)
+       (setq ns-command-modifier 'meta)
+       (setq ns-option-modifier 'super))
    #+END_SRC
 *** Executable Script Hook
     #+BEGIN_SRC emacs-lisp :tangle yes
