@@ -59,11 +59,13 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq load-prefer-newer t)
      (setq straight-repository-branch "develop")
-     (setq straight-check-for-modifications 'never)
+     (setq straight-check-for-modifications '(find-when-checking))
      (setq straight-use-package-by-default t)
+     (setq straight-cache-autoloads t)
 
-     (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
-           (bootstrap-version 3))
+     (let ((bootstrap-file
+            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+           (bootstrap-version 4))
        (unless (file-exists-p bootstrap-file)
          (with-current-buffer
              (url-retrieve-synchronously
