@@ -773,6 +773,12 @@
    state, that has to be mapped back to ~quit-window~.
    (~tabulated-list-mode-map~ does not derive from ~special-mode-map~,
    so it also has to be set explicitly. I filed [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30452][a bug]] for that.)
+*** TODO Occur Buffers
+    ~ivy-occur~ buffers should be shackled to the window they were
+    originally in. Jumping to candidates in the occur buffer should
+    also be shackled (with the option of opening them in another
+    window if explicitly requested, because sometimes that really is
+    what I want).
 *** TODO Comprehensive Popup System
     I rather envy [[https://github.com/hlissner/doom-emacs/blob/master/core/core-popups.el][doom-popups]]. This system hooks into evil's normal
     state ~ESC~ to close the current window (if it is a popup), and to
