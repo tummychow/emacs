@@ -14,6 +14,7 @@
  ("epkgs" . "59ca0b0ae4b09d45579232ed4e729d514ab49747")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
  ("evil" . "230b87212c81aaa68ef5547a6b998d9c365fe139")
+ ("evil-surround" . "2af81ab3ac64e4b0515a157a672d8cb89f0172b9")
  ("exec-path-from-shell" . "54ea2f9c3c81d18b96e4d33c4c547e02eee420dc")
  ("flycheck" . "0995b0bb3f518c7350f1428860c0fc7eeaee3c46")
  ("flycheck-rust" . "1ffbbfeed6344107a3f65d837b30c8879274e4cf")
