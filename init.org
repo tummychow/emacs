@@ -609,6 +609,11 @@
     mutate the action list to change the leading integer that selects
     the default. Both options are unpleasant, but the latter is
     shorter.
+*** TODO Sorting
+    I mainly use buffer switching to cycle between the last few files
+    I looked at. counsel-projectile supports [[https://github.com/ericdanan/counsel-projectile#sorting-candidates][sorting candidates]], which
+    might reduce my dependence on that functionality. Perhaps a
+    binding for ~other-buffer~ would also help.
 ** [[https://github.com/abo-abo/avy][avy]]
    One of the unpleasant truths of vim is that, although there are
    structured motions for everything, you're probably going to start
