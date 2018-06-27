@@ -1124,6 +1124,15 @@
    doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine
    substitute, since the mode doesn't appear to be modified often.
 
+   Note that ~straight-pull-package~ usually doesn't work for
+   beancount, because the repo has a master [[https://bitbucket.org/blais/beancount/commits/tag/master][tag]]. In hg, the main
+   branch is called ~default~, but this tag also gets pulled into the
+   git [[https://github.com/beancount/beancount/releases/tag/master][mirror]], so ~git checkout master~ is ambiguous. (Setting the
+   branch to ~heads/master~ also fails, because
+   ~straight-pull-package~ will look for ~origin/heads/master~.) I
+   could file an upstream issue to handle this more gracefully, but it
+   seems better to wait for hg support, or to implement it myself.
+
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package beancount
        :straight (:host github
