@@ -1339,6 +1339,7 @@
     can be found [[https://github.com/Microsoft/language-server-protocol/blob/gh-pages/_implementors/servers.md][here]].
 
     - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
+    - [[https://github.com/joaotavora/eglot][eglot]]
     - [[https://github.com/tigersoldier/company-lsp][company-lsp]]
 *** TODO epub
     See [[https://github.com/wasamasa/nov.el][nov.el]].
