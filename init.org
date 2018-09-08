@@ -1420,6 +1420,10 @@
    Outside of lisp, it's still useful to have automatic pairs, but you
    don't really need anything else. Besides smartparens, there's also
    the built-in electric-pair-mode.
+
+   It would also be nice if evil's ~%~ motion worked with arbitrary
+   pairs, like in vim. That functionality can be achieved with
+   [[https://github.com/redguardtoo/evil-matchit][evil-matchit]].
 ** TODO Comments
    emacs has two built-in commenting functions, ~comment-dwim~ and
    ~comment-line~. There are some packages as well:
