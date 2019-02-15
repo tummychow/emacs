@@ -1212,7 +1212,7 @@
       manually invoke beancount-init-accounts
     - ~beancount-account-regexp~ does not recognize custom naming
       options (see ~beancount-account-categories~)
-    - shorter key sequence for beancount-insert-account
+    - autocompletion for accounts and payees
     - clean auto align for the entire file, even for non-transaction
       directives (~bean-format~ can help, but it only aligns amounts)
     - indentation should default to 2 spaces after a transaction,
@@ -1397,6 +1397,7 @@
    - [[https://github.com/dbordak/telephone-line][telephone-line]]
    - [[https://github.com/milkypostman/powerline][powerline]]/[[https://github.com/TheBB/spaceline][spaceline]]
    - [[https://github.com/Malabarba/smart-mode-line][smart-mode-line]]
+   - [[https://github.com/tarsius/moody][moody]]
 ** TODO Pairs
    Automatic pair insertion saves a lot of time and generally reduces
    the cognitive load of keeping parentheses matched. As emacs is a
@@ -1500,6 +1501,7 @@
 ** TODO Miscellaneous Packages
    - [[https://github.com/Malabarba/rich-minority][rich-minority]] (I currently use the diminish integration in
      use-package)
+   - when hydra is not enough: [[https://emacsair.me/2019/02/14/transient-0.1/][transient]]
    - [[https://github.com/bbatsov/crux][crux]]
    - [[https://github.com/m00natic/vlfi][vlf]]
    - [[https://github.com/bbatsov/super-save][super-save]]
