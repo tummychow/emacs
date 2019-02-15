@@ -338,6 +338,7 @@
         :infix "d"
         "" '(:wk "desktops"
              :ignore t)
+        "d" #'evil-switch-to-windows-last-buffer
         "h" #'split-window-vertically
         "v" #'split-window-horizontally
         "x" #'delete-window
@@ -580,7 +581,8 @@
         "f" #'private/counsel-projectile-find-file
         "/" #'counsel-projectile-rg
         "p" #'counsel-projectile-switch-project
-        "b" #'counsel-projectile-switch-to-buffer)
+        "b" #'counsel-projectile-switch-to-buffer
+        "k" #'projectile-kill-buffers)
        :demand t
        :config
        (setcar counsel-projectile-switch-project-action
