@@ -541,6 +541,11 @@
        (useful in longer expressions)
      - easy integration with swiper/rg and occur/wgrep, if you realize
        that you're biting off more than you can chew
+
+     It's also worth asking if we can scale ~:s~ to multiple files. A
+     vim package that crossed my desk recently, and seems to have a
+     very interesting workflow, is [[https://github.com/wincent/ferret][ferret]]. Something similar could
+     probably be built on top of occur.
 **** iedit/multiple-cursors
      I've heard [[https://sam217pa.github.io/2016/09/11/nuclear-power-editing-via-ivy-and-ag/][good]] [[https://oremacs.com/2015/01/27/my-refactoring-workflow/][things]] about iedit, and I'm also interested in
      multiple-cursors:
@@ -633,6 +638,12 @@
     I looked at. counsel-projectile supports [[https://github.com/ericdanan/counsel-projectile#sorting-candidates][sorting candidates]], which
     might reduce my dependence on that functionality. Perhaps a
     binding for ~other-buffer~ would also help.
+*** TODO git-ls-files
+    projectile's use of git-ls-files can lead to some strange
+    behavior, because the list is based on the git index. This can
+    lead to [[https://github.com/bbatsov/projectile/issues/1148][deleted files persisting]], or [[https://github.com/bbatsov/projectile/issues/997][duplicated listings]] for merge
+    conflicts. I'm not actually sure there's any way to get around
+    this with a git-based command.
 ** [[https://github.com/abo-abo/avy][avy]]
    One of the unpleasant truths of vim is that, although there are
    structured motions for everything, you're probably going to start
@@ -1071,6 +1082,8 @@
     - We should print a message to the minibuffer if we try to move
       past the end of a direction. [[https://emacs.stackexchange.com/a/11024][~save-excursion~]] might help for
       this.
+    - If existing org functions aren't the right fit, maybe we can
+      roll our own by parsing the file with org-element and [[https://github.com/ndwarshuis/om.el][om]]?
 **** Target UX
      - heading state (default)
        - ~hjkl~ (available outside hydra) :: parent heading, down same
@@ -1338,11 +1351,13 @@
 *** TODO LSP
     The Language Server Protocol gives me hope that my editor will
     stop being completely terrible some day. A list of implementations
-    can be found [[https://github.com/Microsoft/language-server-protocol/blob/gh-pages/_implementors/servers.md][here]].
+    can be found [[https://github.com/Microsoft/language-server-protocol/blob/gh-pages/_implementors/servers.md][here]]. More thoughts [[https://utcc.utoronto.ca/~cks/space/blog/programming/GoEmacsDroppedTools][here]].
 
     - [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]]
     - [[https://github.com/joaotavora/eglot][eglot]]
     - [[https://github.com/tigersoldier/company-lsp][company-lsp]]
+*** TODO tree-sitter
+    [[https://github.com/ubolonton/emacs-tree-sitter][Here]].
 *** TODO epub
     See [[https://github.com/wasamasa/nov.el][nov.el]].
 *** TODO Bash
@@ -1438,7 +1453,8 @@
    Autocompletion is a huge time saver and can eliminate a lot of
    "whoops I forgot that argument's type" brain cycles. Unfortunately,
    the situation in emacs is [[https://www.reddit.com/r/emacs/comments/49ee8f/][not great]]. There are two main
-   implentations, [[https://github.com/company-mode/company-mode][company]] and [[https://github.com/auto-complete/auto-complete][auto-complete]].
+   implentations, [[https://github.com/company-mode/company-mode][company]] and [[https://github.com/auto-complete/auto-complete][auto-complete]]. Some other interesting
+   thoughts [[https://www.reddit.com/r/emacs/comments/cy6hrq/the_stupid_completion_definer_is_back_a_little/eyqihl3/?context=1][here]].
 ** TODO git
    Obviously the elephant in this room is [[https://github.com/magit/magit][magit]], with support from
    other packages like [[https://github.com/vermiculus/magithub][magithub]] and [[https://github.com/emacs-evil/evil-magit][evil-magit]]. Some other important
@@ -1510,8 +1526,11 @@
    - [[https://github.com/nflath/hungry-delete][hungry-delete]] and/or [[https://github.com/hrehfeld/emacs-smart-hungry-delete][smart-hungry-delete]]
    - [[https://github.com/alezost/mwim.el][mwim]]
    - [[https://github.com/bbatsov/zenburn-emacs][zenburn]] (I should actually implement [[https://github.com/tummychow/pallor][pallor]] in emacs)
+   - [[https://github.com/jasonm23/autothemer][autothemer]]
    - [[https://www.reddit.com/r/emacs/comments/4d8gvt/][auto close minibuffer]]
    - tools for fontification debugging: [[https://github.com/Lindydancer/font-lock-studio][font-lock-studio]],
      [[https://github.com/Lindydancer/font-lock-profiler][font-lock-profiler]], [[https://github.com/Lindydancer/highlight-refontification][highlight-refontification]], [[https://github.com/Lindydancer/face-explorer][face-explorer]],
      [[https://github.com/Lindydancer/faceup][faceup]]
    - more text objects: [[https://github.com/ninrod/exato][exato]], [[https://github.com/noctuid/targets.el][targets]]
+   - [[https://www.reddit.com/r/emacs/comments/j2ovcb/][so-long-mode]]
+   - [[https://github.com/DarthFennec/highlight-indent-guides/tree/master][highlight-indent-guides]]
