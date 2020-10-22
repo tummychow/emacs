@@ -14,6 +14,7 @@
      ~n~.
   4. Tangle the file manually (~C-c C-v t~ or ~M-x org-babel-tangle~).
   5. Restart emacs (~M-x kill-emacs~). Note that this restart may take
-     a very long time; emacs will bootstrap [[https://github.com/raxod502/straight.el][straight]] and pull all my
-     init's dependencies. This includes an entire clone of org.
+     a very long time; emacs will bootstrap [[https://github.com/raxod502/straight.el][straight]] and clone/build
+     all my init's dependencies. (This includes a full clone of
+     org-mode.)
   6. You should now have emacs open with my config active.

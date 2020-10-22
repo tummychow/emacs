@@ -53,8 +53,7 @@
    I like straight philosophically - clones and lockfiles "feels" like
    the right way to solve this problem - and I don't mind having to
    give up the built-in package management for those benefits.
-   Extensive documentation is also greatly appreciated. UX is still
-   rough around the edges - see [[https://github.com/raxod502/straight.el/issues/66][#66]]/[[https://github.com/raxod502/straight.el/issues/158][#158]] - but I can wait for that.
+   Extensive documentation is also greatly appreciated.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq load-prefer-newer t)
@@ -63,9 +62,10 @@
      (setq straight-use-package-by-default t)
      (setq straight-cache-autoloads t)
 
+     (defvar bootstrap-version)
      (let ((bootstrap-file
             (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-           (bootstrap-version 4))
+           (bootstrap-version 5))
        (unless (file-exists-p bootstrap-file)
          (with-current-buffer
              (url-retrieve-synchronously
@@ -87,6 +87,40 @@
      (use-package diminish
        :defer t)
    #+END_SRC
+*** Shallow Clones
+    straight has [[https://github.com/raxod502/straight.el/pull/372][partial shallow clone support]]. However, freezing is
+    [[https://github.com/raxod502/straight.el/issues/527][not compatible]] with shallow clones, so we're still waiting for
+    that before we can adopt it.
+
+    org introduces special complications with shallow clones. The
+    ~org-version~ function is not defined in the org-mode git
+    repository; it's supposed to be created by a Makefile. straight
+    uses a [[https://github.com/raxod502/straight.el/issues/211][special hack]] to fix that, but the hacks depend on the
+    presence of tags in the cloned repository. Unfortunately, the
+    current shallow clone implementation excludes tag refs, which
+    causes ~org-version~ to return an error from ~git describe~. (Tag
+    objects will be fetched, but the refs to refer to them by name
+    will not be created, and the refs are needed for ~git describe~.)
+    This creates another bad interaction with elfeed's elfeed-link
+    feature, which tries to invoke ~org-version~ when the org package
+    is loaded. There would be a few ways to solve this problem:
+
+    - Allow straight to preserve tags when shallowly cloning, maybe
+      configurable with the existing ~:depth~ key.
+    - Override the recipe for elfeed to exclude ~elfeed-link.el~ from
+      the build, since I don't use that functionality.
+    - Do a deep clone of org instead of a shallow one. This is what
+      I'm actually doing, since shallow clones are missing some
+      functionality as I mentioned above.
+
+
+    One other interesting caveat (again, demonstrated by org) is that
+    not all git servers support fetching specific commit refs. For
+    example, with ~--depth=1~, you can fetch 50fd89cb93 (the tag
+    object for org ~release_9.4~), but you can't fetch fbccf09c74
+    (which is the actual commit the tag refers to). So using shallow
+    clones would restrict you to released versions only. This has
+    [[https://github.com/raxod502/straight.el/issues/527#issuecomment-714833174][other complicated implications]].
 ** [[https://github.com/emacscollective/no-littering][no-littering]]
    This keeps files like ~projectile-known-projects-file~ where they
    belong.
@@ -838,9 +872,6 @@
    is a minor mode.
 * Major Modes and Filetypes
 ** [[http://orgmode.org/][org]]
-   straight will install a full clone of org's [[https://code.orgmode.org/bzg/org-mode][git repository]], which
-   is immense. We're waiting for [[https://github.com/raxod502/straight.el/issues/2][shallow clone]] support.
-
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package org
        :custom

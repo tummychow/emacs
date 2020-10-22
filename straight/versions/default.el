@@ -30,10 +30,10 @@
  ("projectile" . "09255ddc3369eea918c9b4f318b7db98d4816581")
  ("rust-mode" . "106aeab800fb3404baf231845d3e3549ec235afa")
  ("shackle" . "4189c1c773aab533969b587f7801ffbcd1d7d613")
- ("straight.el" . "2809c0e93a553419baa0b9502b9a4713e9f16feb")
+ ("straight.el" . "a856388a248c21946ef37773905374898b9eb4b4")
  ("swiper" . "716e1518db1ef20ea14f82a248b15ec1c9c87318")
  ("systemd-mode" . "e97f78ee11f4d4738aaa646e48bb39565d88abd6")
  ("use-package" . "da8c9e2840343906e732f9699e43d35a1f06481d")
  ("ws-butler" . "52321b99be69aa1b661da7743c4421a30d8b6bcb")
  ("yaml-mode" . "40067a10ac1360f0b9533f0bbbb2eea128e2574d"))
-:jupiter
+:beta
