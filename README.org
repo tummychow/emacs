@@ -1,4 +1,4 @@
-* ~~/.emacs.d~
+* ~~/.config/emacs~
   Just my emacs configuration. See ~init.org~ for the details.
 
   I reserve the right to make breaking changes to my configuration
@@ -6,9 +6,9 @@
   pushes. You depend on this repository at your own risk.
 * Installing
   If, for some reason, you want to try my configuration, follow these steps:
-  1. Clone this repo to ~~/.emacs.d~. (I recommend backing up your own
+  1. Clone this repo to ~~/.config/emacs~. (I recommend backing up your own
      emacs configuration first.)
-  2. Launch emacs, and ~C-x C-f ~/.emacs.d/init.org~.
+  2. Launch emacs, and ~C-x C-f ~/.config/emacs/init.org~.
   3. emacs will warn you that ~init.org~ sets an unsafe file variable,
      and it will prompt you for how to handle this variable. Press
      ~n~.
