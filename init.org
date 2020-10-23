@@ -1189,80 +1189,74 @@
      (use-package edit-indirect
        :defer t)
    #+END_SRC
-** [[http://furius.ca/beancount/][beancount]]
-   The actual beancount minor mode lives in [[https://bitbucket.org/blais/beancount/src/default/editors/emacs/beancount.el?at=default&fileviewer=file-view-default][bitbucket]], but straight
-   doesn't have hg support yet. The [[https://github.com/beancount/beancount/blob/master/editors/emacs/beancount.el][github mirror]] is a fine
-   substitute, since the mode doesn't appear to be modified often.
+** [[http://furius.ca/beancount/][beancount]], [[https://github.com/alphapapa/outshine][outshine]]
+   The earliest incarnation of beancount-mode was a minor mode, so
+   that it could be embedded in an org-mode file. The modern version
+   is a major mode, but my beancount file still uses org-shaped stuff,
+   so I use outshine to preserve the behavior I used to depend on.
+   (beancount-mode includes some org-esque cycle functions, but I want
+   other outshine functionality as well, like org-style behavior at
+   the beginning of the buffer. So I use outshine's implementation
+   instead of beancount's.) I might break the outshine bits into their
+   own config if I ever use it in non-beancount contexts.
 
-   Note that ~straight-pull-package~ usually doesn't work for
-   beancount, because the repo has a master [[https://bitbucket.org/blais/beancount/commits/tag/master][tag]]. In hg, the main
-   branch is called ~default~, but this tag also gets pulled into the
-   git [[https://github.com/beancount/beancount/releases/tag/master][mirror]], so ~git checkout master~ is ambiguous. (Setting the
-   branch to ~heads/master~ also fails, because
-   ~straight-pull-package~ will look for ~origin/heads/master~.) I
-   could file an upstream issue to handle this more gracefully, but it
-   seems better to wait for hg support, or to implement it myself.
+   Not having full org-mode powers is a genuine downside. For example,
+   ~counsel-outline~ has the same functionality as ~counsel-org-goto~,
+   but in an org buffer, it invokes ~org-goto-marker-or-bmk~, which
+   reveals the heading you're jumping to if it's hidden underneath
+   another heading. That reveal doesn't happen in outline or outshine,
+   so you end up selecting the hidden text instead, and pressing ~TAB~
+   expands the visible heading that you're on instead of the actual
+   heading you jumped to.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package beancount
+     (use-package beancount-mode
        :straight (:host github
-                  :repo "beancount/beancount"
-                  :branch "master"
-                  :files ("editors/emacs/beancount.el"))
+                  :repo "beancount/beancount-mode"
+                  :branch "main")
        :custom
        (beancount-use-ido nil)
-       :mode ("\\.beancount\\'" . org-mode)
+       :general
+       (:states '(normal insert emacs)
+        :keymaps 'beancount-mode-map
+        "C-c d" #'beancount-insert-date)
+       (private/with-local-leader
+        :keymaps 'beancount-mode-map
+        "q" #'beancount-query
+        "l" #'beancount-check
+        "x" #'beancount-context)
+       :mode ("\\.beancount\\'" . beancount-mode)
        :hook
-       (org-mode . private/org-beancount)
-       :init
-       (defun private/org-beancount ()
-         (when (and buffer-file-name
-                    (string= (file-name-extension buffer-file-name) "beancount"))
-           (beancount-mode 1)
-           (set (make-local-variable 'org-adapt-indentation) nil)
-           (set (make-local-variable 'org-blank-before-new-entry) '((heading . t)
-                                                                    (plain-list-item . nil)))))
+       (beancount-mode . outshine-mode)
        :defer t)
    #+END_SRC
-*** org-beancount
-    ~beancount-mode~ is actually a minor mode, and its directives can
-    be embedded in other major modes. The author of beancount uses org
-    for this, probably via a file-local property (~-*- mode: org;
-    mode: beancount -*-~).
 
-    I implemented similar behavior via a hook, so that I wouldn't need
-    file-specific cruft. This hook also disables indentation in org,
-    which is necessary because beancount does not support leading
-    whitespace on directives. Since the file is unindented, I add a
-    blank line above each heading to make them more visible.
-
-    If the hook function is created at ~:config~ time,
-    ~beancount-mode~ will be loaded as soon as you open any org file,
-    regardless of whether that is a beancount file. This is because
-    any function used in ~:hook~ will have an autoload created for it
-    if it's not already defined. Then, when you open an org file, the
-    hook gets run, triggering the autoload, which also loads all of
-    ~beancount-mode~. By creating the hook at ~:init~ time instead,
-    the mode will only be autoloaded if the hook actually tries to
-    turn it on.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package outshine
+       :custom
+       (outshine-startup-folded-p t)
+       (outshine-cycle-emulate-tab t)
+       (outshine-org-style-global-cycling-at-bob-p t)
+       :general
+       (:states '(normal insert emacs)
+        :keymaps 'outshine-mode-map
+        "TAB" #'outshine-cycle)
+       (private/with-local-leader
+        :keymaps 'outshine-mode-map
+        "/" #'counsel-outline)
+       :diminish 'outline-minor-mode
+       :defer t)
+   #+END_SRC
 *** TODO Mode Improvements
     ~beancount-mode~ is rather anemic, and there's a lot of stuff I
     would like to improve:
 
-    - quick key to insert the current YYYY-MM-DD
     - fontification of comments, strings, numbers, and commodities
-    - keywords (eg open, balance, document) are fontified in comments
-      and strings, where they should be treated as regular text
-    - automatic reinitialization of accounts without having to
-      manually invoke beancount-init-accounts
     - ~beancount-account-regexp~ does not recognize custom naming
       options (see ~beancount-account-categories~)
     - autocompletion for accounts and payees
     - clean auto align for the entire file, even for non-transaction
       directives (~bean-format~ can help, but it only aligns amounts)
-    - indentation should default to 2 spaces after a transaction,
-      returning to 0 after an empty line (Can we use TAB to cycle
-      between valid indentation levels? We're in org...)
     - Flycheck invocation of ~bean-check~
 ** [[https://github.com/holomorph/systemd-mode][systemd]]
    #+BEGIN_SRC emacs-lisp :tangle yes
