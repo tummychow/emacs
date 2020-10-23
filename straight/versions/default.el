@@ -27,7 +27,7 @@
  ("markdown-mode" . "e45b35b220d9505c138ec692d623a133aeb524d5")
  ("melpa" . "fe7889550dd0004d2ed5e3099f538eef47d8fa4b")
  ("no-littering" . "f1ac5274ba49e3533c356c4cd6d5f8ebed0ec517")
- ("org" . "732aa477b031772c3694023cbf34eec6bdc08d61")
+ ("org" . "fbccf09c740a298e39daa9170bceaa92684f2fe0")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("projectile" . "09255ddc3369eea918c9b4f318b7db98d4816581")
  ("rust-mode" . "106aeab800fb3404baf231845d3e3549ec235afa")

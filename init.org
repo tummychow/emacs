@@ -878,6 +878,7 @@
        (org-M-RET-may-split-line nil)
        (org-blank-before-new-entry '((heading . nil)
                                      (plain-list-item . nil)))
+       (org-startup-folded t)
        (org-catch-invisible-edits 'smart)
        (org-ellipsis "⤵")
        (org-src-fontify-natively t)
