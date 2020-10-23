@@ -22,7 +22,7 @@
  ("go-eldoc" . "cbbd2ea1e94a36004432a9ac61414cb5a95a39bd")
  ("go-mode.el" . "ff87a1e80945d958d9c348ce4d2e65a797b38a4b")
  ("goto-chg" . "e5b38e4e1378f6ea48fa9e8439f49c2998654aa4")
- ("hydra" . "5b8f66299249cc771008248279544b8eb3ecdc19")
+ ("hydra" . "112e689f75b59398d8eca79ac6562dca12b8a959")
  ("let-alist" . "b299c78897cc307f9d5521927376fbd06a26f123")
  ("markdown-mode" . "e45b35b220d9505c138ec692d623a133aeb524d5")
  ("melpa" . "fe7889550dd0004d2ed5e3099f538eef47d8fa4b")
