@@ -602,11 +602,11 @@
         (lambda (project-root)
           (or (file-remote-p project-root)
               (string-prefix-p (straight--dir) project-root))))
-       (projectile-globally-ignored-file-suffixes '(".pdf"))
-       (projectile-globally-unignored-files '(".projectile" ".dir-locals.el"))
        :demand t
        :config
        (put 'projectile-enable-caching 'safe-local-variable #'booleanp)
+       (put 'projectile-indexing-method 'safe-local-variable
+            (lambda (v) (member v '(native hybrid alien))))
        (projectile-mode 1))
    #+END_SRC
 
