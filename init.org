@@ -1200,8 +1200,11 @@
    expands the visible heading that you're on instead of the actual
    heading you jumped to.
 
+   I don't use beancount alignment at all, so I advise away that part
+   of ~indent-line-function~.
+
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package beancount-mode
+     (use-package beancount
        :straight (:host github
                   :repo "beancount/beancount-mode"
                   :branch "main")
@@ -1219,7 +1222,9 @@
        :mode ("\\.beancount\\'" . beancount-mode)
        :hook
        (beancount-mode . outshine-mode)
-       :defer t)
+       :config
+       (advice-add #'beancount-align-number :override
+                   (lambda (&rest r) ())))
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
