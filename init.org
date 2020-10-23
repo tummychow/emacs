@@ -617,22 +617,16 @@
         :infix "p"
         "" '(:wk "projectile"
              :ignore t)
-        "f" #'private/counsel-projectile-find-file
+        "f" #'counsel-projectile-find-file
         "/" #'counsel-projectile-rg
         "p" #'counsel-projectile-switch-project
         "b" #'counsel-projectile-switch-to-buffer
         "k" #'projectile-kill-buffers)
        :demand t
        :config
-       (setcar counsel-projectile-switch-project-action
-               (counsel-projectile--action-index
-                #'counsel-projectile-switch-project-action-find-file
-                counsel-projectile-switch-project-action))
-       (defun private/counsel-projectile-find-file (arg)
-         (interactive "P")
-         (if (not (projectile-project-p))
-             (counsel-projectile-switch-project)
-           (counsel-projectile-find-file arg)))
+       (counsel-projectile-modify-action
+        'counsel-projectile-switch-project-action
+        '((default counsel-projectile-switch-project-action-find-file)))
        (counsel-projectile-mode 1))
    #+END_SRC
 
@@ -661,12 +655,9 @@
 
     I also want ~counsel-projectile-switch-project~ to use
     ~counsel-projectile-find-file~ as its action (the default action
-    selects a file or buffer, like ~counsel-projectile~).
-    Unfortunately, there's no good way to change the default action.
-    Either you copy the entire action list into your config, or you
-    mutate the action list to change the leading integer that selects
-    the default. Both options are unpleasant, but the latter is
-    shorter.
+    selects a file or buffer, like ~counsel-projectile~). The
+    ~counsel-projectile-modify-action~ function lets us make this
+    change in a reasonably ergonomic fashion.
 *** TODO Sorting
     I mainly use buffer switching to cycle between the last few files
     I looked at. counsel-projectile supports [[https://github.com/ericdanan/counsel-projectile#sorting-candidates][sorting candidates]], which
