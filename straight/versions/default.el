@@ -31,7 +31,7 @@
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("projectile" . "09255ddc3369eea918c9b4f318b7db98d4816581")
  ("rust-mode" . "106aeab800fb3404baf231845d3e3549ec235afa")
- ("shackle" . "4189c1c773aab533969b587f7801ffbcd1d7d613")
+ ("shackle" . "171c3f437d853f34782b201d86ef765665b755e2")
  ("straight.el" . "a856388a248c21946ef37773905374898b9eb4b4")
  ("swiper" . "716e1518db1ef20ea14f82a248b15ec1c9c87318")
  ("systemd-mode" . "e97f78ee11f4d4738aaa646e48bb39565d88abd6")
