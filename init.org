@@ -1366,6 +1366,14 @@
    probably a good way to store ~elfeed-feeds~ in a separate file
    (similar to ~projectile-known-projects-file~) but I haven't
    bothered to implement it yet.
+*** TODO ~elfeed-db-compact~
+    I didn't even know ~elfeed-db-compact~ existed until very
+    recently. It greatly reduces the number of stray inodes running
+    around in my no-littering var directory. I was going to run it on
+    a hook whenever I exited elfeed, but it seems to be quite slow. If
+    I hook it to ~kill-emacs-hook~, it might not get run depending on
+    how emacs terminates. I'll have to figure out some kind of
+    automation here.
 * TODO Other Improvements
   - https://github.com/emacs-tw/awesome-emacs
   - https://github.com/hlissner/doom-emacs
