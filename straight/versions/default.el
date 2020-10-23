@@ -10,7 +10,7 @@
  ("elfeed" . "1d7156d1aceda643dc6f0bbf2359a1bb1401a77b")
  ("emacs-htmlize" . "315a8f23cfd3e87642ff9e30ae3300c7a84244d5")
  ("emacs-which-key" . "ff79dfff66f880885c5893dd6fd05dc51173a476")
- ("epkgs" . "59ca0b0ae4b09d45579232ed4e729d514ab49747")
+ ("emacsmirror-mirror" . "83bfe8b5f9bcd3653dbea383776183c6d36841ac")
  ("epl" . "78ab7a85c08222cd15582a298a364774e3282ce6")
  ("evil" . "230b87212c81aaa68ef5547a6b998d9c365fe139")
  ("evil-surround" . "2af81ab3ac64e4b0515a157a672d8cb89f0172b9")
