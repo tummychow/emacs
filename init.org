@@ -1171,7 +1171,7 @@
      (use-package markdown-mode
        :custom
        (markdown-hide-urls t)
-       :mode ("\\.md\\'" . markdown-mode)
+       :mode "\\.md\\'"
        :hook
        (markdown-mode . visual-line-mode))
    #+END_SRC
