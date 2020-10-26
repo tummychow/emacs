@@ -342,14 +342,14 @@
    mood to roll my own version of evil right now.
 
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package undo-tree
-       :defer t
-       :diminish)
+     (use-package undo-fu
+       :defer t)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package evil
        :custom
+       (evil-undo-system 'undo-fu)
        (evil-want-Y-yank-to-eol t)
        (evil-disable-insert-state-bindings t)
        (evil-motion-state-modes nil)
@@ -395,6 +395,9 @@
    which I stole from [[https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/modules/feature/evil/config.el#L92-L108][doom]]. I tend to mash ~ESC~ when I want to get
    back to regular editor behavior, and this hook serves as a
    predictable entry point for that behavior.
+
+   I expect to drop undo-fu and set ~evil-undo-system~ to ~undo-redo~
+   once all my machines have emacs 28.
 ** [[https://github.com/emacs-evil/evil-surround][evil-surround]]
    Out of all the vim plugins in the world, [[https://github.com/tpope/vim-surround][surround]] is perhaps the
    only one that deserves to be built in. Naturally, there's an evil
