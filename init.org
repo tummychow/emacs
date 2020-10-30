@@ -982,8 +982,7 @@
     headlines (you can scan the left edge of the buffer to locate
     them). It also increases the vertical density of my org files,
     since I don't need empty lines (~org-blank-before-new-entry~) or
-    larger fonts to make the headlines stand out. I do disable the
-    indentation for beancount buffers; see below.
+    larger fonts to make the headlines stand out.
 *** org-src Default Language
     I want to use fundamental-mode in org-src blocks that have no
     language, but there is no supported way to set a [[https://emacs.stackexchange.com/q/8314][default language]]
