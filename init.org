@@ -765,7 +765,7 @@
                                              :same t)))
        :demand t
        :general
-       (:keymaps '(special-mode-map tabulated-list-mode-map)
+       (:keymaps 'special-mode-map
         :states 'normal
         "q" #'quit-window)
        ([remap quit-window] #'private/quit-window)
@@ -782,8 +782,6 @@
    I remap ~quit-window~ so that it kills buffers by default instead
    of burying them. Since evil has its own binding of ~q~ in normal
    state, that has to be mapped back to ~quit-window~.
-   (~tabulated-list-mode-map~ does not derive from ~special-mode-map~,
-   so it also has to be set explicitly. I filed [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=30452][a bug]] for that.)
 *** TODO Occur Buffers
     ~ivy-occur~ buffers should be shackled to the window they were
     originally in. Jumping to candidates in the occur buffer should
