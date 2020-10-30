@@ -691,40 +691,10 @@
        (avy-all-windows nil)
        :general
        (:states '(motion)
-        "f" #'avy-goto-char-2-esc)
+        "f" #'avy-goto-char-2)
        :config
-       (defun avy-goto-char-2-esc (&optional arg beg end)
-         "Like avy-goto-char-2, but cancels the prompt if you press ESC."
-         (interactive (list current-prefix-arg nil nil))
-         (catch 'escaped
-           (let ((char1 (read-char "char 1: " t)))
-             (when (eq char1 ?\e)
-               (throw 'escaped "Quit"))
-             (let ((char2 (read-char "char 2: " t)))
-               (when (eq char2 ?\e)
-                 (throw 'escaped "Quit"))
-               (avy-goto-char-2 char1 char2 arg beg end)))))
        (evil-define-avy-motion avy-goto-char-2 exclusive))
    #+END_SRC
-*** read-char ~ESC~
-    ~avy-goto-char-2~ uses ~read-char~ to request the target
-    characters. This function is pretty low-level - it can only be
-    cancelled with ~C-g~, and does not support [[https://www.reddit.com/r/emacs/comments/67rlfr/][key translation]] maps.
-    ~read-key~ does support key translations, but not the way I want:
-    if you remap ~ESC~ to ~C-g~, ~read-key~ will return 7 (the ~C-g~
-    keycode) instead of 27 (the ~ESC~ keycode) Either way, pressing
-    ~ESC~ doesn't actually quit.
-
-    I hacked around this by rolling my own version of
-    ~avy-goto-char-2~, which checks if you pressed ~ESC~ for the
-    prompt and bails out early. I suspect this is extremely
-    unidiomatic elisp the way I've written it, but oh well. Pull
-    requests are welcome to address my atrocious lack of style.
-
-    Note that, although pressing ~ESC~ will end the avy prompt, evil
-    still thinks that the motion completed (eg ~cf ESC~ will still go
-    into insert mode). Is there a way to signal that the motion was
-    canceled?
 *** TODO Repeat
     One nice feature of [[https://github.com/justinmk/vim-sneak][vim-sneak]] is that, after your initial search,
     you can mash the key to go to the next or previous instance. Such
