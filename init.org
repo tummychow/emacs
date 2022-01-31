@@ -1186,13 +1186,23 @@
         "C-c d" #'beancount-insert-date)
        (private/with-local-leader
         :keymaps 'beancount-mode-map
+        "b" #'private/beancount-balance-sheet
         "q" #'beancount-query
         "l" #'beancount-check
         "x" #'beancount-context)
        :mode ("\\.beancount\\'" . beancount-mode)
        :hook
-       (beancount-mode . outshine-mode)
+       (beancount-mode . (lambda ()
+                           (outshine-mode)
+                           (goto-char (point-max))
+                           (outline-show-entry)))
        :config
+       (defun private/beancount-balance-sheet ()
+         (interactive)
+         (let ((compilation-read-command nil))
+           (beancount--run beancount-query-program
+                           (file-relative-name buffer-file-name)
+                           "select account, sum(units(position)) as position from clear where account ~ 'Assets'or account ~ 'Liabilities'group by account, currency order by account, currency")))
        (advice-add #'beancount-align-number :override
                    (lambda (&rest r) ())))
    #+END_SRC
