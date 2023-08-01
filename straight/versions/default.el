@@ -27,7 +27,7 @@
  ("hydra" . "112e689f75b59398d8eca79ac6562dca12b8a959")
  ("let-alist" . "b299c78897cc307f9d5521927376fbd06a26f123")
  ("markdown-mode" . "cf6403186119cd3d25adc702845f969071060e20")
- ("melpa" . "fe7889550dd0004d2ed5e3099f538eef47d8fa4b")
+ ("melpa" . "4d9ff9717f25fd229891746044777de8a73558c2")
  ("no-littering" . "60ce8946226882cda4561da47453fcf9b9da8ddc")
  ("org" . "fbccf09c740a298e39daa9170bceaa92684f2fe0")
  ("outorg" . "ef0f86f4b893b30be8bcf8b43a5ec357a6c70f07")
@@ -39,7 +39,6 @@
  ("straight.el" . "e2de88ea0e7ccf9f4846e9e756f86e0dcf469c44")
  ("swiper" . "b65e401c22ec56a008b00f651cd9536caf593d43")
  ("systemd-mode" . "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
- ("use-package" . "4fb1f9a68f1e7e7d614652afc017a6652fd029f1")
  ("ws-butler" . "52321b99be69aa1b661da7743c4421a30d8b6bcb")
  ("yaml-mode" . "68fecb5f0dec712a10c8655df6881392a4613617"))
 :beta

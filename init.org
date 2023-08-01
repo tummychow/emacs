@@ -74,8 +74,6 @@
            (goto-char (point-max))
            (eval-print-last-sexp)))
        (load bootstrap-file nil 'nomessage))
-
-     (straight-use-package 'use-package)
    #+END_SRC
 
    I disable straight's automatic rebuilding and invoke
