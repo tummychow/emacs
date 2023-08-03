@@ -29,6 +29,7 @@
  ("markdown-mode" . "cf6403186119cd3d25adc702845f969071060e20")
  ("melpa" . "4d9ff9717f25fd229891746044777de8a73558c2")
  ("no-littering" . "60ce8946226882cda4561da47453fcf9b9da8ddc")
+ ("nongnu-elpa" . "c0840d025ba5ad3fc3f2dbd08d3b4ab72cf07574")
  ("org" . "fbccf09c740a298e39daa9170bceaa92684f2fe0")
  ("outorg" . "ef0f86f4b893b30be8bcf8b43a5ec357a6c70f07")
  ("outshine" . "9334b555aaf1426a9e405a57b80809a1615627b3")
@@ -36,9 +37,9 @@
  ("projectile" . "defce6e6bb504bdfab1e091550e2f709310327b9")
  ("rust-mode" . "ca7d99c6fd90fc1e636aa9d4020a2f077786a0c3")
  ("shackle" . "171c3f437d853f34782b201d86ef765665b755e2")
- ("straight.el" . "e2de88ea0e7ccf9f4846e9e756f86e0dcf469c44")
+ ("straight.el" . "ff63b154bef1ef8d92c141bd189001bff74f6982")
  ("swiper" . "b65e401c22ec56a008b00f651cd9536caf593d43")
  ("systemd-mode" . "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
  ("ws-butler" . "52321b99be69aa1b661da7743c4421a30d8b6bcb")
  ("yaml-mode" . "68fecb5f0dec712a10c8655df6881392a4613617"))
-:beta
+:gamma
