@@ -851,7 +851,7 @@
        :general
        (:states '(insert emacs)
         :keymaps 'org-mode-map
-        "RET" #'org-return-indent)
+        "RET" #'private/org-return-indent)
        (private/with-local-leader
         :keymaps 'org-mode-map
         "h" '(private/hydra-worf/private/org-up-heading-safe
@@ -883,6 +883,9 @@
        :hook
        (org-mode . private/org-agenda-file-to-back-if-new)
        :config
+       (defun private/org-return-indent ()
+         (interactive)
+         (org-return t))
        (defun private/org-agenda-file-to-back-if-new ()
          (when (and buffer-file-name
                     (not (org-agenda-file-p buffer-file-name)))

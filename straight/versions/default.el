@@ -30,7 +30,7 @@
  ("melpa" . "4d9ff9717f25fd229891746044777de8a73558c2")
  ("no-littering" . "60ce8946226882cda4561da47453fcf9b9da8ddc")
  ("nongnu-elpa" . "c0840d025ba5ad3fc3f2dbd08d3b4ab72cf07574")
- ("org" . "fbccf09c740a298e39daa9170bceaa92684f2fe0")
+ ("org" . "652430128896e690dc6ef2a83891a1209094b3da")
  ("outorg" . "ef0f86f4b893b30be8bcf8b43a5ec357a6c70f07")
  ("outshine" . "9334b555aaf1426a9e405a57b80809a1615627b3")
  ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
