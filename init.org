@@ -839,7 +839,6 @@
                         (auto-mode . emacs)
                         (system . "xdg-open %s")
                         (t . system)))
-       (org-agenda-files (no-littering-expand-var-file-name "org/agenda-files"))
        :general
        (:states '(insert emacs)
         :keymaps 'org-mode-map
@@ -873,15 +872,10 @@
         :keymaps 'org-src-mode-map
         "e" #'org-edit-src-exit)
        :hook
-       (org-mode . private/org-agenda-file-to-back-if-new)
        :config
        (defun private/org-return-indent ()
          (interactive)
          (org-return t))
-       (defun private/org-agenda-file-to-back-if-new ()
-         (when (and buffer-file-name
-                    (not (org-agenda-file-p buffer-file-name)))
-           (org-agenda-file-to-front t)))
        (defun private/org-meta-return-before (arg)
          (interactive "P")
          (beginning-of-line)
@@ -906,9 +900,6 @@
          ("j" org-forward-heading-same-level "next")
          ("k" org-backward-heading-same-level "prev")
          ("l" private/org-goto-first-child "child"))
-       (when (and (stringp org-agenda-files)
-                  (not (file-exists-p org-agenda-files)))
-         (with-temp-buffer (write-file org-agenda-files)))
        (advice-add #'org-element-property :after-until
                    (lambda (property element)
                      (and (eq (org-element-type element) 'src-block)
@@ -1108,21 +1099,6 @@
     even better would be autocomplete for them. Autocompletion is
     unfortunately a TODO in its own right, but perhaps we can hack up
     an interim solution with ivy.
-*** TODO org-agenda
-    ~org-agenda~ is a large key tree that spawns a buffer just for
-    prompts. We could replace the prompts with which-key, but
-    ~org-agenda~ has some additional features. In particular, you can
-    press ~<>~ multiple times within an ~org-agenda~ buffer to adjust
-    the restriction level. This persistent binding would require a
-    hydra to replicate. Alternatively, we could approximate it with
-    just a plain key tree, which would probably be easier.
-
-    The basic key tree is implemented in
-    ~org-agenda-get-restriction-and-command~. Note that ~org-agenda~
-    has a bunch of custom command functionality as well
-    (~org-agenda-custom-commands~) and we have to decide how much of
-    that we want to implement. ~defhydradio~ can help us with the
-    persistent parts (~<>~), as it does in hydra-ox.
 ** [[https://github.com/jrblevin/markdown-mode][Markdown]]
    While I prefer working in org, sometimes you have to write markup
    that other people can edit, and org is really not usable in any
