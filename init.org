@@ -872,6 +872,7 @@
         :keymaps 'org-src-mode-map
         "e" #'org-edit-src-exit)
        :hook
+       (org-src-mode . evil-normalize-keymaps)
        :config
        (defun private/org-return-indent ()
          (interactive)
@@ -973,6 +974,11 @@
     ~org-element-property~. If ~org-element-property~ returns nil for
     an org-src block's language, this advice will treat the block's
     language as fundamental instead.
+*** ~evil-normalize-keymaps~
+    Sometimes you'll find your keymaps don't work after changing modes
+    or buffers, yet mysteriously pressing ~ESC~ gets them to behave.
+    This is usually because you need to invoke
+    ~evil-normalize-keymaps~, hence my hook for ~org-src-mode~.
 *** TODO [[https://github.com/abo-abo/ace-link][ace-link]]/[[https://github.com/noctuid/link-hint.el][link-hint]]
     A more powerful alternative to ~org-open-at-point~. This should
     open the link at point (if any), and otherwise select one
