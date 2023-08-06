@@ -73,7 +73,13 @@
            (goto-char (point-max))
            (eval-print-last-sexp)))
        (load bootstrap-file nil 'nomessage))
+
+     (setq use-package-use-theme nil)
    #+END_SRC
+
+   use-package is now part of emacs29, so I no longer have to install
+   it. But for some reason, its custom theme behavior breaks some
+   defcustoms in [[https://github.com/emacs-evil/evil/issues/1571][evil]], so I disable it.
 
    I disable straight's automatic rebuilding and invoke
    ~straight-rebuild-package~ by hand. This avoids some nasty startup
